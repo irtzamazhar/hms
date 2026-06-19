@@ -46,7 +46,7 @@
     </x-form.select>
 
     <div class="flex justify-between items-center pt-2">
-        @can('manage users')
+        @can('delete users')
         @if($user->id !== auth()->id())
         <form method="POST" action="{{ route('users.destroy', $user) }}" onsubmit="return confirm('Delete this user?')">
             @csrf @method('DELETE')

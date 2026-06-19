@@ -41,7 +41,7 @@
             </div>
 
             {{-- Result entry (lab technician) --}}
-            @can('update lab')
+            @can('enter lab results')
             @if(($item->status ?? 'pending') !== 'completed')
             <div class="px-5 pb-4">
                 <form method="POST" action="{{ route('lab.results.save',$booking) }}">

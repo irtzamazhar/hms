@@ -19,12 +19,13 @@
         <x-form.input name="employee_id" label="Employee ID" :value="old('employee_id',$staff->user->employee_id)" />
         <div>
             <label class="field-label">Status</label>
-            <select name="is_active" class="field">
-                <option value="1" @selected(old('is_active', $staff->is_active ?? true))>Active</option>
-                <option value="0" @selected(!old('is_active', $staff->is_active ?? true))>Inactive</option>
+            <select name="status" class="field">
+                @foreach(['active'=>'Active','inactive'=>'Inactive','on_leave'=>'On Leave','terminated'=>'Terminated'] as $v=>$l)
+                    <option value="{{ $v }}" @selected(old('status',$staff->status)===$v)>{{ $l }}</option>
+                @endforeach
             </select>
         </div>
-        <x-form.input name="position" label="Position" :value="old('position',$staff->position)" />
+        <x-form.input name="designation" label="Designation *" :value="old('designation',$staff->designation)" required />
         <div>
             <label class="field-label">Department</label>
             <select name="department_id" class="field">

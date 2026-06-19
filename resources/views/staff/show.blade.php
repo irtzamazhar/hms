@@ -13,11 +13,11 @@
             <div class="field w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-xl font-bold text-slate-600 dark:text-slate-300">{{ substr($staff->user->name,0,1) }}</div>
             <div>
                 <h1 class="text-lg font-bold text-slate-800 dark:text-white">{{ $staff->user->name }}</h1>
-                <p class="text-sm text-slate-400">{{ ucfirst(str_replace('_',' ',$staff->position ?? '')) }} · {{ $staff->department->name ?? '—' }}</p>
+                <p class="text-sm text-slate-400">{{ ucfirst(str_replace('_',' ',$staff->designation ?? '')) }} · {{ $staff->department->name ?? '—' }}</p>
                 <p class="text-sm text-slate-400">{{ $staff->user->email }}</p>
             </div>
         </div>
-        @can('update staff')
+        @can('edit staff')
         <a href="{{ route('staff.edit',$staff) }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg">Edit</a>
         @endcan
     </div>
@@ -29,7 +29,7 @@
             ['Employee ID', $staff->user->employee_id ?? '—'],
             ['Phone', $staff->user->phone ?? '—'],
             ['Department', $staff->department->name ?? '—'],
-            ['Position', $staff->position ?? '—'],
+            ['Designation', $staff->designation ?? '—'],
             ['Basic Salary', $staff->basic_salary ? '₨ '.number_format($staff->basic_salary,0) : '—'],
             ['Joining Date', $staff->user->joining_date?->format('d M Y') ?? '—'],
             ['Status', ($staff->is_active ?? true) ? 'Active' : 'Inactive'],

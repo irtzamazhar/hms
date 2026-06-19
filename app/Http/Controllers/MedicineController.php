@@ -71,7 +71,7 @@ class MedicineController extends Controller
     {
         $this->authorize('manage medicines');
 
-        return view('medicines.edit', compact('medicine', ...['categories' => MedicineCategory::active()->get()]));
+        return view('medicines.edit', ['medicine' => $medicine, 'categories' => MedicineCategory::active()->get()]);
     }
 
     public function update(Request $request, Medicine $medicine): RedirectResponse

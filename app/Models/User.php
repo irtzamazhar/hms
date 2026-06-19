@@ -55,6 +55,19 @@ class User extends Authenticatable implements Auditable
         return $this->status === 'active';
     }
 
+    public function homeRoute(): string
+    {
+        return match($this->user_type) {
+            'receptionist'   => route('tokens.index'),
+            'doctor'         => route('opd.index'),
+            'nurse'          => route('patients.index'),
+            'pharmacist'     => route('pharmacy.pos'),
+            'lab_technician' => route('lab.index'),
+            'accountant'     => route('expenses.index'),
+            default          => route('dashboard'),
+        };
+    }
+
     public function getAvatarUrlAttribute(): string
     {
         return $this->avatar

@@ -50,7 +50,7 @@ class RolePermissionSeeder extends Seeder
 
             // Laboratory
             'view laboratory', 'create lab bookings', 'enter lab results',
-            'verify lab reports', 'view lab reports',
+            'verify lab reports', 'view lab reports', 'manage lab tests',
 
             // Expenses
             'view expenses', 'create expenses', 'edit expenses', 'delete expenses', 'approve expenses',
@@ -84,9 +84,12 @@ class RolePermissionSeeder extends Seeder
                 'view ipd', 'create ipd', 'edit ipd', 'discharge patients',
                 'view appointments', 'create appointments', 'edit appointments',
                 'view tokens', 'create tokens', 'manage tokens',
-                'view doctors', 'view staff', 'view departments', 'view wards',
+                'view doctors', 'create doctors', 'edit doctors',
+                'view staff', 'create staff', 'edit staff',
+                'view departments', 'create departments', 'edit departments', 'delete departments',
+                'view wards', 'create wards', 'edit wards', 'delete wards',
                 'view pharmacy', 'view pharmacy reports',
-                'view laboratory', 'view lab reports',
+                'view laboratory', 'view lab reports', 'manage lab tests',
                 'view expenses', 'create expenses', 'approve expenses',
                 'view salaries', 'manage salaries', 'pay salaries',
                 'view shifts', 'manage shifts', 'close shifts',
@@ -95,7 +98,7 @@ class RolePermissionSeeder extends Seeder
             ],
 
             'receptionist' => [
-                'view dashboard', 'view patients', 'create patients', 'edit patients',
+                'view patients', 'create patients', 'edit patients',
                 'view opd', 'create opd', 'edit opd',
                 'view appointments', 'create appointments', 'edit appointments',
                 'view tokens', 'create tokens', 'manage tokens',
@@ -103,29 +106,29 @@ class RolePermissionSeeder extends Seeder
             ],
 
             'doctor' => [
-                'view dashboard', 'view patients', 'view opd', 'edit opd',
+                'view patients', 'view opd', 'edit opd',
                 'view ipd', 'edit ipd', 'discharge patients',
                 'view appointments', 'view lab reports', 'create lab bookings',
             ],
 
             'nurse' => [
-                'view dashboard', 'view patients', 'view opd', 'view ipd',
+                'view patients', 'view opd', 'view ipd',
                 'view appointments', 'view wards',
             ],
 
             'pharmacist' => [
-                'view dashboard', 'view pharmacy', 'manage medicines',
+                'view pharmacy', 'manage medicines',
                 'create sales', 'view sales', 'manage purchases', 'view purchases',
                 'view pharmacy reports',
             ],
 
             'lab_technician' => [
-                'view dashboard', 'view laboratory', 'create lab bookings',
+                'view laboratory', 'create lab bookings',
                 'enter lab results', 'view lab reports',
             ],
 
             'accountant' => [
-                'view dashboard', 'view expenses', 'create expenses', 'edit expenses',
+                'view expenses', 'create expenses', 'edit expenses',
                 'view salaries', 'manage salaries', 'pay salaries',
                 'view reports', 'export reports', 'close daily reports', 'close monthly reports',
                 'view pharmacy reports', 'view lab reports',

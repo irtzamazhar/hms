@@ -67,7 +67,7 @@
 
     {{-- Close shift button --}}
     @if(!$report->is_closed)
-    @can('manage reports')
+    @can('close daily reports')
     <form method="POST" action="{{ route('reports.daily-closing.close') }}" onsubmit="return confirm('Close this shift? This cannot be undone.')">
         @csrf
         <input type="hidden" name="date" value="{{ $report->report_date->toDateString() }}">
@@ -80,7 +80,7 @@
 @else
 <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-12 text-center">
     <p class="text-slate-400 text-sm">No report found for the selected date and shift.</p>
-    @can('manage reports')
+    @can('close daily reports')
     <form method="POST" action="{{ route('reports.daily-closing.close') }}" class="mt-4 inline-block">
         @csrf
         <input type="hidden" name="date" value="{{ request('date', today()->toDateString()) }}">

@@ -219,14 +219,18 @@
         {{-- Navigation --}}
         <nav class="flex-1 overflow-y-auto py-2 px-2 space-y-0.5">
 
+            @can('view dashboard')
             <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 13a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"/>
                 </svg>
                 <span x-show="sidebarOpen" x-cloak>Dashboard</span>
             </a>
+            @endcan
 
+            @canany(['view tokens', 'view appointments', 'view opd'])
             <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">OPD</div>
+            @endcanany
 
             @can('view tokens')
             <a href="{{ route('tokens.index') }}" class="sidebar-link {{ request()->routeIs('tokens.*') ? 'active' : '' }}">
@@ -249,7 +253,9 @@
             </a>
             @endcan
 
+            @canany(['view ipd', 'view wards'])
             <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">IPD</div>
+            @endcanany
 
             @can('view ipd')
             <a href="{{ route('ipd.index') }}" class="sidebar-link {{ request()->routeIs('ipd.*') ? 'active' : '' }}">
@@ -265,7 +271,9 @@
             </a>
             @endcan
 
+            @can('view patients')
             <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">Patients</div>
+            @endcan
 
             @can('view patients')
             <a href="{{ route('patients.index') }}" class="sidebar-link {{ request()->routeIs('patients.*') ? 'active' : '' }}">
@@ -274,7 +282,9 @@
             </a>
             @endcan
 
+            @canany(['view pharmacy', 'view purchases'])
             <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">Pharmacy</div>
+            @endcanany
 
             @can('view pharmacy')
             <a href="{{ route('pharmacy.pos') }}" class="sidebar-link {{ request()->routeIs('pharmacy.pos') ? 'active' : '' }}">
@@ -291,7 +301,9 @@
             </a>
             @endcan
 
+            @can('view laboratory')
             <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">Laboratory</div>
+            @endcan
 
             @can('view laboratory')
             <a href="{{ route('lab.index') }}" class="sidebar-link {{ request()->routeIs('lab.*') ? 'active' : '' }}">
@@ -300,7 +312,9 @@
             </a>
             @endcan
 
+            @canany(['view expenses', 'view salaries', 'view reports'])
             <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">Finance</div>
+            @endcanany
 
             @can('view expenses')
             <a href="{{ route('expenses.index') }}" class="sidebar-link {{ request()->routeIs('expenses.*') ? 'active' : '' }}">
@@ -323,7 +337,9 @@
             </a>
             @endcan
 
+            @canany(['view doctors', 'view staff', 'view departments', 'view shifts', 'view settings'])
             <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">Administration</div>
+            @endcanany
 
             @can('view doctors')
             <a href="{{ route('doctors.index') }}" class="sidebar-link {{ request()->routeIs('doctors.*') ? 'active' : '' }}">

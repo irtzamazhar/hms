@@ -33,7 +33,7 @@
 <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
     <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-4">Position Details</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <x-form.input name="position" label="Position / Title" :value="old('position')" />
+        <x-form.input name="designation" label="Designation / Title *" :value="old('designation')" required />
         <div>
             <label class="field-label">Department</label>
             <select name="department_id" class="field">

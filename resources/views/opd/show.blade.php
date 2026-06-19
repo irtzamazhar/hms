@@ -17,7 +17,7 @@
         </div>
         <div class="flex gap-2 flex-wrap">
             <a href="{{ route('opd.invoice', $visit) }}" class="px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg">Invoice</a>
-            @can('update opd')
+            @can('edit opd')
             <a href="{{ route('opd.edit', $visit) }}" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg">Edit</a>
             @endcan
         </div>

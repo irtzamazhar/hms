@@ -13,7 +13,7 @@ class DepartmentController extends Controller
 {
     public function index(Request $request): View
     {
-        $this->authorize('manage settings');
+        $this->authorize('view departments');
         $departments = Department::with(['headDoctor:id,name'])
             ->withCount(['doctors', 'staff'])
             ->when($request->status, fn ($q, $s) => $q->where('status', $s))
@@ -25,7 +25,7 @@ class DepartmentController extends Controller
 
     public function create(): View
     {
-        $this->authorize('manage settings');
+        $this->authorize('create departments');
         $doctors = Doctor::with('user:id,name')->where('status', 'active')->get();
 
         return view('departments.create', compact('doctors'));
@@ -33,7 +33,7 @@ class DepartmentController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $this->authorize('manage settings');
+        $this->authorize('create departments');
         $request->validate([
             'name'           => 'required|string|max:100|unique:departments,name',
             'code'           => 'required|string|max:20|unique:departments,code',
@@ -47,17 +47,14 @@ class DepartmentController extends Controller
         return redirect()->route('departments.index')->with('success', 'Department created.');
     }
 
-    public function show(Department $department): View
+    public function show(Department $department): RedirectResponse
     {
-        $this->authorize('manage settings');
-        $department->load(['headDoctor', 'doctors.user', 'staff.user', 'wards']);
-
         return redirect()->route('departments.index');
     }
 
     public function edit(Department $department): View
     {
-        $this->authorize('manage settings');
+        $this->authorize('edit departments');
         $doctors = Doctor::with('user:id,name')->where('status', 'active')->get();
 
         return view('departments.edit', compact('department', 'doctors'));
@@ -65,7 +62,7 @@ class DepartmentController extends Controller
 
     public function update(Request $request, Department $department): RedirectResponse
     {
-        $this->authorize('manage settings');
+        $this->authorize('edit departments');
         $request->validate([
             'name'           => "required|string|max:100|unique:departments,name,{$department->id}",
             'head_doctor_id' => 'nullable|exists:users,id',
@@ -80,7 +77,7 @@ class DepartmentController extends Controller
 
     public function destroy(Department $department): RedirectResponse
     {
-        $this->authorize('manage settings');
+        $this->authorize('delete departments');
 
         if ($department->doctors()->exists() || $department->staff()->exists()) {
             return back()->withErrors(['error' => 'Cannot delete department with assigned doctors or staff.']);

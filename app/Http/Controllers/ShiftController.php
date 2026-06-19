@@ -14,7 +14,7 @@ class ShiftController extends Controller
 {
     public function index(): View
     {
-        $this->authorize('manage settings');
+        $this->authorize('view shifts');
         $shifts = Shift::withCount('assignments')->get();
 
         return view('shifts.index', compact('shifts'));
@@ -22,14 +22,14 @@ class ShiftController extends Controller
 
     public function create(): View
     {
-        $this->authorize('manage settings');
+        $this->authorize('manage shifts');
 
         return view('shifts.create');
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $this->authorize('manage settings');
+        $this->authorize('manage shifts');
         $request->validate([
             'name'       => 'required|string|max:100|unique:shifts,name',
             'type'       => 'required|in:morning,evening,night,custom',
@@ -45,14 +45,14 @@ class ShiftController extends Controller
 
     public function edit(Shift $shift): View
     {
-        $this->authorize('manage settings');
+        $this->authorize('manage shifts');
 
         return view('shifts.edit', compact('shift'));
     }
 
     public function update(Request $request, Shift $shift): RedirectResponse
     {
-        $this->authorize('manage settings');
+        $this->authorize('manage shifts');
         $request->validate([
             'name'       => "required|string|max:100|unique:shifts,name,{$shift->id}",
             'start_time' => 'required|date_format:H:i',
@@ -67,7 +67,7 @@ class ShiftController extends Controller
 
     public function destroy(Shift $shift): RedirectResponse
     {
-        $this->authorize('manage settings');
+        $this->authorize('manage shifts');
         $shift->delete();
 
         return redirect()->route('shifts.index')->with('success', 'Shift deleted.');
@@ -75,7 +75,7 @@ class ShiftController extends Controller
 
     public function assignments(Request $request): View
     {
-        $this->authorize('manage settings');
+        $this->authorize('manage shifts');
         $assignments = ShiftAssignment::with(['user:id,name,employee_id', 'shift:id,name,type'])
             ->when($request->date, fn ($q, $d) => $q->where('assignment_date', $d))
             ->when($request->shift_id, fn ($q, $id) => $q->where('shift_id', $id))
@@ -91,7 +91,7 @@ class ShiftController extends Controller
 
     public function assign(Request $request): RedirectResponse
     {
-        $this->authorize('manage settings');
+        $this->authorize('manage shifts');
         $request->validate([
             'user_id'         => 'required|exists:users,id',
             'shift_id'        => 'required|exists:shifts,id',
@@ -108,7 +108,7 @@ class ShiftController extends Controller
 
     public function closeForm(): View
     {
-        $this->authorize('manage settings');
+        $this->authorize('close shifts');
         $shifts  = Shift::active()->get();
         $closings = ShiftClosing::with('shift')->latest()->limit(10)->get();
 
@@ -117,7 +117,7 @@ class ShiftController extends Controller
 
     public function close(Request $request): RedirectResponse
     {
-        $this->authorize('manage settings');
+        $this->authorize('close shifts');
         $request->validate([
             'shift_id'          => 'required|exists:shifts,id',
             'closing_date'      => 'required|date',

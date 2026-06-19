@@ -51,7 +51,7 @@ class PharmacyController extends Controller
             ->when($request->shift, fn ($q, $s) => $q->where('shift', $s))
             ->latest();
 
-        $totalRevenue  = (clone $query)->sum('net_amount');
+        $totalRevenue  = (clone $query)->sum('total_amount');
         $totalDiscount = (clone $query)->sum('discount_amount');
         $sales         = $query->paginate(20)->withQueryString();
 

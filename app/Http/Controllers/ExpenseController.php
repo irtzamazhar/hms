@@ -65,7 +65,7 @@ class ExpenseController extends Controller
     {
         $this->authorize('edit expenses');
 
-        return view('expenses.edit', compact('expense', ...['categories' => ExpenseCategory::active()->get()]));
+        return view('expenses.edit', ['expense' => $expense, 'categories' => ExpenseCategory::active()->get()]);
     }
 
     public function update(Request $request, Expense $expense): RedirectResponse

@@ -103,7 +103,7 @@ class DoctorController extends Controller
     {
         $this->authorize('edit doctors');
 
-        return view('doctors.edit', compact('doctor', ...['departments' => Department::active()->get()]));
+        return view('doctors.edit', ['doctor' => $doctor, 'departments' => Department::active()->get()]);
     }
 
     public function update(Request $request, Doctor $doctor): RedirectResponse

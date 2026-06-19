@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function index(Request $request): View
     {
-        $this->authorize('manage users');
+        $this->authorize('view users');
         $users = User::with('roles')
             ->when($request->search, fn ($q, $s) => $q->where('name', 'like', "%$s%")->orWhere('email', 'like', "%$s%"))
             ->when($request->role, fn ($q, $r) => $q->role($r))
@@ -30,7 +30,7 @@ class UserController extends Controller
 
     public function create(): View
     {
-        $this->authorize('manage users');
+        $this->authorize('create users');
         $roles = Role::whereNotIn('name', ['superadmin'])->orderBy('name')->get();
 
         return view('users.create', compact('roles'));
@@ -38,7 +38,7 @@ class UserController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $this->authorize('manage users');
+        $this->authorize('create users');
         $request->validate([
             'name'      => 'required|string|max:100',
             'email'     => 'required|email|unique:users,email',
@@ -71,7 +71,7 @@ class UserController extends Controller
 
     public function show(User $user): View
     {
-        $this->authorize('manage users');
+        $this->authorize('view users');
         $user->load(['roles', 'doctor.department', 'staff.department', 'salaryStructure']);
 
         return view('users.show', compact('user'));
@@ -79,7 +79,7 @@ class UserController extends Controller
 
     public function edit(User $user): View
     {
-        $this->authorize('manage users');
+        $this->authorize('edit users');
         $roles = Role::whereNotIn('name', ['superadmin'])->orderBy('name')->get();
 
         return view('users.edit', compact('user', 'roles'));
@@ -87,7 +87,7 @@ class UserController extends Controller
 
     public function update(Request $request, User $user): RedirectResponse
     {
-        $this->authorize('manage users');
+        $this->authorize('edit users');
         $request->validate([
             'name'     => 'required|string|max:100',
             'email'    => "required|email|unique:users,email,{$user->id}",
@@ -112,7 +112,7 @@ class UserController extends Controller
 
     public function destroy(User $user): RedirectResponse
     {
-        $this->authorize('manage users');
+        $this->authorize('delete users');
 
         if ($user->id === auth()->id()) {
             return back()->withErrors(['error' => 'You cannot delete your own account.']);

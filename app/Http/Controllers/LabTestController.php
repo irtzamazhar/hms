@@ -12,7 +12,7 @@ class LabTestController extends Controller
 {
     public function index(Request $request): View
     {
-        $this->authorize('view lab');
+        $this->authorize('view laboratory');
         $tests = LabTest::with('category:id,name')
             ->when($request->search, fn ($q, $s) => $q->where('name', 'like', "%$s%")->orWhere('code', 'like', "%$s%"))
             ->when($request->category_id, fn ($q, $id) => $q->where('category_id', $id))
@@ -28,7 +28,7 @@ class LabTestController extends Controller
 
     public function create(): View
     {
-        $this->authorize('create lab');
+        $this->authorize('manage lab tests');
         $categories = LabTestCategory::active()->get();
 
         return view('lab.tests.create', compact('categories'));
@@ -36,7 +36,7 @@ class LabTestController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $this->authorize('create lab');
+        $this->authorize('manage lab tests');
         $request->validate([
             'category_id'              => 'required|exists:lab_test_categories,id',
             'name'                     => 'required|string|max:150',
@@ -58,7 +58,7 @@ class LabTestController extends Controller
 
     public function edit(LabTest $labTest): View
     {
-        $this->authorize('create lab');
+        $this->authorize('manage lab tests');
         $categories = LabTestCategory::active()->get();
 
         return view('lab.tests.edit', compact('labTest', 'categories'));
@@ -66,7 +66,7 @@ class LabTestController extends Controller
 
     public function update(Request $request, LabTest $labTest): RedirectResponse
     {
-        $this->authorize('create lab');
+        $this->authorize('manage lab tests');
         $request->validate([
             'category_id'  => 'required|exists:lab_test_categories,id',
             'name'         => 'required|string|max:150',
@@ -82,7 +82,7 @@ class LabTestController extends Controller
 
     public function destroy(LabTest $labTest): RedirectResponse
     {
-        $this->authorize('create lab');
+        $this->authorize('manage lab tests');
         $labTest->delete();
 
         return redirect()->route('lab.tests.index')->with('success', 'Lab test deleted.');

@@ -7,7 +7,7 @@
 @section('content')
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-xl font-bold text-slate-800 dark:text-white">User Management</h1>
-    @can('manage users')
+    @can('create users')
     <a href="{{ route('users.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         Add User
@@ -73,7 +73,7 @@
                 <td class="px-4 py-3 text-slate-500 dark:text-slate-400 text-xs">{{ $user->last_login_at?->diffForHumans() ?? '—' }}</td>
                 <td class="px-4 py-3 flex gap-2 justify-end">
                     <a href="{{ route('users.show', $user) }}" class="text-xs text-primary-600 hover:underline">View</a>
-                    @can('manage users')
+                    @can('edit users')
                     <a href="{{ route('users.edit', $user) }}" class="text-xs text-slate-500 hover:underline">Edit</a>
                     @endcan
                 </td>

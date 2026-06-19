@@ -23,9 +23,9 @@
         </div>
         <div>
             <label class="field-label">Status</label>
-            <select name="is_active" class="field">
-                <option value="1" @selected(old('is_active',$ward->is_active))>Active</option>
-                <option value="0" @selected(!old('is_active',$ward->is_active))>Inactive</option>
+            <select name="status" class="field">
+                <option value="active" @selected(old('status',$ward->status)==='active')>Active</option>
+                <option value="inactive" @selected(old('status',$ward->status)==='inactive')>Inactive</option>
             </select>
         </div>
         <div>

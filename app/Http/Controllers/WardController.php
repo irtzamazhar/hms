@@ -13,7 +13,7 @@ class WardController extends Controller
 {
     public function index(Request $request): View
     {
-        $this->authorize('manage settings');
+        $this->authorize('view wards');
         $wards = Ward::with(['department:id,name', 'beds'])
             ->withCount('beds')
             ->when($request->department_id, fn ($q, $id) => $q->where('department_id', $id))
@@ -28,14 +28,14 @@ class WardController extends Controller
 
     public function create(): View
     {
-        $this->authorize('manage settings');
+        $this->authorize('create wards');
 
         return view('wards.create', ['departments' => Department::active()->get()]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $this->authorize('manage settings');
+        $this->authorize('create wards');
         $validated = $request->validate([
             'name'          => 'required|string|max:100',
             'code'          => 'required|string|max:20|unique:wards,code',
@@ -69,14 +69,14 @@ class WardController extends Controller
 
     public function edit(Ward $ward): View
     {
-        $this->authorize('manage settings');
+        $this->authorize('edit wards');
 
-        return view('wards.edit', compact('ward', ...['departments' => Department::active()->get()]));
+        return view('wards.edit', ['ward' => $ward, 'departments' => Department::active()->get()]);
     }
 
     public function update(Request $request, Ward $ward): RedirectResponse
     {
-        $this->authorize('manage settings');
+        $this->authorize('edit wards');
         $validated = $request->validate([
             'name'          => 'required|string|max:100',
             'department_id' => 'nullable|exists:departments,id',
@@ -93,7 +93,7 @@ class WardController extends Controller
 
     public function destroy(Ward $ward): RedirectResponse
     {
-        $this->authorize('manage settings');
+        $this->authorize('delete wards');
 
         if ($ward->beds()->where('status', 'occupied')->exists()) {
             return back()->withErrors(['error' => 'Cannot delete ward with occupied beds.']);
@@ -107,7 +107,7 @@ class WardController extends Controller
 
     public function beds(Ward $ward): View
     {
-        $this->authorize('manage settings');
+        $this->authorize('view wards');
         $ward->load('beds');
 
         return view('wards.beds', compact('ward'));

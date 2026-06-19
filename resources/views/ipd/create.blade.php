@@ -52,7 +52,7 @@
         </div>
         <div>
             <label class="field-label">Admission Date *</label>
-            <input type="datetime-local" name="admission_date" value="{{ old('admission_date', now()->format('Y-m-d\TH:i')) }}" required
+            <input type="datetime-local" name="admission_datetime" value="{{ old('admission_datetime', now()->format('Y-m-d\TH:i')) }}" required
                    class="field">
         </div>
         <div>

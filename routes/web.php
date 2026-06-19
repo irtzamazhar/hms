@@ -32,9 +32,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // ── Patients ──────────────────────────────────────────
+    Route::get('/patients/export', [PatientController::class, 'export'])->name('patients.export');
     Route::resource('patients', PatientController::class);
     Route::get('/patients/{patient}/history', [PatientController::class, 'history'])->name('patients.history');
-    Route::get('/patients/export', [PatientController::class, 'export'])->name('patients.export');
 
     // ── Tokens ────────────────────────────────────────────
     Route::resource('tokens', TokenController::class)->except(['edit', 'update']);
@@ -89,9 +89,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('medicines', MedicineController::class);
     Route::post('/medicines/{medicine}/stock-adjustment', [MedicineController::class, 'stockAdjustment'])->name('medicines.stock.adjust');
 
+    Route::get('/purchases/export', [PurchaseController::class, 'export'])->name('purchases.export');
     Route::resource('purchases', PurchaseController::class);
     Route::get('/purchases/{purchase}/print', [PurchaseController::class, 'print'])->name('purchases.print');
-    Route::get('/purchases/export', [PurchaseController::class, 'export'])->name('purchases.export');
 
     Route::resource('suppliers', SupplierController::class);
 

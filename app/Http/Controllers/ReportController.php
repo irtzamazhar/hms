@@ -9,7 +9,9 @@ use App\Exports\OpdReportExport;
 use App\Exports\PharmacyReportExport;
 use App\Exports\ProfitLossExport;
 use App\Models\DailyClosingReport;
+use App\Models\Doctor;
 use App\Models\Expense;
+use App\Models\ExpenseCategory;
 use App\Models\IpdAdmission;
 use App\Models\LabBooking;
 use App\Models\MonthlyClosingReport;
@@ -51,7 +53,9 @@ class ReportController extends Controller
             'pending'  => $visits->where('payment_status', 'pending')->sum('net_amount'),
         ];
 
-        return view('reports.opd', compact('visits', 'totals', 'from', 'to'));
+        $doctors = Doctor::active()->with('user:id,name')->get();
+
+        return view('reports.opd', compact('visits', 'totals', 'from', 'to', 'doctors'));
     }
 
     public function ipd(Request $request): View
@@ -100,7 +104,9 @@ class ReportController extends Controller
 
         $totals = $expenses->groupBy('module')->map->sum('amount');
 
-        return view('reports.expenses', compact('expenses', 'totals', 'from', 'to'));
+        $categories = ExpenseCategory::active()->get();
+
+        return view('reports.expenses', compact('expenses', 'totals', 'from', 'to', 'categories'));
     }
 
     public function profitLoss(Request $request): View
@@ -134,9 +140,11 @@ class ReportController extends Controller
     public function dailyClosingForm(): View
     {
         $this->authorize('close daily reports');
-        $existing = DailyClosingReport::whereDate('report_date', today())->first();
+        $date         = request('date', today()->toDateString());
+        $currentShift = now()->hour < 14 ? 'morning' : (now()->hour < 22 ? 'evening' : 'night');
+        $report       = DailyClosingReport::whereDate('report_date', $date)->first();
 
-        return view('reports.daily-closing', compact('existing'));
+        return view('reports.daily-closing', compact('report', 'currentShift'));
     }
 
     public function closeDay(Request $request): RedirectResponse
@@ -176,8 +184,11 @@ class ReportController extends Controller
     public function monthlyClosingForm(): View
     {
         $this->authorize('close monthly reports');
+        $month  = (int) request('month', now()->month);
+        $year   = (int) request('year', now()->year);
+        $report = MonthlyClosingReport::where('month', $month)->where('year', $year)->first();
 
-        return view('reports.monthly-closing');
+        return view('reports.monthly-closing', compact('report'));
     }
 
     public function closeMonth(Request $request): RedirectResponse

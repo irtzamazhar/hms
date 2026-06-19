@@ -8,7 +8,7 @@
 @section('content')
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-xl font-bold text-slate-800 dark:text-white">{{ $user->name }}</h1>
-    @can('manage users')
+    @can('edit users')
     <a href="{{ route('users.edit', $user) }}" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm rounded-lg">Edit User</a>
     @endcan
 </div>

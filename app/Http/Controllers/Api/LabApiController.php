@@ -12,7 +12,7 @@ class LabApiController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $this->authorize('view lab');
+        $this->authorize('view laboratory');
 
         $bookings = LabBooking::with(['patient:id,name,mr_number'])
             ->withCount('items')
@@ -27,7 +27,7 @@ class LabApiController extends Controller
 
     public function show(LabBooking $lab): LabBookingResource
     {
-        $this->authorize('view lab');
+        $this->authorize('view laboratory');
         $lab->load(['patient', 'items.labTest', 'referredBy.user:id,name']);
 
         return new LabBookingResource($lab);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Doctor;
 use App\Models\LabBooking;
 use App\Models\LabTest;
+use App\Models\LabTestCategory;
 use App\Models\Patient;
 use App\Notifications\LabResultReady;
 use App\Services\LabService;
@@ -27,11 +28,11 @@ class LabController extends Controller
     public function create(): View
     {
         $this->authorize('create lab bookings');
-        $patients = Patient::select('id', 'name', 'mr_number')->latest()->get();
-        $doctors  = Doctor::active()->with('user:id,name')->get();
-        $tests    = LabTest::active()->with('category:id,name')->orderBy('name')->get();
+        $patients   = Patient::select('id', 'name', 'mr_number')->latest()->get();
+        $doctors    = Doctor::active()->with('user:id,name')->get();
+        $categories = LabTestCategory::active()->with(['tests' => fn ($q) => $q->active()->orderBy('name')])->get();
 
-        return view('lab.create', compact('patients', 'doctors', 'tests'));
+        return view('lab.create', compact('patients', 'doctors', 'categories'));
     }
 
     public function store(Request $request): RedirectResponse

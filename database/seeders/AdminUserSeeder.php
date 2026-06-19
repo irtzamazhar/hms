@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Staff;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -38,5 +39,15 @@ class AdminUserSeeder extends Seeder
             ]
         );
         $receptionist->assignRole('receptionist');
+
+        Staff::firstOrCreate(
+            ['user_id' => $receptionist->id],
+            [
+                'staff_id'     => 'STF-0001',
+                'designation'  => 'Receptionist',
+                'status'       => 'active',
+                'basic_salary' => 0,
+            ]
+        );
     }
 }

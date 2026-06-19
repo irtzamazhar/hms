@@ -54,7 +54,7 @@
         </div>
         <div>
             <label class="field-label">Selling Price</label>
-            <input type="number" name="selling_price" value="{{ old('selling_price',$medicine->selling_price) }}" step="0.01"
+            <input type="number" name="sale_price" value="{{ old('sale_price',$medicine->sale_price) }}" step="0.01"
                    class="field">
         </div>
         <div>

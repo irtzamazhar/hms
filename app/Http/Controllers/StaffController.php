@@ -92,7 +92,7 @@ class StaffController extends Controller
     {
         $this->authorize('edit staff');
 
-        return view('staff.edit', compact('staff', ...['departments' => Department::active()->get()]));
+        return view('staff.edit', ['staff' => $staff, 'departments' => Department::active()->get()]);
     }
 
     public function update(Request $request, Staff $staff): RedirectResponse

@@ -58,7 +58,7 @@
         </div>
         <div>
             <label class="field-label">Selling Price *</label>
-            <input type="number" name="selling_price" value="{{ old('selling_price') }}" min="0" step="0.01" required
+            <input type="number" name="sale_price" value="{{ old('sale_price') }}" min="0" step="0.01" required
                    class="field">
         </div>
         <div>

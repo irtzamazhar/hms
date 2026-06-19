@@ -16,7 +16,7 @@
         <div class="flex gap-2 flex-wrap">
             <x-badge color="{{ ['approved'=>'green','pending'=>'amber','rejected'=>'red'][$expense->status] ?? 'slate' }}">{{ ucfirst($expense->status) }}</x-badge>
             @if($expense->status === 'pending')
-            @can('manage expenses')
+            @can('edit expenses')
             <a href="{{ route('expenses.edit',$expense) }}" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg">Edit</a>
             <form method="POST" action="{{ route('expenses.approve',$expense) }}" class="inline">
                 @csrf @method('PATCH')

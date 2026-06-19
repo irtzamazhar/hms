@@ -18,10 +18,11 @@
         <div class="flex gap-2 flex-wrap">
             <a href="{{ route('ipd.invoice',$admission) }}" class="px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg">Invoice</a>
             @if($admission->status === 'admitted')
-                @can('manage ipd')
+                @can('edit ipd')
                 <a href="{{ route('ipd.edit',$admission) }}" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg">Edit</a>
                 <form method="POST" action="{{ route('ipd.discharge',$admission) }}" onsubmit="return confirm('Discharge this patient?')">
                     @csrf @method('PATCH')
+                    <input type="hidden" name="discharge_datetime" value="{{ now()->format('Y-m-d H:i:s') }}">
                     <button class="px-3 py-2 bg-amber-600 hover:bg-amber-700 text-white text-sm rounded-lg">Discharge</button>
                 </form>
                 @endcan
@@ -92,7 +93,7 @@
         <div class="px-5 py-3 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
             <h3 class="font-semibold text-sm text-slate-700 dark:text-white">Treatment Notes</h3>
             @if($admission->status === 'admitted')
-            @can('manage ipd')
+            @can('edit ipd')
             <button onclick="document.getElementById('addTreatmentForm').classList.toggle('hidden')"
                     class="text-sm text-primary-600 hover:text-primary-700 font-medium">+ Add Note</button>
             @endcan
@@ -118,7 +119,7 @@
                                class="field">
                     </div>
                 </div>
-                <textarea name="description" rows="2" placeholder="Description…" required
+                <textarea name="treatment_notes" rows="2" placeholder="Treatment notes…" required
                           class="field mb-3"></textarea>
                 <button type="submit" class="px-4 py-2 bg-primary-600 text-white text-sm rounded-lg">Add</button>
             </form>

@@ -19,9 +19,10 @@
         <x-form.input name="employee_id" label="Employee ID" :value="old('employee_id',$doctor->user->employee_id)" />
         <div>
             <label class="field-label">Status</label>
-            <select name="is_active" class="field">
-                <option value="1" @selected(old('is_active',$doctor->is_active))>Active</option>
-                <option value="0" @selected(!old('is_active',$doctor->is_active))>Inactive</option>
+            <select name="status" class="field">
+                @foreach(['active'=>'Active','inactive'=>'Inactive','on_leave'=>'On Leave'] as $v=>$l)
+                    <option value="{{ $v }}" @selected(old('status',$doctor->status)===$v)>{{ $l }}</option>
+                @endforeach
             </select>
         </div>
     </div>

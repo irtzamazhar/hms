@@ -16,9 +16,9 @@
     <x-form.textarea name="description" label="Description" :value="old('description',$department->description)" rows="2" />
     <div>
         <label class="field-label">Status</label>
-        <select name="is_active" class="field">
-            <option value="1" @selected(old('is_active',$department->is_active))>Active</option>
-            <option value="0" @selected(!old('is_active',$department->is_active))>Inactive</option>
+        <select name="status" class="field">
+            <option value="active" @selected(old('status',$department->status)==='active')>Active</option>
+            <option value="inactive" @selected(old('status',$department->status)==='inactive')>Inactive</option>
         </select>
     </div>
 </div>

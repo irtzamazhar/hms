@@ -13,18 +13,26 @@
     <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide">Ward Details</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <x-form.input name="name" label="Ward Name *" :value="old('name')" required />
+        <x-form.input name="code" label="Ward Code * (e.g. W-01)" :value="old('code')" required />
         <div>
-            <label class="field-label">Ward Type</label>
-            <select name="ward_type" class="field">
-                @foreach(['general'=>'General','private'=>'Private','icu'=>'ICU','nicu'=>'NICU','emergency'=>'Emergency','maternity'=>'Maternity'] as $v=>$l)
+            <label class="field-label">Ward Type *</label>
+            <select name="ward_type" required class="field">
+                @foreach(['general'=>'General','private'=>'Private','semi_private'=>'Semi Private','icu'=>'ICU','emergency'=>'Emergency','maternity'=>'Maternity','pediatric'=>'Pediatric'] as $v=>$l)
                     <option value="{{ $v }}" @selected(old('ward_type','general')===$v)>{{ $l }}</option>
                 @endforeach
             </select>
         </div>
         <div>
-            <label class="field-label">Capacity (beds)</label>
-            <input type="number" name="capacity" value="{{ old('capacity', 10) }}" min="1"
+            <label class="field-label">Total Beds *</label>
+            <input type="number" name="total_beds" value="{{ old('total_beds', 10) }}" min="1" max="200" required
                    class="field">
+        </div>
+        <div>
+            <label class="field-label">Status</label>
+            <select name="status" class="field">
+                <option value="active" @selected(old('status','active')==='active')>Active</option>
+                <option value="inactive" @selected(old('status')==='inactive')>Inactive</option>
+            </select>
         </div>
         <div>
             <label class="field-label">Charge Per Day (₨)</label>

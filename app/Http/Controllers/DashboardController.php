@@ -10,6 +10,10 @@ class DashboardController extends Controller
 
     public function index()
     {
+        if (!auth()->user()->can('view dashboard')) {
+            return redirect(auth()->user()->homeRoute());
+        }
+
         $summary  = $this->service->getSummary();
         $revenue  = $this->service->getRevenueChart(14);
         $growth   = $this->service->getPatientGrowth(6);

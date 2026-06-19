@@ -17,7 +17,7 @@
             <span class="px-3 py-1 rounded-full text-sm font-semibold {{ $medicine->stock_quantity <= $medicine->minimum_stock ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700' }}">
                 Stock: {{ $medicine->stock_quantity }} {{ $medicine->unit }}
             </span>
-            @can('update pharmacy')
+            @can('manage medicines')
             <a href="{{ route('medicines.edit',$medicine) }}" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg">Edit</a>
             @endcan
         </div>
@@ -67,7 +67,7 @@
             </div>
 
             {{-- Stock Adjustment --}}
-            @can('update pharmacy')
+            @can('manage medicines')
             <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
                 <div class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Stock Adjustment</div>
                 <form method="POST" action="{{ route('medicines.stock.adjust',$medicine) }}">

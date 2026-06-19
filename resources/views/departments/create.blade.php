@@ -12,8 +12,15 @@
 <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 space-y-4">
     <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide">New Department</h2>
     <x-form.input name="name" label="Department Name *" :value="old('name')" required />
-    <x-form.input name="code" label="Code (e.g. OPD, SURG)" :value="old('code')" />
+    <x-form.input name="code" label="Code (e.g. OPD, SURG) *" :value="old('code')" required />
     <x-form.textarea name="description" label="Description" :value="old('description')" rows="2" />
+    <div>
+        <label class="field-label">Status</label>
+        <select name="status" class="field">
+            <option value="active" @selected(old('status','active')==='active')>Active</option>
+            <option value="inactive" @selected(old('status')==='inactive')>Inactive</option>
+        </select>
+    </div>
     <div>
         <label class="field-label">Head of Department</label>
         <select name="head_doctor_id" class="field">
