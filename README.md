@@ -1,58 +1,211 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Hospital Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A full-featured Hospital Management System (HMS) built with **Laravel 13**, **Tailwind CSS**, and **Alpine.js**. Designed for clinics and hospitals to manage patients, OPD/IPD workflows, pharmacy, laboratory, staff, appointments, and financials — all from a single, modern web interface with dark/light mode support.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Clinical
+- **Patient Registry** — MR number generation, CNIC, blood group, age, medical history, Excel export
+- **OPD (Outpatient)** — Visits, prescriptions, printable invoices
+- **IPD (Inpatient)** — Admissions, ward/bed assignment, treatments, discharge, invoices
+- **Appointments** — Scheduling, status tracking (scheduled → confirmed → completed)
+- **Tokens** — Queue token generation per shift (morning / evening / night), per doctor/department
+- **Laboratory** — Test bookings, result entry, report verification, printable lab reports
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Pharmacy
+- **Medicine Catalogue** — Categories, dosage forms, suppliers, stock levels, low-stock alerts
+- **POS Sales** — Cart-based point-of-sale with prescription requirement enforcement
+- **Purchases** — Supplier invoices, batch tracking, expiry dates, stock auto-increment
+- **Suppliers** — Supplier directory with purchase history
 
-## Learning Laravel
+### Administration
+- **Doctors** — Profiles, specializations, department linkage
+- **Staff** — Employee management, roles, salary structures
+- **Departments** — Organisational units linked to doctors and OPD
+- **Wards & Beds** — Ward types (general / ICU / private), bed availability tracking
+- **Shifts** — Shift definitions and assignments
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Finance
+- **Expenses** — Categorised expense tracking with approval workflow
+- **Salaries** — Salary structures and payment recording
+- **Reports** — OPD, laboratory, and pharmacy reports with date filters; Excel/PDF export
+- **Daily & Monthly Closing** — Shift closing summaries
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Platform
+- **Role-based access control** — 8 roles (super_admin, hospital_admin, receptionist, doctor, nurse, pharmacist, lab_technician, accountant) with 60+ granular permissions via Spatie Laravel Permission
+- **Audit trail** — Full change history via Laravel Auditing
+- **REST API** — Sanctum-authenticated endpoints for patients, OPD, IPD, appointments, lab, doctors, dashboard, and push notifications
+- **Push notifications** — In-app notification bell with unread count
+- **PDF generation** — Invoices and reports via DomPDF
+- **Excel export** — Patient lists, purchases, and reports via Maatwebsite Excel
+- **Dark / Light mode** — Persisted via `localStorage`, defaults to dark
+- **Hospital Settings** — Logo, name, address, timezone, date format
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+## Tech Stack
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+| Layer | Technology |
+|---|---|
+| Backend | PHP 8.3, Laravel 13 |
+| Frontend | Blade, Tailwind CSS (CDN), Alpine.js |
+| Auth | Laravel Breeze + Sanctum (API) |
+| Permissions | Spatie Laravel Permission v8 |
+| Database | MySQL (SQLite for local dev) |
+| PDF | barryvdh/laravel-dompdf |
+| Excel | Maatwebsite/Excel |
+| Auditing | owen-it/laravel-auditing |
+
+---
+
+## Requirements
+
+- PHP >= 8.3
+- Composer
+- MySQL 8+ (or SQLite for local development)
+- Node.js (optional — no build step required, Tailwind is loaded via CDN)
+
+---
+
+## Installation
 
 ```bash
-composer require laravel/boost --dev
+# 1. Clone the repository
+git clone <repository-url> hospital-management-system
+cd hospital-management-system
 
-php artisan boost:install
+# 2. Install PHP dependencies
+composer install
+
+# 3. Copy environment file
+cp .env.example .env
+
+# 4. Generate application key
+php artisan key:generate
+
+# 5. Configure your database in .env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=hms
+DB_USERNAME=root
+DB_PASSWORD=
+
+# 6. Run migrations and seed default data
+php artisan migrate --seed
+
+# 7. Create the storage symlink
+php artisan storage:link
+
+# 8. Start the development server
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Access the app at `http://localhost:8000`
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Default Credentials
 
-## Code of Conduct
+| Role | Email | Password |
+|---|---|---|
+| Super Admin | admin@hms.com | Admin@123 |
+| Receptionist | receptionist@hms.com | Admin@123 |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## Roles & Permissions
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Permission Area | super_admin | hospital_admin | receptionist | doctor | nurse | pharmacist | lab_technician | accountant |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Patients | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | |
+| OPD | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | | |
+| IPD | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | | |
+| Appointments | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | | |
+| Tokens | ✓ | ✓ | ✓ | ✓ | ✓ | | | |
+| Pharmacy / Sales | ✓ | ✓ | | | | ✓ | | |
+| Purchases | ✓ | ✓ | | | | ✓ | | |
+| Laboratory | ✓ | ✓ | ✓ | | ✓ | ✓ | ✓ | |
+| Doctors / Staff | ✓ | ✓ | | | | | | |
+| Expenses | ✓ | ✓ | | | | | | ✓ |
+| Salaries | ✓ | ✓ | | | | | | ✓ |
+| Reports | ✓ | ✓ | | | | | | ✓ |
+| Settings | ✓ | ✓ | | | | | | |
+
+---
+
+## REST API
+
+Base URL: `/api`
+
+Authentication: Bearer token via `POST /api/auth/login`
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/login` | Obtain API token |
+| POST | `/api/auth/logout` | Revoke token |
+| GET | `/api/auth/me` | Authenticated user info |
+| GET/POST | `/api/patients` | List / create patients |
+| GET/PUT/DELETE | `/api/patients/{id}` | Show / update / delete patient |
+| GET/POST | `/api/opd` | OPD visits |
+| GET/POST | `/api/ipd` | IPD admissions |
+| GET/POST | `/api/appointments` | Appointments |
+| GET/POST | `/api/lab` | Lab bookings |
+| GET | `/api/doctors` | Doctor list |
+| GET | `/api/dashboard` | Dashboard stats |
+| GET | `/api/notifications` | In-app notifications |
+| GET | `/api/notifications/unread-count` | Unread notification count |
+| POST | `/api/notifications/mark-all-read` | Mark all read |
+
+---
+
+## Project Structure
+
+```
+app/
+├── Http/Controllers/       # Web controllers (one per resource)
+│   └── Api/                # API controllers (Sanctum-authenticated)
+├── Models/                 # Eloquent models (37 models)
+├── Services/               # Business logic (PharmacyService, etc.)
+├── Notifications/          # Push notifications (LowStockAlert, etc.)
+└── Exports/                # Excel export classes
+
+resources/views/
+├── layouts/                # hms.blade.php (main), guest.blade.php (auth)
+├── components/             # Reusable Blade components (badges, form fields)
+├── patients/ appointments/ opd/ ipd/ tokens/
+├── pharmacy/ medicines/ purchases/ suppliers/
+├── lab/ departments/ doctors/ staff/ wards/
+├── expenses/ salaries/ shifts/ reports/ settings/
+└── auth/                   # Login, password reset
+
+database/
+├── migrations/             # 27 migration files
+└── seeders/                # Roles, permissions, departments, admin user
+```
+
+---
+
+## Key Design Decisions
+
+- **No build step** — Tailwind CSS is loaded from CDN. No `npm install` or `npm run build` required.
+- **CSS utility classes** — Custom `.field`, `.field-label`, `.btn-cancel`, and sidebar classes are defined in the layout `<style>` block for consistent form and UI styling across all pages.
+- **Dark mode default** — Controlled via Alpine.js + `localStorage`. Defaults to dark unless the user explicitly switches to light.
+- **Blade-only frontend** — No SPA framework. Alpine.js handles interactivity (modals, toggles, dynamic carts).
+- **Sanctum for API** — Web session auth for Blade views; token-based Sanctum auth for the REST API.
+
+---
+
+## Running Tests
+
+```bash
+php artisan test
+```
+
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
