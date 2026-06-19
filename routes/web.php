@@ -12,7 +12,6 @@ use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\OpdController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PharmacyController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SalaryController;
@@ -31,11 +30,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    // Profile (Breeze)
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // ── Patients ──────────────────────────────────────────
     Route::resource('patients', PatientController::class);
