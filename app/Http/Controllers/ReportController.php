@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExpensesReportExport;
+use App\Exports\IpdReportExport;
+use App\Exports\LabReportExport;
+use App\Exports\OpdReportExport;
+use App\Exports\PharmacyReportExport;
+use App\Exports\ProfitLossExport;
 use App\Models\DailyClosingReport;
 use App\Models\Expense;
 use App\Models\IpdAdmission;
@@ -12,7 +18,10 @@ use App\Models\Sale;
 use App\Models\SalaryPayment;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ReportController extends Controller
 {
@@ -220,5 +229,97 @@ class ReportController extends Controller
         $pdf     = app('dompdf.wrapper')->loadView('reports.monthly-pdf', compact('report', 'setting'));
 
         return $pdf->stream("Monthly-Report-{$report->month}-{$report->year}.pdf");
+    }
+
+    // ── Excel Exports ────────────────────────────────────────────────────────
+
+    public function opdExport(Request $request): BinaryFileResponse
+    {
+        $this->authorize('view reports');
+        $from = $request->get('from', today()->toDateString());
+        $to   = $request->get('to', today()->toDateString());
+
+        return Excel::download(
+            new OpdReportExport($from, $to, $request->shift, $request->doctor_id),
+            "OPD-Report-{$from}-to-{$to}.xlsx"
+        );
+    }
+
+    public function ipdExport(Request $request): BinaryFileResponse
+    {
+        $this->authorize('view reports');
+        $from = $request->get('from', today()->toDateString());
+        $to   = $request->get('to', today()->toDateString());
+
+        return Excel::download(
+            new IpdReportExport($from, $to, $request->status),
+            "IPD-Report-{$from}-to-{$to}.xlsx"
+        );
+    }
+
+    public function pharmacyExport(Request $request): BinaryFileResponse
+    {
+        $this->authorize('view pharmacy reports');
+        $from = $request->get('from', today()->toDateString());
+        $to   = $request->get('to', today()->toDateString());
+
+        return Excel::download(
+            new PharmacyReportExport($from, $to),
+            "Pharmacy-Report-{$from}-to-{$to}.xlsx"
+        );
+    }
+
+    public function labExport(Request $request): BinaryFileResponse
+    {
+        $this->authorize('view lab reports');
+        $from = $request->get('from', today()->toDateString());
+        $to   = $request->get('to', today()->toDateString());
+
+        return Excel::download(
+            new LabReportExport($from, $to, $request->status),
+            "Lab-Report-{$from}-to-{$to}.xlsx"
+        );
+    }
+
+    public function expensesExport(Request $request): BinaryFileResponse
+    {
+        $this->authorize('view reports');
+        $from = $request->get('from', today()->toDateString());
+        $to   = $request->get('to', today()->toDateString());
+
+        return Excel::download(
+            new ExpensesReportExport($from, $to, $request->module),
+            "Expenses-Report-{$from}-to-{$to}.xlsx"
+        );
+    }
+
+    public function profitLossExport(Request $request): BinaryFileResponse
+    {
+        $this->authorize('view reports');
+        $month = (int) $request->get('month', now()->month);
+        $year  = (int) $request->get('year', now()->year);
+        $start = now()->setDate($year, $month, 1)->startOfMonth();
+        $end   = $start->copy()->endOfMonth();
+
+        $revenue = [
+            'opd'      => OpdVisit::whereBetween('visit_date', [$start, $end])->sum('net_amount'),
+            'pharmacy' => Sale::whereBetween('sale_date', [$start, $end])->where('status', 'completed')->sum('total_amount'),
+            'lab'      => LabBooking::whereBetween('booking_date', [$start, $end])->sum('net_amount'),
+        ];
+        $revenue['total'] = array_sum($revenue);
+
+        $expenses = [
+            'hospital' => Expense::whereBetween('expense_date', [$start, $end])->approved()->forModule('hospital')->sum('amount'),
+            'pharmacy' => Expense::whereBetween('expense_date', [$start, $end])->approved()->forModule('pharmacy')->sum('amount'),
+            'lab'      => Expense::whereBetween('expense_date', [$start, $end])->approved()->forModule('laboratory')->sum('amount'),
+            'salaries' => SalaryPayment::where('month', $month)->where('year', $year)->where('status', 'paid')->sum('net_salary'),
+        ];
+        $expenses['total'] = array_sum($expenses);
+        $netProfit         = $revenue['total'] - $expenses['total'];
+
+        return Excel::download(
+            new ProfitLossExport($revenue, $expenses, $netProfit, $month, $year),
+            "ProfitLoss-" . date('F', mktime(0, 0, 0, $month, 1)) . "-{$year}.xlsx"
+        );
     }
 }

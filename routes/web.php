@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
     // ── Patients ──────────────────────────────────────────
     Route::resource('patients', PatientController::class);
     Route::get('/patients/{patient}/history', [PatientController::class, 'history'])->name('patients.history');
+    Route::get('/patients/export', [PatientController::class, 'export'])->name('patients.export');
 
     // ── Tokens ────────────────────────────────────────────
     Route::resource('tokens', TokenController::class)->except(['edit', 'update']);
@@ -88,6 +89,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/sales', [PharmacyController::class, 'sales'])->name('sales');
         Route::get('/sales/{sale}', [PharmacyController::class, 'saleShow'])->name('sale.show');
         Route::get('/sales/{sale}/print', [PharmacyController::class, 'salePrint'])->name('sale.print');
+        Route::get('/search-medicines', [PharmacyController::class, 'searchMedicines'])->name('search.medicines');
     });
 
     Route::resource('medicines', MedicineController::class);
@@ -95,6 +97,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('purchases', PurchaseController::class);
     Route::get('/purchases/{purchase}/print', [PurchaseController::class, 'print'])->name('purchases.print');
+    Route::get('/purchases/export', [PurchaseController::class, 'export'])->name('purchases.export');
 
     Route::resource('suppliers', SupplierController::class);
 
@@ -129,6 +132,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/generate', [SalaryController::class, 'generate'])->name('generate.run');
         Route::patch('/{salaryPayment}/pay', [SalaryController::class, 'pay'])->name('pay');
         Route::get('/{salaryPayment}/slip', [SalaryController::class, 'slip'])->name('slip');
+        Route::get('/export', [SalaryController::class, 'export'])->name('export');
     });
 
     // ── Reports ───────────────────────────────────────────
@@ -146,6 +150,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/monthly-closing', [ReportController::class, 'closeMonth'])->name('monthly-closing.close');
         Route::get('/daily/{report}/pdf', [ReportController::class, 'dailyPdf'])->name('daily.pdf');
         Route::get('/monthly/{report}/pdf', [ReportController::class, 'monthlyPdf'])->name('monthly.pdf');
+        // Excel exports
+        Route::get('/opd/export', [ReportController::class, 'opdExport'])->name('opd.export');
+        Route::get('/ipd/export', [ReportController::class, 'ipdExport'])->name('ipd.export');
+        Route::get('/pharmacy/export', [ReportController::class, 'pharmacyExport'])->name('pharmacy.export');
+        Route::get('/laboratory/export', [ReportController::class, 'labExport'])->name('laboratory.export');
+        Route::get('/expenses/export', [ReportController::class, 'expensesExport'])->name('expenses.export');
+        Route::get('/profit-loss/export', [ReportController::class, 'profitLossExport'])->name('profit-loss.export');
     });
 
     // ── Users ─────────────────────────────────────────────

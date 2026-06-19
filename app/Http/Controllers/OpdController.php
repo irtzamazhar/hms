@@ -28,11 +28,12 @@ class OpdController extends Controller
     public function create(): View
     {
         $this->authorize('create opd');
-        $patients    = Patient::select('id', 'name', 'mr_number')->latest()->get();
-        $doctors     = Doctor::active()->with('user:id,name')->get();
-        $departments = Department::active()->get();
+        $patients     = Patient::select('id', 'name', 'mr_number')->latest()->get();
+        $doctors      = Doctor::active()->with('user:id,name')->get();
+        $departments  = Department::active()->get();
+        $currentShift = $this->service->currentShift();
 
-        return view('opd.create', compact('patients', 'doctors', 'departments'));
+        return view('opd.create', compact('patients', 'doctors', 'departments', 'currentShift'));
     }
 
     public function store(OpdVisitRequest $request): RedirectResponse
@@ -46,23 +47,24 @@ class OpdController extends Controller
     public function show(OpdVisit $opd): View
     {
         $this->authorize('view opd');
-        $opd->load(['patient', 'doctor.user', 'department', 'prescriptions.items', 'labBookings.items.test', 'createdBy']);
+        $visit = $opd;
+        $visit->load(['patient', 'doctor.user', 'prescription.items', 'createdBy']);
 
-        return view('opd.show', compact('opd'));
+        return view('opd.show', compact('visit'));
     }
 
     public function edit(OpdVisit $opd): View
     {
-        $this->authorize('edit opd');
+        $this->authorize('update opd');
+        $visit       = $opd;
         $doctors     = Doctor::active()->with('user:id,name')->get();
-        $departments = Department::active()->get();
 
-        return view('opd.edit', compact('opd', 'doctors', 'departments'));
+        return view('opd.edit', compact('visit', 'doctors'));
     }
 
     public function update(OpdVisitRequest $request, OpdVisit $opd): RedirectResponse
     {
-        $this->authorize('edit opd');
+        $this->authorize('update opd');
         $this->service->update($opd, $request->validated());
 
         return redirect()->route('opd.show', $opd)->with('success', 'OPD visit updated.');
@@ -78,16 +80,20 @@ class OpdController extends Controller
 
     public function invoice(OpdVisit $opdVisit): View
     {
-        $opdVisit->load(['patient', 'doctor.user']);
+        $visit = $opdVisit;
+        $visit->load(['patient', 'doctor.user', 'prescription.items']);
+        $setting = \App\Models\HospitalSetting::current();
 
-        return view('opd.invoice', compact('opdVisit'));
+        return view('opd.invoice', compact('visit', 'setting'));
     }
 
     public function print(OpdVisit $opdVisit)
     {
-        $opdVisit->load(['patient', 'doctor.user', 'prescriptions.items']);
-        $pdf = app('dompdf.wrapper')->loadView('opd.print', compact('opdVisit'));
+        $visit = $opdVisit;
+        $visit->load(['patient', 'doctor.user', 'prescription.items']);
+        $setting = \App\Models\HospitalSetting::current();
+        $pdf     = app('dompdf.wrapper')->loadView('opd.print', compact('visit', 'setting'));
 
-        return $pdf->stream("OPD-{$opdVisit->visit_number}.pdf");
+        return $pdf->stream("OPD-{$visit->visit_number}.pdf");
     }
 }

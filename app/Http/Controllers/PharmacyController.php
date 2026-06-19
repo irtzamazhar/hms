@@ -30,31 +30,45 @@ class PharmacyController extends Controller
     {
         $this->authorize('create sales');
         $request->validate([
-            'items'                => 'required|array|min:1',
-            'items.*.medicine_id'  => 'required|exists:medicines,id',
-            'items.*.quantity'     => 'required|integer|min:1',
-            'items.*.unit_price'   => 'required|numeric|min:0',
-            'paid_amount'          => 'required|numeric|min:0',
+            'items'               => 'required|array|min:1',
+            'items.*.medicine_id' => 'required|exists:medicines,id',
+            'items.*.quantity'    => 'required|integer|min:1',
+            'items.*.unit_price'  => 'required|numeric|min:0',
         ]);
 
         $sale = $this->service->processSale($request->all());
 
-        return redirect()->route('pharmacy.sale.show', $sale)->with('success', "Invoice {$sale->invoice_number} created.");
+        return redirect()->route('pharmacy.sale.show', $sale)->with('success', "Sale {$sale->sale_number} created.");
     }
 
     public function sales(Request $request): View
     {
         $this->authorize('view sales');
-        $sales = Sale::with(['patient:id,name', 'createdBy:id,name'])
-            ->when($request->date, fn ($q, $d) => $q->whereDate('sale_date', $d))
+        $query = Sale::with(['patient:id,name'])
+            ->withCount('items')
+            ->when($request->from, fn ($q, $d) => $q->whereDate('created_at', '>=', $d))
+            ->when($request->to, fn ($q, $d) => $q->whereDate('created_at', '<=', $d))
             ->when($request->shift, fn ($q, $s) => $q->where('shift', $s))
-            ->when($request->search, fn ($q, $s) => $q->where('invoice_number', 'like', "%{$s}%")
-                ->orWhere('customer_name', 'like', "%{$s}%"))
-            ->latest()
-            ->paginate(20)
-            ->withQueryString();
+            ->latest();
 
-        return view('pharmacy.sales', compact('sales'));
+        $totalRevenue  = (clone $query)->sum('net_amount');
+        $totalDiscount = (clone $query)->sum('discount_amount');
+        $sales         = $query->paginate(20)->withQueryString();
+
+        return view('pharmacy.sales', compact('sales', 'totalRevenue', 'totalDiscount'));
+    }
+
+    public function searchMedicines(Request $request): JsonResponse
+    {
+        $medicines = Medicine::active()
+            ->where(fn ($q) => $q->where('name', 'like', '%'.$request->q.'%')
+                ->orWhere('generic_name', 'like', '%'.$request->q.'%')
+                ->orWhere('barcode', $request->q))
+            ->select('id', 'name', 'generic_name', 'selling_price', 'stock_quantity')
+            ->limit(12)
+            ->get();
+
+        return response()->json($medicines);
     }
 
     public function saleShow(Sale $sale): View

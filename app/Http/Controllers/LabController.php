@@ -6,6 +6,7 @@ use App\Models\Doctor;
 use App\Models\LabBooking;
 use App\Models\LabTest;
 use App\Models\Patient;
+use App\Notifications\LabResultReady;
 use App\Services\LabService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -64,6 +65,9 @@ class LabController extends Controller
         $request->validate(['results' => 'required|array']);
 
         $this->service->saveResults($labBooking, $request->results);
+
+        $labBooking->load('patient');
+        auth()->user()->notify(new LabResultReady($labBooking));
 
         return back()->with('success', 'Results saved.');
     }

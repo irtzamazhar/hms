@@ -51,6 +51,14 @@ class OpdService
         return $visit;
     }
 
+    public function currentShift(): string
+    {
+        $hour = (int) now()->format('H');
+        if ($hour >= 8 && $hour < 14) return 'morning';
+        if ($hour >= 14 && $hour < 20) return 'evening';
+        return 'night';
+    }
+
     private function savePrescription(OpdVisit $visit, array $items): void
     {
         $prescription = Prescription::create([

@@ -8,6 +8,7 @@ use App\Models\Doctor;
 use App\Models\IpdAdmission;
 use App\Models\Patient;
 use App\Models\Ward;
+use App\Notifications\IpdAdmissionCreated;
 use App\Services\IpdService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -54,6 +55,8 @@ class IpdController extends Controller
         ]);
 
         $admission = $this->service->admit($request->validated());
+        $admission->load(['patient', 'doctor.user', 'ward', 'bed']);
+        auth()->user()->notify(new IpdAdmissionCreated($admission));
 
         return redirect()->route('ipd.show', $admission)->with('success', "Patient admitted — {$admission->admission_number}.");
     }

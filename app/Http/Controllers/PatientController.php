@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PatientsExport;
 use App\Http\Requests\PatientRequest;
 use App\Models\Patient;
 use App\Services\PatientService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PatientController extends Controller
 {
@@ -73,5 +76,15 @@ class PatientController extends Controller
         $history = $this->service->getHistory($patient);
 
         return view('patients.history', compact('patient', 'history'));
+    }
+
+    public function export(Request $request): BinaryFileResponse
+    {
+        $this->authorize('view patients');
+
+        return Excel::download(
+            new PatientsExport($request->search, $request->gender, $request->blood_group),
+            'Patients-' . now()->format('Y-m-d') . '.xlsx'
+        );
     }
 }

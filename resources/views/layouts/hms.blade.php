@@ -222,18 +222,18 @@
 
                 {{-- Notifications --}}
                 <div x-data="{ open: false }" class="relative">
-                    <button @click="open = !open" class="relative p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 dark:text-slate-400">
+                    {{-- <button @click="open = !open" class="relative p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 dark:text-slate-400">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                         @if(auth()->user()->unreadNotifications->count() > 0)
                         <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                         @endif
-                    </button>
+                    </button> --}}
                     <div x-show="open" @click.outside="open = false" x-cloak
                          class="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 z-50">
                         <div class="p-4 border-b border-slate-200 dark:border-slate-700">
                             <h3 class="text-sm font-semibold text-slate-800 dark:text-white">Notifications</h3>
                         </div>
-                        <div class="max-h-64 overflow-y-auto">
+                        {{-- <div class="max-h-64 overflow-y-auto">
                             @forelse(auth()->user()->unreadNotifications->take(5) as $notification)
                             <div class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm text-slate-600 dark:text-slate-300 border-b border-slate-100 dark:border-slate-700">
                                 {{ $notification->data['message'] ?? '' }}
@@ -241,7 +241,7 @@
                             @empty
                             <div class="px-4 py-6 text-center text-sm text-slate-400">No new notifications</div>
                             @endforelse
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
 

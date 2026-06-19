@@ -1,0 +1,57 @@
+@extends('layouts.hms')
+@section('title','Add Lab Test')
+@section('breadcrumb')
+    <a href="{{ route('lab.tests.index') }}" class="text-slate-400 hover:text-slate-600">Lab Tests</a>
+    <span class="mx-1">/</span><span class="font-medium text-slate-700 dark:text-slate-200">Add</span>
+@endsection
+
+@section('content')
+<div class="max-w-2xl mx-auto">
+<div class="flex items-center justify-between mb-6">
+    <h1 class="text-xl font-bold text-slate-800 dark:text-white">Add Lab Test</h1>
+    <a href="{{ route('lab.tests.index') }}" class="text-sm text-slate-500 hover:text-slate-700">← Back</a>
+</div>
+
+<form method="POST" action="{{ route('lab.tests.store') }}"
+      class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 space-y-4">
+    @csrf
+
+    <div class="grid grid-cols-2 gap-4">
+        <x-form.input name="name" label="Test Name" required />
+        <x-form.input name="code" label="Test Code" placeholder="e.g. CBC-001" required />
+    </div>
+
+    <x-form.select name="category_id" label="Category" required>
+        <option value="">— Select Category —</option>
+        @foreach($categories as $cat)
+        <option value="{{ $cat->id }}" @selected(old('category_id') == $cat->id)>{{ $cat->name }}</option>
+        @endforeach
+    </x-form.select>
+
+    <div class="grid grid-cols-2 gap-4">
+        <x-form.input name="cost" type="number" step="0.01" label="Cost (₨)" required />
+        <x-form.input name="turnaround_hours" type="number" label="Turnaround (hours)" />
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+        <x-form.input name="sample_type" label="Sample Type" placeholder="e.g. Blood, Urine" />
+        <x-form.input name="unit" label="Result Unit" placeholder="e.g. mg/dL" />
+    </div>
+
+    <x-form.input name="normal_range" label="Normal Range" placeholder="e.g. 70-110 mg/dL" />
+
+    <x-form.textarea name="preparation_instructions" label="Patient Preparation Instructions" rows="2" />
+    <x-form.textarea name="description" label="Description" rows="2" />
+
+    <x-form.select name="status" label="Status" required>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+    </x-form.select>
+
+    <div class="flex justify-end gap-3 pt-2">
+        <a href="{{ route('lab.tests.index') }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm rounded-lg">Cancel</a>
+        <button type="submit" class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg">Add Test</button>
+    </div>
+</form>
+</div>
+@endsection

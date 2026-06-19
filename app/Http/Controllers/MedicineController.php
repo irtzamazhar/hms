@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Medicine;
 use App\Models\MedicineCategory;
+use App\Notifications\LowStockAlert;
 use App\Services\PharmacyService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -101,6 +102,11 @@ class MedicineController extends Controller
         ]);
 
         $this->service->adjustStock($medicine, $request->quantity, $request->type, $request->notes ?? '');
+
+        $medicine->refresh();
+        if ($medicine->isLowStock()) {
+            auth()->user()->notify(new LowStockAlert($medicine));
+        }
 
         return back()->with('success', 'Stock adjusted.');
     }
