@@ -21,7 +21,7 @@
 
 {{-- Shift & Date Filter --}}
 <form method="GET" class="flex flex-wrap gap-3 mb-4">
-    <input type="date" name="date" value="{{ $date }}" class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+    <input type="date" name="date" value="{{ $date }}" class="field">
     @foreach(['all','morning','evening','night'] as $s)
     <a href="{{ request()->fullUrlWithQuery(['shift' => $s, 'date' => $date]) }}"
        class="px-4 py-2 text-sm rounded-lg font-medium transition-colors {{ $shift === $s ? 'bg-primary-600 text-white' : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50' }}">

@@ -17,8 +17,8 @@
         <x-form.input name="name" label="Full Name *" :value="old('name',$patient->name)" required />
         <x-form.input name="phone" label="Phone *" :value="old('phone',$patient->phone)" required />
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Gender *</label>
-            <select name="gender" required class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+            <label class="field-label">Gender *</label>
+            <select name="gender" required class="field">
                 @foreach(['male','female','other'] as $g)
                     <option value="{{ $g }}" @selected(old('gender',$patient->gender)===$g)>{{ ucfirst($g) }}</option>
                 @endforeach
@@ -26,8 +26,8 @@
         </div>
         <x-form.input name="date_of_birth" label="Date of Birth" type="date" :value="old('date_of_birth', $patient->date_of_birth?->toDateString())" />
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Blood Group</label>
-            <select name="blood_group" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+            <label class="field-label">Blood Group</label>
+            <select name="blood_group" class="field">
                 <option value="">—</option>
                 @foreach(['A+','A-','B+','B-','AB+','AB-','O+','O-'] as $bg)
                     <option value="{{ $bg }}" @selected(old('blood_group',$patient->blood_group)===$bg)>{{ $bg }}</option>
@@ -63,7 +63,7 @@
 
 <div class="flex gap-3">
     <button type="submit" class="px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg">Update Patient</button>
-    <a href="{{ route('patients.show', $patient) }}" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-200">Cancel</a>
+    <a href="{{ route('patients.show', $patient) }}" class="btn-cancel">Cancel</a>
 </div>
 
 </form>

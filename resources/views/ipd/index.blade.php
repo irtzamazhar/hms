@@ -22,14 +22,14 @@
 <form method="GET" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 mb-4">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <input type="text" name="search" value="{{ request('search') }}" placeholder="Patient name / ID…"
-               class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
-        <select name="status" class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+               class="field">
+        <select name="status" class="field">
             <option value="">All Statuses</option>
             @foreach(['admitted','discharged','transferred','absconded'] as $s)
                 <option value="{{ $s }}" @selected(request('status')===$s)>{{ ucfirst($s) }}</option>
             @endforeach
         </select>
-        <select name="ward_id" class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+        <select name="ward_id" class="field">
             <option value="">All Wards</option>
             @foreach($wards as $w)
                 <option value="{{ $w->id }}" @selected(request('ward_id')==$w->id)>{{ $w->name }}</option>
@@ -37,7 +37,7 @@
         </select>
         <div class="flex gap-2">
             <button type="submit" class="flex-1 px-3 py-2 bg-primary-600 text-white text-sm rounded-lg">Filter</button>
-            <a href="{{ route('ipd.index') }}" class="px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm rounded-lg">Reset</a>
+            <a href="{{ route('ipd.index') }}" class="btn-cancel">Reset</a>
         </div>
     </div>
 </form>

@@ -14,8 +14,8 @@
     <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-4">Booking Details</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Patient *</label>
-            <select name="patient_id" required class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+            <label class="field-label">Patient *</label>
+            <select name="patient_id" required class="field">
                 <option value="">Select patient…</option>
                 @foreach($patients as $p)
                     <option value="{{ $p->id }}" @selected(old('patient_id', request('patient_id'))==$p->id)>{{ $p->name }} ({{ $p->mr_number }})</option>
@@ -24,8 +24,8 @@
             @error('patient_id')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
         </div>
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Referred By</label>
-            <select name="referred_by" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+            <label class="field-label">Referred By</label>
+            <select name="referred_by" class="field">
                 <option value="">— None —</option>
                 @foreach($doctors as $d)
                     <option value="{{ $d->id }}" @selected(old('referred_by')==$d->id)>Dr. {{ $d->user->name }}</option>
@@ -33,13 +33,13 @@
             </select>
         </div>
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Sample Collected At</label>
+            <label class="field-label">Sample Collected At</label>
             <input type="datetime-local" name="sample_collected_at" value="{{ old('sample_collected_at', now()->format('Y-m-d\TH:i')) }}"
-                   class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                   class="field">
         </div>
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Payment Method</label>
-            <select name="payment_method" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+            <label class="field-label">Payment Method</label>
+            <select name="payment_method" class="field">
                 @foreach(['cash'=>'Cash','card'=>'Card','insurance'=>'Insurance'] as $v=>$l)
                     <option value="{{ $v }}" @selected(old('payment_method','cash')===$v)>{{ $l }}</option>
                 @endforeach
@@ -82,7 +82,7 @@
         <div>
             <label class="text-sm font-medium text-slate-700 dark:text-slate-300 mr-2">Discount (₨)</label>
             <input type="number" name="discount_amount" value="{{ old('discount_amount', 0) }}" min="0" step="0.01"
-                   class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500 w-28">
+                   class="field w-28">
         </div>
         <p class="text-base font-bold text-slate-800 dark:text-white">Total: ₨ <span x-text="total()"></span></p>
     </div>
@@ -93,7 +93,7 @@
             class="px-6 py-2.5 bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white text-sm font-semibold rounded-lg">
         Create Booking
     </button>
-    <a href="{{ route('lab.index') }}" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm rounded-lg">Cancel</a>
+    <a href="{{ route('lab.index') }}" class="btn-cancel">Cancel</a>
 </div>
 
 </form>

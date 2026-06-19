@@ -57,7 +57,7 @@
         @endif
         @endcan
         <div class="flex gap-3">
-            <a href="{{ route('users.show', $user) }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm rounded-lg">Cancel</a>
+            <a href="{{ route('users.show', $user) }}" class="btn-cancel">Cancel</a>
             <button type="submit" class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg">Update User</button>
         </div>
     </div>

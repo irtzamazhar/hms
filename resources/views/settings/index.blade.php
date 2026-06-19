@@ -12,7 +12,7 @@
         @foreach(['hospital'=>'Hospital Info','system'=>'System Settings'] as $key=>$label)
         <button @click="tab='{{ $key }}'" type="button"
                 class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                :class="tab==='{{ $key }}' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow' : 'text-slate-500 hover:text-slate-700'">
+                :class="tab==='{{ $key }}' ? 'bg-white text-slate-800 shadow' : 'text-slate-500 hover:text-slate-700'">
             {{ $label }}
         </button>
         @endforeach
@@ -35,7 +35,7 @@
                 </div>
                 <x-form.textarea name="address" label="Full Address" :value="old('address',$setting->address)" rows="2" />
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Logo</label>
+                    <label class="field-label">Logo</label>
                     @if($setting->logo)
                     <div class="mb-2"><img src="{{ asset('storage/'.$setting->logo) }}" alt="Logo" class="h-12 rounded-lg border border-slate-200"></div>
                     @endif
@@ -55,16 +55,16 @@
                 <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide">System Settings</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Timezone</label>
-                        <select name="timezone" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                        <label class="field-label">Timezone</label>
+                        <select name="timezone" class="field">
                             @foreach(['Asia/Karachi'=>'Asia/Karachi (PKT)','UTC'=>'UTC','Asia/Kolkata'=>'Asia/Kolkata (IST)','America/New_York'=>'America/New_York (EST)'] as $v=>$l)
                                 <option value="{{ $v }}" @selected(old('timezone',$setting->timezone ?? 'Asia/Karachi')===$v)>{{ $l }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date Format</label>
-                        <select name="date_format" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                        <label class="field-label">Date Format</label>
+                        <select name="date_format" class="field">
                             @foreach(['d M Y'=>'01 Jan 2025','Y-m-d'=>'2025-01-01','d/m/Y'=>'01/01/2025'] as $v=>$example)
                                 <option value="{{ $v }}" @selected(old('date_format',$setting->date_format ?? 'd M Y')===$v)>{{ $v }} ({{ $example }})</option>
                             @endforeach

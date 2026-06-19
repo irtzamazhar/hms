@@ -8,7 +8,7 @@
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-xl font-bold text-slate-800 dark:text-white">Salary Management</h1>
     <div class="flex gap-2">
-        <a href="{{ route('salaries.structure') }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">Salary Structure</a>
+        <a href="{{ route('salaries.structure') }}" class="px-4 py-2 border text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">Salary Structure</a>
         <a href="{{ route('salaries.export', request()->query()) }}"
            class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -39,19 +39,19 @@
 {{-- Filters --}}
 <form method="GET" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 mb-4">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <select name="month" class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+        <select name="month" class="field">
             <option value="">All Months</option>
             @for($m = 1; $m <= 12; $m++)
             <option value="{{ $m }}" @selected(request('month') == $m)>{{ date('F', mktime(0,0,0,$m,1)) }}</option>
             @endfor
         </select>
-        <select name="year" class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+        <select name="year" class="field">
             <option value="">All Years</option>
             @for($y = now()->year; $y >= now()->year - 3; $y--)
             <option value="{{ $y }}" @selected(request('year') == $y)>{{ $y }}</option>
             @endfor
         </select>
-        <select name="status" class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+        <select name="status" class="field">
             <option value="">All Status</option>
             @foreach(['generated','paid','cancelled'] as $s)
             <option value="{{ $s }}" @selected(request('status') === $s)>{{ ucfirst($s) }}</option>
@@ -59,7 +59,7 @@
         </select>
         <div class="flex gap-2">
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Search employee..."
-                   class="flex-1 text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+                   class="field">
             <button type="submit" class="px-3 py-2 bg-primary-600 text-white text-sm rounded-lg">Go</button>
         </div>
     </div>
@@ -111,15 +111,15 @@
                         @csrf @method('PATCH')
                         <div>
                             <label class="text-xs text-slate-500">Payment Method</label>
-                            <select name="payment_method" class="text-xs rounded border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+                            <select name="payment_method" class="field">
                                 @foreach(['cash','bank_transfer','cheque'] as $m)
                                 <option value="{{ $m }}">{{ ucfirst(str_replace('_',' ',$m)) }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div><label class="text-xs text-slate-500">Bonus ₨</label><input type="number" name="bonus" value="0" step="0.01" class="w-28 text-xs rounded border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
-                        <div><label class="text-xs text-slate-500">Overtime ₨</label><input type="number" name="overtime" value="0" step="0.01" class="w-28 text-xs rounded border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
-                        <div><label class="text-xs text-slate-500">Ref #</label><input type="text" name="transaction_reference" class="w-32 text-xs rounded border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></div>
+                        <div><label class="text-xs text-slate-500">Bonus ₨</label><input type="number" name="bonus" value="0" step="0.01" class="field w-28"></div>
+                        <div><label class="text-xs text-slate-500">Overtime ₨</label><input type="number" name="overtime" value="0" step="0.01" class="field w-28"></div>
+                        <div><label class="text-xs text-slate-500">Ref #</label><input type="text" name="transaction_reference" class="field w-32"></div>
                         <button type="submit" class="px-4 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg font-medium">Mark Paid</button>
                     </form>
                 </td>

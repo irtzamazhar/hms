@@ -22,7 +22,7 @@
     <div class="grid grid-cols-2 gap-4">
         <div>
             <label class="block text-xs font-medium text-slate-500 mb-1">Doctor</label>
-            <select name="doctor_id" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+            <select name="doctor_id" class="field">
                 @foreach($doctors as $d)
                 <option value="{{ $d->id }}" @selected($appointment->doctor_id == $d->id)>Dr. {{ $d->user?->name }}</option>
                 @endforeach
@@ -30,7 +30,7 @@
         </div>
         <div>
             <label class="block text-xs font-medium text-slate-500 mb-1">Department</label>
-            <select name="department_id" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+            <select name="department_id" class="field">
                 <option value="">—</option>
                 @foreach($departments as $dept)
                 <option value="{{ $dept->id }}" @selected($appointment->department_id == $dept->id)>{{ $dept->name }}</option>
@@ -70,7 +70,7 @@
     <x-form.textarea name="notes" label="Notes" :value="$appointment->notes" rows="2" />
 
     <div class="flex justify-end gap-3 pt-2">
-        <a href="{{ route('appointments.show', $appointment) }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm rounded-lg">Cancel</a>
+        <a href="{{ route('appointments.show', $appointment) }}" class="btn-cancel">Cancel</a>
         <button type="submit" class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg">Update Appointment</button>
     </div>
 </form>

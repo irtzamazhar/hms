@@ -51,16 +51,16 @@
                         <div>
                             <label class="block text-xs text-slate-400 mb-1">Result Value</label>
                             <input type="text" name="result_value" value="{{ $item->report?->result_value }}" placeholder="e.g. 5.2 mmol/L"
-                                   class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                                   class="field">
                         </div>
                         <div>
                             <label class="block text-xs text-slate-400 mb-1">Normal Range</label>
                             <input type="text" name="normal_range" value="{{ $item->report?->normal_range }}" placeholder="e.g. 3.9–6.1"
-                                   class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                                   class="field">
                         </div>
                     </div>
                     <textarea name="remarks" rows="2" placeholder="Remarks / interpretation…"
-                              class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500 mb-2">{{ $item->report?->remarks }}</textarea>
+                              class="field mb-2">{{ $item->report?->remarks }}</textarea>
                     <button type="submit" class="px-4 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs rounded-lg font-medium">Save Result</button>
                 </form>
             </div>

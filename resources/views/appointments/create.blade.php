@@ -19,7 +19,7 @@
     <div class="grid grid-cols-2 gap-4">
         <div>
             <label class="block text-xs font-medium text-slate-500 mb-1">Patient <span class="text-red-500">*</span></label>
-            <select name="patient_id" required class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+            <select name="patient_id" required class="field">
                 <option value="">— Select Patient —</option>
                 @foreach($patients as $p)
                 <option value="{{ $p->id }}" @selected(request('patient_id') == $p->id)>{{ $p->name }} ({{ $p->mr_number }})</option>
@@ -28,7 +28,7 @@
         </div>
         <div>
             <label class="block text-xs font-medium text-slate-500 mb-1">Doctor <span class="text-red-500">*</span></label>
-            <select name="doctor_id" required class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+            <select name="doctor_id" required class="field">
                 <option value="">— Select Doctor —</option>
                 @foreach($doctors as $d)
                 <option value="{{ $d->id }}" @selected(request('doctor_id') == $d->id)>Dr. {{ $d->user?->name }} — {{ $d->specialization }}</option>
@@ -64,7 +64,7 @@
     <x-form.textarea name="reason" label="Reason for Visit" rows="2" />
 
     <div class="flex justify-end gap-3 pt-2">
-        <a href="{{ route('appointments.index') }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm rounded-lg">Cancel</a>
+        <a href="{{ route('appointments.index') }}" class="btn-cancel">Cancel</a>
         <button type="submit" class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg">Book Appointment</button>
     </div>
 </form>

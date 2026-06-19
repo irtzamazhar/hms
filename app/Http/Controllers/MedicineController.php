@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Medicine;
 use App\Models\MedicineCategory;
+use App\Models\Supplier;
 use App\Notifications\LowStockAlert;
 use App\Services\PharmacyService;
 use Illuminate\Http\RedirectResponse;
@@ -33,7 +34,10 @@ class MedicineController extends Controller
     {
         $this->authorize('manage medicines');
 
-        return view('medicines.create', ['categories' => MedicineCategory::active()->get()]);
+        return view('medicines.create', [
+            'categories' => MedicineCategory::active()->get(),
+            'suppliers'  => Supplier::orderBy('name')->get(),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse

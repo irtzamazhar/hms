@@ -18,7 +18,7 @@
             @csrf
             <div>
                 <label class="block text-xs font-medium text-slate-500 mb-1">Employee</label>
-                <select name="user_id" required class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+                <select name="user_id" required class="field">
                     <option value="">— Select —</option>
                     @foreach($users as $u)
                     <option value="{{ $u->id }}">{{ $u->name }} ({{ ucfirst($u->user_type) }})</option>
@@ -27,7 +27,7 @@
             </div>
             <div>
                 <label class="block text-xs font-medium text-slate-500 mb-1">Shift</label>
-                <select name="shift_id" required class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+                <select name="shift_id" required class="field">
                     <option value="">— Select —</option>
                     @foreach($shifts as $shift)
                     <option value="{{ $shift->id }}">{{ $shift->name }}</option>
@@ -37,11 +37,11 @@
             <div>
                 <label class="block text-xs font-medium text-slate-500 mb-1">Date</label>
                 <input type="date" name="assignment_date" value="{{ today()->toDateString() }}" required
-                       class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+                       class="field">
             </div>
             <div>
                 <label class="block text-xs font-medium text-slate-500 mb-1">Notes</label>
-                <input type="text" name="notes" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white" placeholder="Optional">
+                <input type="text" name="notes" class="field" placeholder="Optional">
             </div>
             <button type="submit" class="w-full py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg">Assign</button>
         </form>
@@ -51,8 +51,8 @@
     <div class="md:col-span-2">
         <form method="GET" class="flex gap-3 mb-4">
             <input type="date" name="date" value="{{ request('date') }}"
-                   class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
-            <select name="shift_id" class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+                   class="field">
+            <select name="shift_id" class="field">
                 <option value="">All Shifts</option>
                 @foreach($shifts as $s)
                 <option value="{{ $s->id }}" @selected(request('shift_id') == $s->id)>{{ $s->name }}</option>

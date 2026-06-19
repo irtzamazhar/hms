@@ -10,8 +10,8 @@
     <h1 class="text-xl font-bold text-slate-800 dark:text-white">{{ $purchase->purchase_number }}</h1>
     <div class="flex gap-2">
         <a href="{{ route('purchases.print', $purchase) }}" target="_blank" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg">PDF</a>
-        @can('manage pharmacy')
-        <a href="{{ route('purchases.edit', $purchase) }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-50">Edit Payment</a>
+        @can('manage purchases')
+        <a href="{{ route('purchases.edit', $purchase) }}" class="px-4 py-2 border text-slate-600 dark:text-slate-300 hover:bg-slate-50">Edit Payment</a>
         @endcan
     </div>
 </div>

@@ -10,7 +10,7 @@
 
     <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 flex justify-between items-start flex-wrap gap-3">
         <div class="flex gap-4 items-center">
-            <div class="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-xl font-bold text-slate-600 dark:text-slate-300">{{ substr($staff->user->name,0,1) }}</div>
+            <div class="field w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-xl font-bold text-slate-600 dark:text-slate-300">{{ substr($staff->user->name,0,1) }}</div>
             <div>
                 <h1 class="text-lg font-bold text-slate-800 dark:text-white">{{ $staff->user->name }}</h1>
                 <p class="text-sm text-slate-400">{{ ucfirst(str_replace('_',' ',$staff->position ?? '')) }} · {{ $staff->department->name ?? '—' }}</p>

@@ -19,8 +19,8 @@
 <form method="GET" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 mb-4">
     <div class="grid grid-cols-3 gap-3">
         <input type="date" name="date" value="{{ request('date', today()->toDateString()) }}"
-               class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
-        <select name="shift" class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+               class="field">
+        <select name="shift" class="field">
             @foreach(['morning','evening','night'] as $s)
                 <option value="{{ $s }}" @selected(request('shift', $currentShift)===$s)>{{ ucfirst($s) }}</option>
             @endforeach

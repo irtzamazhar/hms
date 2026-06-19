@@ -29,17 +29,17 @@
 <form method="GET" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 mb-4">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <input type="text" name="search" value="{{ request('search') }}" placeholder="Patient name..."
-               class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+               class="field">
         <input type="date" name="date" value="{{ request('date') }}"
-               class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
-        <select name="doctor_id" class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+               class="field">
+        <select name="doctor_id" class="field">
             <option value="">All Doctors</option>
             @foreach($doctors as $d)
             <option value="{{ $d->id }}" @selected(request('doctor_id') == $d->id)>Dr. {{ $d->user?->name }}</option>
             @endforeach
         </select>
         <div class="flex gap-2">
-            <select name="status" class="flex-1 text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+            <select name="status" class="field">
                 <option value="">All Status</option>
                 @foreach(['scheduled','confirmed','completed','cancelled','no_show'] as $s)
                 <option value="{{ $s }}" @selected(request('status') === $s)>{{ ucfirst(str_replace('_',' ',$s)) }}</option>

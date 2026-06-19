@@ -14,7 +14,7 @@
         <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
             <input type="text" x-model="search" @input.debounce.300ms="searchMedicines()"
                    placeholder="Search medicines by name or barcode…"
-                   class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                   class="field">
         </div>
 
         {{-- Search Results --}}
@@ -78,11 +78,11 @@
                     </div>
                     <div class="flex items-center gap-2 mt-1.5">
                         <button @click="item.qty > 1 ? item.qty-- : cart.splice(i,1)" type="button"
-                                class="w-6 h-6 bg-slate-100 dark:bg-slate-700 rounded text-slate-500 font-bold">−</button>
+                                class="w-6 h-6 bg-slate-100 dark:bg-dark-700 text-slate-600 dark:text-slate-300 rounded font-bold text-sm hover:bg-slate-200 dark:hover:bg-dark-600 transition-colors flex items-center justify-center">−</button>
                         <input type="number" x-model.number="item.qty" min="1" :max="item.stock"
-                               class="w-14 text-center text-sm rounded border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+                               class="field w-14 text-center">
                         <button @click="item.qty < item.stock ? item.qty++ : null" type="button"
-                                class="w-6 h-6 bg-slate-100 dark:bg-slate-700 rounded text-slate-500 font-bold">+</button>
+                                class="w-6 h-6 bg-slate-100 dark:bg-dark-700 text-slate-600 dark:text-slate-300 rounded font-bold text-sm hover:bg-slate-200 dark:hover:bg-dark-600 transition-colors flex items-center justify-center">+</button>
                         <span class="ml-auto text-sm font-semibold text-slate-700 dark:text-white" x-text="'₨ ' + (item.price * item.qty).toLocaleString()"></span>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
                 {{-- Patient (optional) --}}
                 <div>
                     <label class="block text-xs font-medium text-slate-500 mb-1">Patient (optional)</label>
-                    <select name="patient_id" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                    <select name="patient_id" class="field">
                         <option value="">Walk-in</option>
                         @foreach($patients as $p)
                             <option value="{{ $p->id }}">{{ $p->name }} ({{ $p->mr_number }})</option>
@@ -118,11 +118,11 @@
                     <div class="flex-1">
                         <label class="block text-xs font-medium text-slate-500 mb-1">Discount (₨)</label>
                         <input type="number" name="discount_amount" x-model.number="discount" min="0" step="0.01"
-                               class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                               class="field">
                     </div>
                     <div class="flex-1">
                         <label class="block text-xs font-medium text-slate-500 mb-1">Payment</label>
-                        <select name="payment_method" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                        <select name="payment_method" class="field">
                             <option value="cash">Cash</option>
                             <option value="card">Card</option>
                             <option value="bank_transfer">Bank</option>

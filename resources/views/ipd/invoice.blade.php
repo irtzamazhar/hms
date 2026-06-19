@@ -9,7 +9,7 @@
 <div class="max-w-2xl mx-auto">
     <div class="flex justify-end gap-2 mb-4">
         <button onclick="window.print()" class="px-4 py-2 bg-slate-800 text-white text-sm rounded-lg hover:bg-slate-700">🖨 Print</button>
-        <a href="{{ route('ipd.show',$admission) }}" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm rounded-lg">Back</a>
+        <a href="{{ route('ipd.show',$admission) }}" class="btn-cancel">Back</a>
     </div>
 
     <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-8 print:border-0 print:shadow-none">

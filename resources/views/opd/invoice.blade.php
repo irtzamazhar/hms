@@ -11,7 +11,7 @@
         <a href="{{ route('opd.print',$visit) }}" target="_blank" class="px-4 py-2 bg-slate-800 text-white text-sm rounded-lg hover:bg-slate-700">
             🖨 Print / PDF
         </a>
-        <a href="{{ route('opd.show',$visit) }}" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm rounded-lg">Back</a>
+        <a href="{{ route('opd.show',$visit) }}" class="btn-cancel">Back</a>
     </div>
 
     <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-8" id="invoice">

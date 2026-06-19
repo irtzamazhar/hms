@@ -9,8 +9,8 @@
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-xl font-bold text-slate-800 dark:text-white">{{ $supplier->name }}</h1>
     <div class="flex gap-2">
-        @can('manage pharmacy')
-        <a href="{{ route('suppliers.edit', $supplier) }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-50">Edit</a>
+        @can('manage purchases')
+        <a href="{{ route('suppliers.edit', $supplier) }}" class="px-4 py-2 border text-slate-600 dark:text-slate-300 hover:bg-slate-50">Edit</a>
         @endcan
         <a href="{{ route('purchases.create') }}?supplier_id={{ $supplier->id }}" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm rounded-lg">New Purchase</a>
     </div>

@@ -17,8 +17,8 @@
     <x-form.input name="title" label="Title *" :value="old('title',$expense->title)" required />
 
     <div>
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Category *</label>
-        <select name="expense_category_id" required class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+        <label class="field-label">Category *</label>
+        <select name="expense_category_id" required class="field">
             @foreach($categories as $c)
                 <option value="{{ $c->id }}" @selected(old('expense_category_id',$expense->expense_category_id)==$c->id)>{{ $c->name }}</option>
             @endforeach
@@ -27,18 +27,18 @@
 
     <div class="grid grid-cols-2 gap-4">
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Amount (₨) *</label>
+            <label class="field-label">Amount (₨) *</label>
             <input type="number" name="amount" value="{{ old('amount',$expense->amount) }}" min="0" step="0.01" required
-                   class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                   class="field">
         </div>
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Expense Date *</label>
+            <label class="field-label">Expense Date *</label>
             <input type="date" name="expense_date" value="{{ old('expense_date',$expense->expense_date->toDateString()) }}" required
-                   class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                   class="field">
         </div>
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Payment Method</label>
-            <select name="payment_method" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+            <label class="field-label">Payment Method</label>
+            <select name="payment_method" class="field">
                 @foreach(['cash'=>'Cash','bank_transfer'=>'Bank Transfer','cheque'=>'Cheque','card'=>'Card'] as $v=>$l)
                     <option value="{{ $v }}" @selected(old('payment_method',$expense->payment_method)===$v)>{{ $l }}</option>
                 @endforeach
@@ -52,7 +52,7 @@
 
 <div class="flex gap-3">
     <button type="submit" class="px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg">Update Expense</button>
-    <a href="{{ route('expenses.show',$expense) }}" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm rounded-lg">Cancel</a>
+    <a href="{{ route('expenses.show',$expense) }}" class="btn-cancel">Cancel</a>
 </div>
 
 </form>

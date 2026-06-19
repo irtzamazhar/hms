@@ -16,16 +16,16 @@
         <x-form.input name="name" label="Medicine Name *" :value="old('name',$medicine->name)" required />
         <x-form.input name="generic_name" label="Generic Name" :value="old('generic_name',$medicine->generic_name)" />
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
-            <select name="medicine_category_id" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+            <label class="field-label">Category</label>
+            <select name="medicine_category_id" class="field">
                 @foreach($categories as $c)
                     <option value="{{ $c->id }}" @selected(old('medicine_category_id',$medicine->medicine_category_id)==$c->id)>{{ $c->name }}</option>
                 @endforeach
             </select>
         </div>
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Dosage Form</label>
-            <select name="dosage_form" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+            <label class="field-label">Dosage Form</label>
+            <select name="dosage_form" class="field">
                 @foreach(['tablet'=>'Tablet','capsule'=>'Capsule','syrup'=>'Syrup','injection'=>'Injection','cream'=>'Cream','drops'=>'Drops','inhaler'=>'Inhaler','suppository'=>'Suppository','other'=>'Other'] as $v=>$l)
                     <option value="{{ $v }}" @selected(old('dosage_form',$medicine->dosage_form)===$v)>{{ $l }}</option>
                 @endforeach
@@ -34,8 +34,8 @@
         <x-form.input name="strength" label="Strength" :value="old('strength',$medicine->strength)" />
         <x-form.input name="unit" label="Unit" :value="old('unit',$medicine->unit)" />
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
-            <select name="status" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+            <label class="field-label">Status</label>
+            <select name="status" class="field">
                 <option value="active" @selected(old('status',$medicine->status)==='active')>Active</option>
                 <option value="inactive" @selected(old('status',$medicine->status)==='inactive')>Inactive</option>
                 <option value="discontinued" @selected(old('status',$medicine->status)==='discontinued')>Discontinued</option>
@@ -48,19 +48,19 @@
     <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-4">Pricing & Stock</h2>
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Purchase Price</label>
+            <label class="field-label">Purchase Price</label>
             <input type="number" name="purchase_price" value="{{ old('purchase_price',$medicine->purchase_price) }}" step="0.01"
-                   class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                   class="field">
         </div>
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Selling Price</label>
+            <label class="field-label">Selling Price</label>
             <input type="number" name="selling_price" value="{{ old('selling_price',$medicine->selling_price) }}" step="0.01"
-                   class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                   class="field">
         </div>
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Min. Stock Alert</label>
+            <label class="field-label">Min. Stock Alert</label>
             <input type="number" name="minimum_stock" value="{{ old('minimum_stock',$medicine->minimum_stock) }}" min="0"
-                   class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                   class="field">
         </div>
     </div>
     <div class="mt-4">
@@ -70,7 +70,7 @@
 
 <div class="flex gap-3">
     <button type="submit" class="px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg">Update Medicine</button>
-    <a href="{{ route('medicines.index') }}" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm rounded-lg">Cancel</a>
+    <a href="{{ route('medicines.index') }}" class="btn-cancel">Cancel</a>
 </div>
 
 </form>

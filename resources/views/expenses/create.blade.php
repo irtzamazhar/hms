@@ -46,7 +46,7 @@
     <x-form.textarea name="description" label="Description / Notes" rows="3" />
 
     <div class="flex justify-end gap-3 pt-2">
-        <a href="{{ route('expenses.index') }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">Cancel</a>
+        <a href="{{ route('expenses.index') }}" class="btn-cancel">Cancel</a>
         <button type="submit" class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg">Save Expense</button>
     </div>
 </form>

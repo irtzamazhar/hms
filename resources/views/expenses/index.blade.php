@@ -33,14 +33,14 @@
 <form method="GET" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 mb-4">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <input type="date" name="date" value="{{ request('date') }}"
-               class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
-        <select name="category_id" class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+               class="field">
+        <select name="category_id" class="field">
             <option value="">All Categories</option>
             @foreach($categories as $cat)
             <option value="{{ $cat->id }}" @selected(request('category_id') == $cat->id)>{{ $cat->name }}</option>
             @endforeach
         </select>
-        <select name="status" class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+        <select name="status" class="field">
             <option value="">All Status</option>
             @foreach(['pending','approved','rejected'] as $s)
             <option value="{{ $s }}" @selected(request('status') === $s)>{{ ucfirst($s) }}</option>
@@ -48,7 +48,7 @@
         </select>
         <div class="flex gap-2">
             <button type="submit" class="flex-1 px-4 py-2 bg-primary-600 text-white text-sm rounded-lg">Filter</button>
-            <a href="{{ route('expenses.index') }}" class="px-3 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm rounded-lg">Clear</a>
+            <a href="{{ route('expenses.index') }}" class="px-3 py-2 border text-slate-600 dark:text-slate-300">Clear</a>
         </div>
     </div>
 </form>

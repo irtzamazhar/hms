@@ -16,7 +16,7 @@
 
             <div>
                 <label class="block text-xs font-medium text-slate-500 mb-1">Shift <span class="text-red-500">*</span></label>
-                <select name="shift_id" required class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+                <select name="shift_id" required class="field">
                     <option value="">— Select Shift —</option>
                     @foreach($shifts as $s)
                     <option value="{{ $s->id }}">{{ $s->name }}</option>

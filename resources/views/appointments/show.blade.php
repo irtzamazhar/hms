@@ -10,7 +10,7 @@
     <h1 class="text-xl font-bold text-slate-800 dark:text-white">{{ $appointment->appointment_number }}</h1>
     <div class="flex gap-2">
         @can('create appointments')
-        <a href="{{ route('appointments.edit', $appointment) }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-50">Edit</a>
+        <a href="{{ route('appointments.edit', $appointment) }}" class="px-4 py-2 border text-slate-600 dark:text-slate-300 hover:bg-slate-50">Edit</a>
         @endcan
         @if($appointment->status === 'confirmed')
         <a href="{{ route('opd.create') }}?patient_id={{ $appointment->patient_id }}&doctor_id={{ $appointment->doctor?->id }}"
@@ -54,7 +54,7 @@
             @can('create appointments')
             <form method="POST" action="{{ route('appointments.status', $appointment) }}">
                 @csrf @method('PATCH')
-                <select name="status" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white mb-2">
+                <select name="status" class="field mb-2">
                     @foreach(['scheduled','confirmed','completed','cancelled','no_show'] as $s)
                     <option value="{{ $s }}" @selected($appointment->status === $s)>{{ ucfirst(str_replace('_',' ',$s)) }}</option>
                     @endforeach

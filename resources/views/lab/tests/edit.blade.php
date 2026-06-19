@@ -53,7 +53,7 @@
             <button type="submit" class="text-sm text-red-500 hover:text-red-700">Delete Test</button>
         </form>
         <div class="flex gap-3">
-            <a href="{{ route('lab.tests.index') }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm rounded-lg">Cancel</a>
+            <a href="{{ route('lab.tests.index') }}" class="btn-cancel">Cancel</a>
             <button type="submit" class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg">Update Test</button>
         </div>
     </div>

@@ -8,8 +8,8 @@
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-xl font-bold text-slate-800 dark:text-white">Shift Management</h1>
     <div class="flex gap-2">
-        <a href="{{ route('shifts.assignments') }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">Assignments</a>
-        <a href="{{ route('shifts.close.form') }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">Close Shift</a>
+        <a href="{{ route('shifts.assignments') }}" class="px-4 py-2 border text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">Assignments</a>
+        <a href="{{ route('shifts.close.form') }}" class="px-4 py-2 border text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">Close Shift</a>
         @can('manage settings')
         <a href="{{ route('shifts.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>

@@ -8,7 +8,7 @@
 @section('content')
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-xl font-bold text-slate-800 dark:text-white">Suppliers</h1>
-    @can('manage pharmacy')
+    @can('manage purchases')
     <a href="{{ route('suppliers.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         Add Supplier
@@ -19,14 +19,14 @@
 <form method="GET" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 mb-4">
     <div class="flex gap-3">
         <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by name or company..."
-               class="flex-1 text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
-        <select name="status" class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+               class="field">
+        <select name="status" class="field">
             <option value="">All Status</option>
             <option value="active" @selected(request('status')==='active')>Active</option>
             <option value="inactive" @selected(request('status')==='inactive')>Inactive</option>
         </select>
         <button type="submit" class="px-4 py-2 bg-primary-600 text-white text-sm rounded-lg">Search</button>
-        <a href="{{ route('suppliers.index') }}" class="px-3 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm rounded-lg">Clear</a>
+        <a href="{{ route('suppliers.index') }}" class="px-3 py-2 border text-slate-600 dark:text-slate-300">Clear</a>
     </div>
 </form>
 
@@ -58,7 +58,7 @@
                 <td class="px-4 py-3"><x-badge color="{{ $s->status === 'active' ? 'green' : 'slate' }}">{{ ucfirst($s->status) }}</x-badge></td>
                 <td class="px-4 py-3 flex gap-2 justify-end">
                     <a href="{{ route('suppliers.show', $s) }}" class="text-xs text-primary-600 hover:underline">View</a>
-                    @can('manage pharmacy')
+                    @can('manage purchases')
                     <a href="{{ route('suppliers.edit', $s) }}" class="text-xs text-slate-500 hover:underline">Edit</a>
                     @endcan
                 </td>

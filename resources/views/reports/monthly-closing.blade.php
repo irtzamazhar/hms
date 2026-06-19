@@ -16,12 +16,12 @@
 
 <form method="GET" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 mb-4">
     <div class="flex gap-3">
-        <select name="month" class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+        <select name="month" class="field">
             @for($m = 1; $m <= 12; $m++)
             <option value="{{ $m }}" @selected(request('month', now()->month)==$m)>{{ date('F', mktime(0,0,0,$m,1)) }}</option>
             @endfor
         </select>
-        <select name="year" class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+        <select name="year" class="field">
             @for($y = now()->year; $y >= now()->year-3; $y--)
             <option value="{{ $y }}" @selected(request('year', now()->year)==$y)>{{ $y }}</option>
             @endfor

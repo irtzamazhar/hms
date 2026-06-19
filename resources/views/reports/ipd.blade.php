@@ -18,9 +18,9 @@
 <form method="GET" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 mb-4">
     <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
         <input type="date" name="from" value="{{ request('from', today()->startOfMonth()->toDateString()) }}"
-               class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+               class="field">
         <input type="date" name="to" value="{{ request('to', today()->toDateString()) }}"
-               class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+               class="field">
         <button type="submit" class="px-3 py-2 bg-primary-600 text-white text-sm rounded-lg">Generate</button>
     </div>
 </form>

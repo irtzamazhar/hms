@@ -11,7 +11,7 @@ class SupplierController extends Controller
 {
     public function index(Request $request): View
     {
-        $this->authorize('manage pharmacy');
+        $this->authorize('view purchases');
         $suppliers = Supplier::withCount('purchases')
             ->when($request->search, fn ($q, $s) => $q->where('name', 'like', "%$s%")->orWhere('company', 'like', "%$s%"))
             ->when($request->status, fn ($q, $s) => $q->where('status', $s))
@@ -24,14 +24,14 @@ class SupplierController extends Controller
 
     public function create(): View
     {
-        $this->authorize('manage pharmacy');
+        $this->authorize('manage purchases');
 
         return view('suppliers.create');
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $this->authorize('manage pharmacy');
+        $this->authorize('manage purchases');
         $request->validate([
             'name'            => 'required|string|max:100',
             'company'         => 'nullable|string|max:150',
@@ -51,7 +51,7 @@ class SupplierController extends Controller
 
     public function show(Supplier $supplier): View
     {
-        $this->authorize('manage pharmacy');
+        $this->authorize('view purchases');
         $supplier->load(['purchases' => fn ($q) => $q->with('items.medicine')->latest()->limit(10)]);
 
         return view('suppliers.show', compact('supplier'));
@@ -59,14 +59,14 @@ class SupplierController extends Controller
 
     public function edit(Supplier $supplier): View
     {
-        $this->authorize('manage pharmacy');
+        $this->authorize('manage purchases');
 
         return view('suppliers.edit', compact('supplier'));
     }
 
     public function update(Request $request, Supplier $supplier): RedirectResponse
     {
-        $this->authorize('manage pharmacy');
+        $this->authorize('manage purchases');
         $request->validate([
             'name'   => 'required|string|max:100',
             'phone'  => 'required|string|max:20',
@@ -81,7 +81,7 @@ class SupplierController extends Controller
 
     public function destroy(Supplier $supplier): RedirectResponse
     {
-        $this->authorize('manage pharmacy');
+        $this->authorize('manage purchases');
         $supplier->delete();
 
         return redirect()->route('suppliers.index')->with('success', 'Supplier deleted.');

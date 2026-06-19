@@ -73,15 +73,15 @@
                 <form method="POST" action="{{ route('medicines.stock.adjust',$medicine) }}">
                     @csrf
                     <div class="flex gap-2">
-                        <select name="type" class="text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                        <select name="type" class="field">
                             <option value="in">Add Stock</option>
                             <option value="out">Remove Stock</option>
                         </select>
                         <input type="number" name="quantity" placeholder="Qty" min="1" required
-                               class="flex-1 text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                               class="field">
                         <button type="submit" class="px-4 py-2 bg-primary-600 text-white text-sm rounded-lg">Apply</button>
                     </div>
-                    <input type="text" name="reason" placeholder="Reason (optional)" class="mt-2 w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                    <input type="text" name="reason" placeholder="Reason (optional)" class="field mt-2">
                 </form>
             </div>
             @endcan

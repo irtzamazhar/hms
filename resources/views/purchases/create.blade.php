@@ -19,7 +19,7 @@
     <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 grid grid-cols-2 md:grid-cols-3 gap-4">
         <div>
             <label class="block text-xs font-medium text-slate-500 mb-1">Supplier <span class="text-red-500">*</span></label>
-            <select name="supplier_id" required class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+            <select name="supplier_id" required class="field">
                 <option value="">— Select Supplier —</option>
                 @foreach($suppliers as $s)
                 <option value="{{ $s->id }}" @selected(request('supplier_id') == $s->id)>{{ $s->name }}@if($s->company) — {{ $s->company }}@endif</option>
@@ -60,18 +60,18 @@
                 <template x-for="(row, i) in rows" :key="i">
                 <tr>
                     <td class="px-3 py-2">
-                        <select :name="'items['+i+'][medicine_id]'" x-model="row.medicine_id" required class="w-full text-xs rounded border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+                        <select :name="'items['+i+'][medicine_id]'" x-model="row.medicine_id" required class="field">
                             <option value="">— Select —</option>
                             @foreach($medicines as $med)
                             <option value="{{ $med->id }}">{{ $med->name }}@if($med->generic_name) ({{ $med->generic_name }})@endif</option>
                             @endforeach
                         </select>
                     </td>
-                    <td class="px-3 py-2"><input :name="'items['+i+'][quantity]'" type="number" min="1" x-model.number="row.qty" @input="calc()" required class="w-20 text-center text-xs rounded border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></td>
-                    <td class="px-3 py-2"><input :name="'items['+i+'][unit_price]'" type="number" step="0.01" min="0" x-model.number="row.price" @input="calc()" required class="w-24 text-right text-xs rounded border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></td>
-                    <td class="px-3 py-2"><input :name="'items['+i+'][sale_price]'" type="number" step="0.01" min="0" x-model.number="row.salePrice" required class="w-24 text-right text-xs rounded border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></td>
-                    <td class="px-3 py-2"><input :name="'items['+i+'][batch_number]'" type="text" x-model="row.batch" class="w-28 text-xs rounded border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></td>
-                    <td class="px-3 py-2"><input :name="'items['+i+'][expiry_date]'" type="date" x-model="row.expiry" class="text-xs rounded border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white"></td>
+                    <td class="px-3 py-2"><input :name="'items['+i+'][quantity]'" type="number" min="1" x-model.number="row.qty" @input="calc()" required class="field w-20 text-center"></td>
+                    <td class="px-3 py-2"><input :name="'items['+i+'][unit_price]'" type="number" step="0.01" min="0" x-model.number="row.price" @input="calc()" required class="field w-24 text-right"></td>
+                    <td class="px-3 py-2"><input :name="'items['+i+'][sale_price]'" type="number" step="0.01" min="0" x-model.number="row.salePrice" required class="field w-24 text-right"></td>
+                    <td class="px-3 py-2"><input :name="'items['+i+'][batch_number]'" type="text" x-model="row.batch" class="field w-28"></td>
+                    <td class="px-3 py-2"><input :name="'items['+i+'][expiry_date]'" type="date" x-model="row.expiry" class="field"></td>
                     <td class="px-3 py-2 text-right font-semibold text-slate-700 dark:text-white" x-text="'₨ '+lineTotal(row)"></td>
                     <td class="px-3 py-2"><button type="button" @click="rows.splice(i,1);calc()" class="text-red-400 hover:text-red-600">&times;</button></td>
                 </tr>
@@ -94,7 +94,7 @@
     </div>
 
     <div class="flex justify-end gap-3">
-        <a href="{{ route('purchases.index') }}" class="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-sm rounded-lg">Cancel</a>
+        <a href="{{ route('purchases.index') }}" class="btn-cancel">Cancel</a>
         <button type="submit" class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg">Save Purchase Order</button>
     </div>
 </form>

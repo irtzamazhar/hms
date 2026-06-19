@@ -14,29 +14,29 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <x-form.input name="name" label="Ward Name *" :value="old('name')" required />
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Ward Type</label>
-            <select name="ward_type" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+            <label class="field-label">Ward Type</label>
+            <select name="ward_type" class="field">
                 @foreach(['general'=>'General','private'=>'Private','icu'=>'ICU','nicu'=>'NICU','emergency'=>'Emergency','maternity'=>'Maternity'] as $v=>$l)
                     <option value="{{ $v }}" @selected(old('ward_type','general')===$v)>{{ $l }}</option>
                 @endforeach
             </select>
         </div>
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Capacity (beds)</label>
+            <label class="field-label">Capacity (beds)</label>
             <input type="number" name="capacity" value="{{ old('capacity', 10) }}" min="1"
-                   class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                   class="field">
         </div>
         <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Charge Per Day (₨)</label>
+            <label class="field-label">Charge Per Day (₨)</label>
             <input type="number" name="charges_per_day" value="{{ old('charges_per_day', 1000) }}" min="0" step="0.01"
-                   class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                   class="field">
         </div>
     </div>
     <x-form.textarea name="description" label="Description" :value="old('description')" rows="2" />
 </div>
 <div class="flex gap-3">
     <button type="submit" class="px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg">Create Ward</button>
-    <a href="{{ route('wards.index') }}" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm rounded-lg">Cancel</a>
+    <a href="{{ route('wards.index') }}" class="btn-cancel">Cancel</a>
 </div>
 </form>
 </div>

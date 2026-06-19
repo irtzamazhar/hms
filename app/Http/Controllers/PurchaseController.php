@@ -20,7 +20,7 @@ class PurchaseController extends Controller
 {
     public function index(Request $request): View
     {
-        $this->authorize('manage pharmacy');
+        $this->authorize('view purchases');
         $purchases = Purchase::with(['supplier:id,name,company', 'createdBy:id,name'])
             ->when($request->supplier_id, fn ($q, $id) => $q->where('supplier_id', $id))
             ->when($request->status, fn ($q, $s) => $q->where('status', $s))
@@ -41,7 +41,7 @@ class PurchaseController extends Controller
 
     public function create(): View
     {
-        $this->authorize('manage pharmacy');
+        $this->authorize('manage purchases');
         $suppliers = Supplier::active()->get();
         $medicines = Medicine::select('id', 'name', 'generic_name', 'unit')->orderBy('name')->get();
 
@@ -50,7 +50,7 @@ class PurchaseController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $this->authorize('manage pharmacy');
+        $this->authorize('manage purchases');
         $request->validate([
             'supplier_id'         => 'required|exists:suppliers,id',
             'purchase_date'       => 'required|date',
@@ -117,7 +117,7 @@ class PurchaseController extends Controller
 
     public function show(Purchase $purchase): View
     {
-        $this->authorize('manage pharmacy');
+        $this->authorize('view purchases');
         $purchase->load(['supplier', 'items.medicine', 'createdBy']);
 
         return view('purchases.show', compact('purchase'));
@@ -125,7 +125,7 @@ class PurchaseController extends Controller
 
     public function edit(Purchase $purchase): View
     {
-        $this->authorize('manage pharmacy');
+        $this->authorize('manage purchases');
         $purchase->load('items.medicine');
         $suppliers = Supplier::active()->get();
         $medicines = Medicine::select('id', 'name', 'generic_name', 'unit')->orderBy('name')->get();
@@ -135,7 +135,7 @@ class PurchaseController extends Controller
 
     public function update(Request $request, Purchase $purchase): RedirectResponse
     {
-        $this->authorize('manage pharmacy');
+        $this->authorize('manage purchases');
         $request->validate([
             'payment_status' => 'required|in:pending,partial,paid',
             'paid_amount'    => 'required|numeric|min:0',
@@ -154,7 +154,7 @@ class PurchaseController extends Controller
 
     public function destroy(Purchase $purchase): RedirectResponse
     {
-        $this->authorize('manage pharmacy');
+        $this->authorize('manage purchases');
         $purchase->delete();
 
         return redirect()->route('purchases.index')->with('success', 'Purchase deleted.');
@@ -162,7 +162,7 @@ class PurchaseController extends Controller
 
     public function export(Request $request): BinaryFileResponse
     {
-        $this->authorize('manage pharmacy');
+        $this->authorize('manage purchases');
 
         return Excel::download(
             new PurchasesExport($request->date_from, $request->date_to, $request->supplier_id),

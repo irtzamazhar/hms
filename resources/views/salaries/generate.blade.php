@@ -33,7 +33,7 @@
             <h2 class="font-semibold text-slate-800 dark:text-white">Select Employees</h2>
             <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 cursor-pointer">
                 <input type="checkbox" x-model="selectAll" @change="document.querySelectorAll('[name=\'user_ids[]\']').forEach(c=>c.checked=selectAll)"
-                       class="rounded border-slate-300 text-primary-600">
+                       class="field text-primary-600">
                 Select All
             </label>
         </div>
@@ -53,7 +53,7 @@
                     <td class="px-4 py-3 text-center">
                         @if($u->salaryStructure)
                         <input type="checkbox" name="user_ids[]" value="{{ $u->id }}" checked
-                               class="rounded border-slate-300 text-primary-600">
+                               class="field text-primary-600">
                         @else
                         <span class="text-slate-300 dark:text-slate-600">—</span>
                         @endif

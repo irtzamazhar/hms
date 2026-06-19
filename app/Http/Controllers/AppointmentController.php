@@ -51,7 +51,7 @@ class AppointmentController extends Controller
             'department_id'        => 'nullable|exists:departments,id',
             'appointment_datetime' => 'required|date|after:now',
             'duration_minutes'     => 'nullable|integer|min:5|max:180',
-            'type'                 => 'required|in:new,follow_up,consultation,emergency',
+            'type'                 => 'required|in:opd,follow_up,emergency,teleconsultation',
             'reason'               => 'nullable|string|max:255',
             'fee'                  => 'nullable|numeric|min:0',
         ]);
@@ -93,7 +93,7 @@ class AppointmentController extends Controller
         $request->validate([
             'appointment_datetime' => 'required|date',
             'duration_minutes'     => 'nullable|integer|min:5',
-            'type'                 => 'required|in:new,follow_up,consultation,emergency',
+            'type'                 => 'required|in:opd,follow_up,emergency,teleconsultation',
             'status'               => 'required|in:scheduled,confirmed,completed,cancelled,no_show',
             'reason'               => 'nullable|string',
             'notes'                => 'nullable|string',

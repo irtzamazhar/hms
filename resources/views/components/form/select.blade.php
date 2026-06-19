@@ -2,13 +2,13 @@
 
 <div>
     @if($label)
-    <label for="{{ $name }}" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ $label }}</label>
+    <label for="{{ $name }}" class="field-label">{{ $label }}@if($required) <span class="text-red-500 ml-0.5">*</span>@endif</label>
     @endif
     <select
         id="{{ $name }}"
         name="{{ $name }}"
         @if($required) required @endif
-        {{ $attributes->class(['w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500 focus:ring-primary-500', 'border-red-400' => $errors->has($name)]) }}
+        {{ $attributes->class(['field', 'error' => $errors->has($name)]) }}
     >
         <option value="">{{ $placeholder }}</option>
         @foreach($options as $value => $text)

@@ -106,7 +106,7 @@
                 <div class="grid grid-cols-2 gap-3 mb-3">
                     <div>
                         <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Type</label>
-                        <select name="treatment_type" class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                        <select name="treatment_type" class="field">
                             @foreach(['medication','procedure','lab_test','nursing','other'] as $t)
                                 <option value="{{ $t }}">{{ ucfirst(str_replace('_',' ',$t)) }}</option>
                             @endforeach
@@ -115,11 +115,11 @@
                     <div>
                         <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Charge (₨)</label>
                         <input type="number" name="charge" value="0" min="0" step="0.01"
-                               class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500">
+                               class="field">
                     </div>
                 </div>
                 <textarea name="description" rows="2" placeholder="Description…" required
-                          class="w-full text-sm rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:border-primary-500 mb-3"></textarea>
+                          class="field mb-3"></textarea>
                 <button type="submit" class="px-4 py-2 bg-primary-600 text-white text-sm rounded-lg">Add</button>
             </form>
         </div>
