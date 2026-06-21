@@ -16,7 +16,7 @@ class DoctorController extends Controller
     public function index(Request $request): View
     {
         $this->authorize('view doctors');
-        $doctors = Doctor::with(['user:id,name,email,status', 'department:id,name'])
+        $doctors = Doctor::with(['user' => fn ($q) => $q->withTrashed()->select('id', 'name', 'email', 'phone'), 'department:id,name'])
             ->when($request->search, fn ($q) => $q->whereHas('user', fn ($u) => $u->where('name', 'like', "%{$request->search}%")))
             ->when($request->department_id, fn ($q, $id) => $q->where('department_id', $id))
             ->when($request->status, fn ($q, $s) => $q->where('status', $s))
@@ -118,7 +118,7 @@ class DoctorController extends Controller
         ]);
 
         $doctor->update($request->only(['qualification', 'specialization', 'department_id', 'cnic', 'phone', 'consultation_fee', 'bio', 'available_days', 'available_from', 'available_to', 'appointment_duration', 'status']));
-        $doctor->user->update($request->only(['name', 'phone']));
+        $doctor->user?->update($request->only(['name', 'phone']));
 
         return redirect()->route('doctors.show', $doctor)->with('success', 'Doctor updated.');
     }
@@ -126,7 +126,9 @@ class DoctorController extends Controller
     public function destroy(Doctor $doctor): RedirectResponse
     {
         $this->authorize('delete doctors');
-        $doctor->user->delete();
+        $doctor->loadMissing('user');
+        $doctor->user?->delete();
+        $doctor->delete();
 
         return redirect()->route('doctors.index')->with('success', 'Doctor removed.');
     }

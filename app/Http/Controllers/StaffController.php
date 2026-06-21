@@ -16,7 +16,7 @@ class StaffController extends Controller
     public function index(Request $request): View
     {
         $this->authorize('view staff');
-        $staff = Staff::with(['user:id,name,email,user_type', 'department:id,name'])
+        $staff = Staff::with(['user' => fn ($q) => $q->withTrashed()->select('id', 'name', 'email', 'user_type', 'phone', 'employee_id'), 'department:id,name'])
             ->when($request->search, fn ($q) => $q->whereHas('user', fn ($u) => $u->where('name', 'like', "%{$request->search}%")))
             ->when($request->department_id, fn ($q, $id) => $q->where('department_id', $id))
             ->when($request->status, fn ($q, $s) => $q->where('status', $s))
@@ -101,7 +101,7 @@ class StaffController extends Controller
         $request->validate(['designation' => 'required|string', 'status' => 'required|in:active,inactive,on_leave,terminated']);
 
         $staff->update($request->only(['department_id', 'designation', 'cnic', 'phone', 'address', 'emergency_contact', 'basic_salary', 'status']));
-        $staff->user->update($request->only(['name', 'phone']));
+        $staff->user?->update($request->only(['name', 'phone']));
 
         return redirect()->route('staff.show', $staff)->with('success', 'Staff updated.');
     }
@@ -109,7 +109,9 @@ class StaffController extends Controller
     public function destroy(Staff $staff): RedirectResponse
     {
         $this->authorize('delete staff');
-        $staff->user->delete();
+        $staff->loadMissing('user');
+        $staff->user?->delete();
+        $staff->delete();
 
         return redirect()->route('staff.index')->with('success', 'Staff member removed.');
     }

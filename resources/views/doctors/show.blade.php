@@ -30,13 +30,24 @@
                 ['License No.', $doctor->license_number ?? '—'],
                 ['Experience', ($doctor->experience_years ?? '—').' years'],
                 ['Consultation Fee', '₨ '.number_format($doctor->consultation_fee ?? 0, 0)],
-                ['Status', $doctor->is_active ? 'Active' : 'Inactive'],
             ] as [$l,$v])
             <div class="px-5 py-2.5 flex justify-between">
                 <span class="text-sm text-slate-400">{{ $l }}</span>
                 <span class="text-sm font-medium text-slate-700 dark:text-slate-200">{{ $v }}</span>
             </div>
             @endforeach
+            <div class="px-5 py-2.5 flex justify-between items-center">
+                <span class="text-sm text-slate-400">Status</span>
+                @php
+                    $statusMap = [
+                        'active'   => ['label' => 'Active',   'color' => 'green'],
+                        'inactive' => ['label' => 'Inactive', 'color' => 'slate'],
+                        'on_leave' => ['label' => 'On Leave', 'color' => 'amber'],
+                    ];
+                    $s = $statusMap[$doctor->status] ?? ['label' => ucfirst($doctor->status ?? '—'), 'color' => 'slate'];
+                @endphp
+                <x-badge color="{{ $s['color'] }}">{{ $s['label'] }}</x-badge>
+            </div>
         </div>
         <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700">
             <div class="px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Contact & HR</div>

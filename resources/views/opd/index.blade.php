@@ -92,7 +92,7 @@
                     <td class="px-4 py-3 text-xs text-slate-400">{{ $v->visit_date->format('d M Y') }}</td>
                     <td class="px-4 py-3">
                         <div class="flex gap-1">
-                            <a href="{{ route('opd.show',$v) }}" class="p-1.5 rounded text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700" title="View">
+                            <a href="{{ route('opd.show',$v) }}" class="p-1.5 rounded text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-white" title="View">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                             </a>
                             <a href="{{ route('opd.invoice',$v) }}" class="p-1.5 rounded text-slate-400 hover:bg-green-50 dark:hover:bg-green-900/30 hover:text-green-600" title="Invoice">

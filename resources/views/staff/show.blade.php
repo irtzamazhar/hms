@@ -32,13 +32,25 @@
             ['Designation', $staff->designation ?? '—'],
             ['Basic Salary', $staff->basic_salary ? '₨ '.number_format($staff->basic_salary,0) : '—'],
             ['Joining Date', $staff->user->joining_date?->format('d M Y') ?? '—'],
-            ['Status', ($staff->is_active ?? true) ? 'Active' : 'Inactive'],
         ] as [$l,$v])
         <div class="px-5 py-2.5 flex justify-between">
             <span class="text-sm text-slate-400">{{ $l }}</span>
             <span class="text-sm font-medium text-slate-700 dark:text-slate-200">{{ $v }}</span>
         </div>
         @endforeach
+        <div class="px-5 py-2.5 flex justify-between items-center">
+            <span class="text-sm text-slate-400">Status</span>
+            @php
+                $statusMap = [
+                    'active'     => ['label' => 'Active',     'class' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'],
+                    'inactive'   => ['label' => 'Inactive',   'class' => 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'],
+                    'on_leave'   => ['label' => 'On Leave',   'class' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'],
+                    'terminated' => ['label' => 'Terminated', 'class' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'],
+                ];
+                $s = $statusMap[$staff->status] ?? ['label' => ucfirst($staff->status ?? '—'), 'class' => 'bg-slate-100 text-slate-500'];
+            @endphp
+            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full {{ $s['class'] }}">{{ $s['label'] }}</span>
+        </div>
     </div>
 
 </div>

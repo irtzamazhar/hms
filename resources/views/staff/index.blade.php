@@ -28,8 +28,10 @@
         </select>
         <select name="status" class="field">
             <option value="">All Statuses</option>
-            <option value="active" @selected(request('status')==='active')>Active</option>
-            <option value="inactive" @selected(request('status')==='inactive')>Inactive</option>
+            <option value="active"     @selected(request('status')==='active')>Active</option>
+            <option value="inactive"   @selected(request('status')==='inactive')>Inactive</option>
+            <option value="on_leave"   @selected(request('status')==='on_leave')>On Leave</option>
+            <option value="terminated" @selected(request('status')==='terminated')>Terminated</option>
         </select>
         <div class="flex gap-2">
             <button type="submit" class="flex-1 px-3 py-2 bg-primary-600 text-white text-sm rounded-lg">Filter</button>
@@ -55,19 +57,19 @@
             <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
                 <td class="px-4 py-3">
                     <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center font-bold text-slate-600 dark:text-slate-300 flex-shrink-0">{{ strtoupper(substr($s->user->name,0,1)) }}</div>
+                        <div class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center font-bold text-slate-600 dark:text-slate-300 flex-shrink-0">{{ strtoupper(substr($s->user?->name ?? '?', 0, 1)) }}</div>
                         <div>
-                            <p class="font-medium text-slate-700 dark:text-white">{{ $s->user->name }}</p>
-                            <p class="text-xs text-slate-400">{{ $s->staff_id }} · {{ $s->user->employee_id }}</p>
+                            <p class="font-medium text-slate-700 dark:text-white">{{ $s->user?->name ?? '—' }}</p>
+                            <p class="text-xs text-slate-400">{{ $s->staff_id }} · {{ $s->user?->employee_id ?? '—' }}</p>
                         </div>
                     </div>
                 </td>
                 <td class="px-4 py-3">
                     <p class="text-slate-700 dark:text-slate-200">{{ $s->designation }}</p>
-                    <p class="text-xs text-slate-400 capitalize">{{ ucfirst(str_replace('_', ' ', $s->user->user_type)) }}</p>
+                    <p class="text-xs text-slate-400 capitalize">{{ ucfirst(str_replace('_', ' ', $s->user?->user_type ?? '')) }}</p>
                 </td>
                 <td class="px-4 py-3 text-slate-500 dark:text-slate-400">{{ $s->department->name ?? '—' }}</td>
-                <td class="px-4 py-3 text-slate-500 dark:text-slate-400">{{ $s->user->phone ?? $s->phone ?? '—' }}</td>
+                <td class="px-4 py-3 text-slate-500 dark:text-slate-400">{{ $s->user?->phone ?? $s->phone ?? '—' }}</td>
                 <td class="px-4 py-3">
                     @php $statusColors = ['active'=>'green','inactive'=>'slate','on_leave'=>'amber','terminated'=>'red']; @endphp
                     <x-badge color="{{ $statusColors[$s->status] ?? 'slate' }}">{{ ucfirst(str_replace('_',' ',$s->status)) }}</x-badge>
@@ -86,7 +88,7 @@
                         @endcan
                         @can('delete staff')
                         <form method="POST" action="{{ route('staff.destroy',$s) }}"
-                              onsubmit="return confirm('Remove {{ addslashes($s->user->name) }}? This cannot be undone.')">
+                              onsubmit="return confirm('Remove {{ addslashes($s->user?->name ?? 'this staff member') }}? This cannot be undone.')">
                             @csrf @method('DELETE')
                             <button type="submit" title="Delete"
                                     class="p-1.5 rounded text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400">
