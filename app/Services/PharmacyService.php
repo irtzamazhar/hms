@@ -42,14 +42,23 @@ class PharmacyService
                 ]);
             }
 
-            $discountAmt  = $subtotal * (($data['discount_percentage'] ?? 0) / 100);
+            $discountAmt  = $data['discount_amount'] ?? ($subtotal * (($data['discount_percentage'] ?? 0) / 100));
             $totalAmount  = $subtotal - $discountAmt + ($data['tax_amount'] ?? 0);
+            $paidAmount   = $data['paid_amount'] ?? $totalAmount;
+
+            $hour  = now()->hour;
+            $shift = $hour >= 8 && $hour < 14 ? 'morning' : ($hour >= 14 && $hour < 20 ? 'evening' : 'night');
 
             $sale = Sale::create(array_merge($data, [
-                'subtotal'       => $subtotal,
+                'subtotal'        => $subtotal,
                 'discount_amount' => $discountAmt,
-                'total_amount'   => $totalAmount,
-                'change_amount'  => max(0, ($data['paid_amount'] ?? $totalAmount) - $totalAmount),
+                'total_amount'    => $totalAmount,
+                'paid_amount'     => $paidAmount,
+                'change_amount'   => max(0, $paidAmount - $totalAmount),
+                'sale_date'       => $data['sale_date'] ?? today(),
+                'shift'           => $data['shift'] ?? $shift,
+                'payment_status'  => 'paid',
+                'status'          => 'completed',
             ]));
 
             foreach ($processedItems as $item) {

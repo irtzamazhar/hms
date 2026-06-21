@@ -27,7 +27,7 @@
                         <p class="text-sm font-medium text-slate-700 dark:text-white truncate" x-text="med.name"></p>
                         <p class="text-xs text-slate-400" x-text="med.generic_name || ''"></p>
                         <div class="flex justify-between items-center mt-1">
-                            <span class="text-sm font-bold text-primary-600" x-text="'₨ ' + med.selling_price"></span>
+                            <span class="text-sm font-bold text-primary-600" x-text="'₨ ' + med.sale_price"></span>
                             <span class="text-xs" :class="med.stock_quantity > 10 ? 'text-green-500' : 'text-amber-500'"
                                   x-text="'Stock: ' + med.stock_quantity"></span>
                         </div>
@@ -44,12 +44,12 @@
             <div class="grid grid-cols-2 md:grid-cols-3 gap-0 divide-x divide-y divide-slate-100 dark:divide-slate-700">
                 @foreach($medicines as $med)
                 <button type="button"
-                        onclick="Alpine.store('pos') || document.querySelector('[x-data]').__x.$data.addToCart({id:{{ $med->id }},name:'{{ addslashes($med->name) }}',generic_name:'{{ addslashes($med->generic_name ?? '') }}',selling_price:{{ $med->selling_price }},stock_quantity:{{ $med->stock_quantity }}})"
+                        x-on:click="addToCart({id:{{ $med->id }},name:{{ json_encode($med->name) }},generic_name:{{ json_encode($med->generic_name ?? '') }},sale_price:{{ $med->sale_price }},stock_quantity:{{ $med->stock_quantity }}})"
                         class="p-3 text-left hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors {{ $med->stock_quantity <= 0 ? 'opacity-50 cursor-not-allowed' : '' }}">
                     <p class="text-sm font-medium text-slate-700 dark:text-white truncate">{{ $med->name }}</p>
                     <p class="text-xs text-slate-400">{{ $med->generic_name }}</p>
                     <div class="flex justify-between items-center mt-1">
-                        <span class="text-sm font-bold text-primary-600">₨ {{ number_format($med->selling_price,0) }}</span>
+                        <span class="text-sm font-bold text-primary-600">₨ {{ number_format($med->sale_price,0) }}</span>
                         <span class="text-xs {{ $med->stock_quantity > 10 ? 'text-green-500' : 'text-amber-500' }}">Stock: {{ $med->stock_quantity }}</span>
                     </div>
                 </button>
@@ -167,7 +167,7 @@ function pos() {
             if (med.stock_quantity <= 0) return;
             const existing = this.cart.find(i => i.id === med.id);
             if (existing) { if (existing.qty < med.stock_quantity) existing.qty++; }
-            else this.cart.push({id: med.id, name: med.name, price: med.selling_price, qty: 1, stock: med.stock_quantity});
+            else this.cart.push({id: med.id, name: med.name, price: med.sale_price, qty: 1, stock: med.stock_quantity});
         },
         subtotal() {
             return this.cart.reduce((s, i) => s + i.price * i.qty, 0);

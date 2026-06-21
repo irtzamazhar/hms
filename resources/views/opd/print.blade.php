@@ -114,14 +114,15 @@
         </div>
     </div>
 
-    @if($visit->prescription && $visit->prescription->items->count())
+    @php $prescription = $visit->prescriptions->first(); @endphp
+    @if($prescription && $prescription->items->count())
     <div class="rx-section">
         <div class="rx-title">Prescription (Rx)</div>
-        @foreach($visit->prescription->items as $item)
+        @foreach($prescription->items as $item)
         <div class="rx-item">• {{ $item->medicine_name }} — {{ $item->dosage }}, {{ $item->frequency }}, {{ $item->duration }}</div>
         @endforeach
-        @if($visit->prescription->notes)
-        <div class="rx-item" style="margin-top:6px;"><em>Notes: {{ $visit->prescription->notes }}</em></div>
+        @if($prescription->notes)
+        <div class="rx-item" style="margin-top:6px;"><em>Notes: {{ $prescription->notes }}</em></div>
         @endif
     </div>
     @endif

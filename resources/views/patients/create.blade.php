@@ -40,19 +40,7 @@
 
                     <x-form.input name="dob" type="date" label="Date of Birth" :value="old('dob')" />
 
-                    <div class="flex gap-3">
-                        <div class="flex-1">
-                            <x-form.input name="age" type="number" label="Age" :value="old('age')" min="0" max="150" />
-                        </div>
-                        <div class="w-28">
-                            <label class="field-label">Unit</label>
-                            <select name="age_unit" class="field">
-                                <option value="years">Years</option>
-                                <option value="months">Months</option>
-                                <option value="days">Days</option>
-                            </select>
-                        </div>
-                    </div>
+                    <x-form.input name="age" type="number" label="Age (years)" :value="old('age')" min="0" max="150" />
 
                     <div>
                         <label class="field-label">Blood Group</label>

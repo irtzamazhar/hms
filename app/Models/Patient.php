@@ -16,7 +16,7 @@ class Patient extends Model implements Auditable
 
     protected $fillable = [
         'mr_number', 'name', 'cnic', 'phone', 'email', 'gender', 'dob',
-        'age', 'age_unit', 'blood_group', 'address', 'city',
+        'age', 'blood_group', 'address', 'city',
         'emergency_contact_name', 'emergency_contact_phone', 'emergency_contact_relation',
         'allergies', 'medical_history', 'referred_by', 'registered_by', 'status',
     ];
@@ -70,7 +70,7 @@ class Patient extends Model implements Auditable
 
     public function getAgeDisplayAttribute(): string
     {
-        return $this->age . ' ' . $this->age_unit;
+        return $this->age ? (string) $this->age : '';
     }
 
     public static function generateMrNumber(): string

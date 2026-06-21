@@ -60,7 +60,7 @@
             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                 @forelse($admissions as $a)
                 @php
-                    $days = $a->admission_date->diffInDays($a->discharge_date ?? now());
+                    $days = $a->admission_datetime->diffInDays($a->discharge_datetime ?? now());
                 @endphp
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
                     <td class="px-4 py-3 font-mono text-xs text-primary-600 dark:text-primary-400 font-medium">{{ $a->admission_number }}</td>
@@ -73,7 +73,7 @@
                         <p class="text-slate-700 dark:text-slate-200">{{ $a->ward->name ?? '—' }}</p>
                         <p class="text-xs text-slate-400">Bed {{ $a->bed->bed_number ?? '—' }}</p>
                     </td>
-                    <td class="px-4 py-3 text-xs text-slate-400">{{ $a->admission_date->format('d M Y') }}</td>
+                    <td class="px-4 py-3 text-xs text-slate-400">{{ $a->admission_datetime->format('d M Y') }}</td>
                     <td class="px-4 py-3 text-slate-600 dark:text-slate-300">{{ $days }}d</td>
                     <td class="px-4 py-3">
                         <x-badge color="{{ ['admitted'=>'blue','discharged'=>'green','transferred'=>'amber','absconded'=>'red'][$a->status] ?? 'slate' }}">

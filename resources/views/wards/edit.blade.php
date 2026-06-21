@@ -16,7 +16,7 @@
         <div>
             <label class="field-label">Ward Type</label>
             <select name="ward_type" class="field">
-                @foreach(['general'=>'General','private'=>'Private','icu'=>'ICU','nicu'=>'NICU','emergency'=>'Emergency','maternity'=>'Maternity'] as $v=>$l)
+                @foreach(['general'=>'General','private'=>'Private','icu'=>'ICU','nicu'=>'NICU','emergency'=>'Emergency','maternity'=>'Maternity','surgical'=>'Surgical','pediatric'=>'Pediatric'] as $v=>$l)
                     <option value="{{ $v }}" @selected(old('ward_type',$ward->ward_type)===$v)>{{ $l }}</option>
                 @endforeach
             </select>

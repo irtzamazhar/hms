@@ -189,7 +189,6 @@ class DemoDataSeeder extends Seeder
                 'phone'                     => '03' . rand(10, 49) . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT),
                 'gender'                    => $gender,
                 'age'                       => rand(5, 75),
-                'age_unit'                  => 'years',
                 'blood_group'               => collect(['A+','A-','B+','B-','O+','O-','AB+','AB-'])->random(),
                 'address'                   => rand(1, 99) . ' Block ' . chr(rand(65, 72)) . ', Lahore',
                 'city'                      => collect(['Lahore','Karachi','Islamabad','Faisalabad','Rawalpindi'])->random(),

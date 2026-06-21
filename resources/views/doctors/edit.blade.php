@@ -55,6 +55,45 @@
     </div>
 </div>
 
+<div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
+    <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-4">Availability Schedule</h2>
+
+    <div class="mb-4">
+        <label class="field-label mb-2">Available Days</label>
+        <div class="flex flex-wrap gap-3">
+            @foreach(['monday'=>'Mon','tuesday'=>'Tue','wednesday'=>'Wed','thursday'=>'Thu','friday'=>'Fri','saturday'=>'Sat','sunday'=>'Sun'] as $val=>$label)
+            <label class="flex items-center gap-1.5 cursor-pointer select-none">
+                <input type="checkbox" name="available_days[]" value="{{ $val }}"
+                       class="w-4 h-4 rounded text-primary-600"
+                       @checked(in_array($val, old('available_days', $doctor->available_days ?? [])))>
+                <span class="text-sm text-slate-600 dark:text-slate-300">{{ $label }}</span>
+            </label>
+            @endforeach
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+            <label class="field-label">Available From</label>
+            <input type="time" name="available_from" class="field"
+                   value="{{ old('available_from', $doctor->available_from ? \Carbon\Carbon::parse($doctor->available_from)->format('H:i') : '09:00') }}">
+        </div>
+        <div>
+            <label class="field-label">Available To</label>
+            <input type="time" name="available_to" class="field"
+                   value="{{ old('available_to', $doctor->available_to ? \Carbon\Carbon::parse($doctor->available_to)->format('H:i') : '17:00') }}">
+        </div>
+        <div>
+            <label class="field-label">Slot Duration (minutes)</label>
+            <select name="appointment_duration" class="field">
+                @foreach([10,15,20,30,45,60] as $min)
+                <option value="{{ $min }}" @selected(old('appointment_duration', $doctor->appointment_duration ?? 30) == $min)>{{ $min }} min</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+</div>
+
 <div class="flex gap-3">
     <button type="submit" class="px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg">Update Doctor</button>
     <a href="{{ route('doctors.show',$doctor) }}" class="btn-cancel">Cancel</a>

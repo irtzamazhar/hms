@@ -42,9 +42,9 @@
                 ['Type', ucfirst($admission->admission_type)],
                 ['Ward', $admission->ward->name ?? '—'],
                 ['Bed', $admission->bed->bed_number ?? '—'],
-                ['Admitted', $admission->admission_date->format('d M Y H:i')],
-                ['Discharged', $admission->discharge_date?->format('d M Y H:i') ?? '—'],
-                ['Days', $admission->admission_date->diffInDays($admission->discharge_date ?? now()).' day(s)'],
+                ['Admitted', $admission->admission_datetime->format('d M Y H:i')],
+                ['Discharged', $admission->discharge_datetime?->format('d M Y H:i') ?? '—'],
+                ['Days', $admission->admission_datetime->diffInDays($admission->discharge_datetime ?? now()).' day(s)'],
             ] as [$l,$v])
             <div class="px-5 py-2.5 flex justify-between">
                 <span class="text-sm text-slate-400">{{ $l }}</span>

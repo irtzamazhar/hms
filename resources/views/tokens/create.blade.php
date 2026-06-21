@@ -8,7 +8,8 @@
 
 @section('content')
 <div class="max-w-xl mx-auto">
-    <div class="bg-white dark:bg-dark-800 rounded-2xl border border-slate-200 dark:border-dark-700 overflow-hidden shadow-sm">
+    <div class="bg-white dark:bg-dark-800 rounded-2xl border border-slate-200 dark:border-dark-700 overflow-hidden shadow-sm"
+         x-data="{ newPatient: {{ $errors->has('new_name') || $errors->has('new_age') || $errors->has('new_phone') ? 'true' : 'false' }} }">
 
         {{-- Card header --}}
         <div class="px-6 py-5 border-b border-slate-100 dark:border-dark-700 flex items-center justify-between bg-slate-50 dark:bg-dark-900/40">
@@ -27,18 +28,70 @@
         <form method="POST" action="{{ route('tokens.store') }}" class="p-6 space-y-5">
             @csrf
 
-            {{-- Patient --}}
+            {{-- Patient toggle --}}
             <div>
-                <label for="patient_id" class="field-label">Patient <span class="text-red-500">*</span></label>
-                <select name="patient_id" id="patient_id" required class="field">
-                    <option value="">Search patient…</option>
-                    @foreach($patients as $p)
-                        <option value="{{ $p->id }}" @selected(old('patient_id') == $p->id)>
-                            {{ $p->name }} ({{ $p->mr_number }})
-                        </option>
-                    @endforeach
-                </select>
-                @error('patient_id')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="field-label mb-0">Patient <span class="text-red-500">*</span></label>
+                    <button type="button"
+                            @click="newPatient = !newPatient"
+                            class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+                        <template x-if="!newPatient">
+                            <span>+ New Patient</span>
+                        </template>
+                        <template x-if="newPatient">
+                            <span>← Existing Patient</span>
+                        </template>
+                    </button>
+                </div>
+
+                {{-- Existing patient select --}}
+                <div x-show="!newPatient">
+                    <select name="patient_id" id="patient_id" class="field">
+                        <option value="">Search patient…</option>
+                        @foreach($patients as $p)
+                            <option value="{{ $p->id }}" @selected(old('patient_id') == $p->id)>
+                                {{ $p->name }} — {{ $p->mr_number }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('patient_id')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+                </div>
+
+                {{-- Quick new patient fields --}}
+                <div x-show="newPatient" class="rounded-xl border border-blue-100 dark:border-blue-900/40 bg-blue-50/50 dark:bg-blue-950/20 p-4 space-y-3">
+                    <p class="text-xs font-semibold text-blue-700 dark:text-blue-400 uppercase tracking-wide">First Visit — Quick Register</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="col-span-2">
+                            <label class="field-label">Full Name <span class="text-red-500">*</span></label>
+                            <input type="text" name="new_name" value="{{ old('new_name') }}"
+                                   placeholder="Patient's full name"
+                                   class="field" />
+                            @error('new_name')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label class="field-label">Age <span class="text-red-500">*</span></label>
+                            <input type="number" name="new_age" value="{{ old('new_age') }}"
+                                   placeholder="e.g. 35" min="0" max="150"
+                                   class="field" />
+                            @error('new_age')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label class="field-label">Gender</label>
+                            <select name="new_gender" class="field">
+                                <option value="male"   @selected(old('new_gender','male') === 'male')>Male</option>
+                                <option value="female" @selected(old('new_gender') === 'female')>Female</option>
+                                <option value="other"  @selected(old('new_gender') === 'other')>Other</option>
+                            </select>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="field-label">Mobile Number <span class="text-red-500">*</span></label>
+                            <input type="text" name="new_phone" value="{{ old('new_phone') }}"
+                                   placeholder="e.g. 03001234567"
+                                   class="field" />
+                            @error('new_phone')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {{-- Shift --}}
@@ -95,10 +148,7 @@
                         class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm">
                     Generate Token #{{ $nextToken }}
                 </button>
-                <a href="{{ route('tokens.index') }}"
-                   class="btn-cancel">
-                    Cancel
-                </a>
+                <a href="{{ route('tokens.index') }}" class="btn-cancel">Cancel</a>
             </div>
         </form>
     </div>

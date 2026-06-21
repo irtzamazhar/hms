@@ -117,7 +117,7 @@ class DoctorController extends Controller
             'status'           => 'required|in:active,inactive,on_leave',
         ]);
 
-        $doctor->update($request->only(['qualification', 'specialization', 'department_id', 'cnic', 'phone', 'consultation_fee', 'bio', 'available_days', 'available_from', 'available_to', 'status']));
+        $doctor->update($request->only(['qualification', 'specialization', 'department_id', 'cnic', 'phone', 'consultation_fee', 'bio', 'available_days', 'available_from', 'available_to', 'appointment_duration', 'status']));
         $doctor->user->update($request->only(['name', 'phone']));
 
         return redirect()->route('doctors.show', $doctor)->with('success', 'Doctor updated.');

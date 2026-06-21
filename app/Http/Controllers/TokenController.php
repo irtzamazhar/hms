@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\Doctor;
 use App\Models\Patient;
+use App\Models\Shift;
 use App\Models\Token;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -41,6 +42,26 @@ class TokenController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $this->authorize('create tokens');
+
+        // Quick-register a new patient if name is provided instead of an existing patient_id
+        if ($request->filled('new_name')) {
+            $request->validate([
+                'new_name'  => 'required|string|max:100',
+                'new_age'   => 'required|integer|min:0|max:150',
+                'new_phone' => 'required|string|max:20',
+            ]);
+
+            $patient = Patient::create([
+                'mr_number' => Patient::generateMrNumber(),
+                'name'      => $request->new_name,
+                'age'       => $request->new_age,
+                'phone'     => $request->new_phone,
+                'gender'    => $request->new_gender ?? 'male',
+            ]);
+
+            $request->merge(['patient_id' => $patient->id]);
+        }
+
         $data = $request->validate([
             'patient_id'    => 'required|exists:patients,id',
             'doctor_id'     => 'nullable|exists:doctors,id',
@@ -56,7 +77,11 @@ class TokenController extends Controller
 
         $token = Token::create($data);
 
-        return redirect()->route('tokens.index')->with('success', "Token #{$token->token_number} generated.");
+        $msg = isset($patient)
+            ? "Patient {$patient->name} registered (MR: {$patient->mr_number}) — Token #{$token->token_number} generated."
+            : "Token #{$token->token_number} generated.";
+
+        return redirect()->route('tokens.index')->with('success', $msg);
     }
 
     public function show(Token $token): View
@@ -92,6 +117,25 @@ class TokenController extends Controller
 
     private function currentShift(): string
     {
+        $now = now()->format('H:i:s');
+
+        $activeShifts = Shift::where('status', 'active')
+            ->whereIn('type', ['morning', 'evening', 'night'])
+            ->get(['type', 'start_time', 'end_time']);
+
+        foreach ($activeShifts as $shift) {
+            $s = $shift->start_time;
+            $e = $shift->end_time;
+
+            // Overnight shifts (e.g. 20:00 – 08:00) wrap past midnight
+            $matched = $s <= $e
+                ? ($now >= $s && $now < $e)
+                : ($now >= $s || $now < $e);
+
+            if ($matched) return $shift->type;
+        }
+
+        // Fallback when no shifts are configured in the DB
         $hour = now()->hour;
         if ($hour >= 8 && $hour < 14)  return 'morning';
         if ($hour >= 14 && $hour < 20) return 'evening';

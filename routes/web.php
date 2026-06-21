@@ -42,6 +42,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tokens/{token}/print', [TokenController::class, 'print'])->name('tokens.print');
 
     // ── Appointments ──────────────────────────────────────
+    Route::get('/appointments/slots', [AppointmentController::class, 'slots'])->name('appointments.slots');
+    Route::get('/appointments/doctor-info/{doctor}', [AppointmentController::class, 'doctorInfo'])->name('appointments.doctor-info');
     Route::resource('appointments', AppointmentController::class);
     Route::patch('/appointments/{appointment}/status', [AppointmentController::class, 'updateStatus'])->name('appointments.status');
 

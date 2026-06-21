@@ -18,7 +18,6 @@ class PatientResource extends JsonResource
             'gender'                  => $this->gender,
             'dob'                     => $this->dob?->toDateString(),
             'age'                     => $this->age,
-            'age_unit'                => $this->age_unit,
             'blood_group'             => $this->blood_group,
             'address'                 => $this->address,
             'city'                    => $this->city,

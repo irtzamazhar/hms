@@ -21,7 +21,7 @@
     {{-- Hospital Info --}}
     <div x-show="tab==='hospital'">
         <form method="POST" action="{{ route('settings.hospital') }}" enctype="multipart/form-data">
-            @csrf @method('PUT')
+            @csrf @method('PATCH')
             <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 space-y-4">
                 <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide">Hospital Information</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -50,7 +50,7 @@
     {{-- System Settings --}}
     <div x-show="tab==='system'">
         <form method="POST" action="{{ route('settings.system') }}">
-            @csrf @method('PUT')
+            @csrf @method('PATCH')
             <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 space-y-4">
                 <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide">System Settings</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -70,12 +70,9 @@
                             @endforeach
                         </select>
                     </div>
-                    <x-form.input name="morning_shift_start" label="Morning Shift Start" type="time" :value="old('morning_shift_start',$setting->morning_shift_start ?? '08:00')" />
-                    <x-form.input name="morning_shift_end" label="Morning Shift End" type="time" :value="old('morning_shift_end',$setting->morning_shift_end ?? '14:00')" />
-                    <x-form.input name="evening_shift_start" label="Evening Shift Start" type="time" :value="old('evening_shift_start',$setting->evening_shift_start ?? '14:00')" />
-                    <x-form.input name="evening_shift_end" label="Evening Shift End" type="time" :value="old('evening_shift_end',$setting->evening_shift_end ?? '20:00')" />
-                    <x-form.input name="night_shift_start" label="Night Shift Start" type="time" :value="old('night_shift_start',$setting->night_shift_start ?? '20:00')" />
-                    <x-form.input name="night_shift_end" label="Night Shift End" type="time" :value="old('night_shift_end',$setting->night_shift_end ?? '08:00')" />
+                    <div class="md:col-span-2 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-sm text-blue-700 dark:text-blue-300">
+                        Shift timings are managed on the <a href="{{ route('shifts.index') }}" class="font-semibold underline">Shifts page</a>.
+                    </div>
                 </div>
                 <div class="space-y-3 pt-2 border-t border-slate-200 dark:border-slate-700">
                     @foreach([

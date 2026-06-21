@@ -17,7 +17,6 @@ class PatientFactory extends Factory
             'email'         => fake()->optional()->safeEmail(),
             'gender'        => fake()->randomElement(['male', 'female']),
             'age'           => fake()->numberBetween(1, 90),
-            'age_unit'      => 'years',
             'blood_group'   => fake()->randomElement(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-', 'unknown']),
             'address'       => fake()->address(),
             'city'          => fake()->city(),

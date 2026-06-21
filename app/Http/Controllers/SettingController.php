@@ -43,14 +43,8 @@ class SettingController extends Controller
     public function updateSystem(Request $request): RedirectResponse
     {
         $this->authorize('manage settings');
-        HospitalSetting::current()->update($request->only([
-            'timezone', 'date_format', 'time_format',
-            'morning_shift_start', 'morning_shift_end',
-            'evening_shift_start', 'evening_shift_end',
-            'night_shift_start', 'night_shift_end',
-            'tax_label', 'tax_rate',
-            'low_stock_alert', 'low_stock_threshold',
-        ]));
+        $data = $request->only(['timezone', 'date_format', 'time_format', 'tax_label', 'tax_rate', 'low_stock_alert', 'low_stock_threshold']);
+        HospitalSetting::current()->update($data);
 
         return back()->with('success', 'System settings updated.');
     }

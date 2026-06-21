@@ -49,7 +49,6 @@ class PatientWebTest extends TestCase
             'phone'  => '03001234567',
             'gender' => 'female',
             'age'    => 28,
-            'age_unit' => 'years',
         ]);
 
         $response->assertRedirect();

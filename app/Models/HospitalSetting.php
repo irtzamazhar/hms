@@ -9,8 +9,7 @@ class HospitalSetting extends Model
     protected $fillable = [
         'hospital_name', 'logo', 'email', 'phone', 'address', 'city', 'state',
         'country', 'postal_code', 'currency', 'currency_symbol', 'timezone',
-        'date_format', 'time_format', 'morning_shift_start', 'morning_shift_end',
-        'evening_shift_start', 'evening_shift_end', 'night_shift_start', 'night_shift_end',
+        'date_format', 'time_format',
         'tax_label', 'tax_rate', 'low_stock_alert', 'low_stock_threshold',
     ];
 

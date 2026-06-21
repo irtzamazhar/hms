@@ -43,18 +43,18 @@ class IpdController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $this->authorize('create ipd');
-        $request->validate([
-            'patient_id'   => 'required|exists:patients,id',
-            'doctor_id'    => 'required|exists:doctors,id',
-            'ward_id'      => 'required|exists:wards,id',
-            'bed_id'       => 'required|exists:beds,id',
-            'admission_datetime' => 'required|date',
+        $validated = $request->validate([
+            'patient_id'          => 'required|exists:patients,id',
+            'doctor_id'           => 'required|exists:doctors,id',
+            'ward_id'             => 'required|exists:wards,id',
+            'bed_id'              => 'required|exists:beds,id',
+            'admission_datetime'  => 'required|date',
             'admission_diagnosis' => 'nullable|string',
-            'admission_type' => 'required|in:emergency,elective,transfer',
-            'daily_bed_charge' => 'nullable|numeric|min:0',
+            'admission_type'      => 'required|in:emergency,elective,transfer',
+            'daily_bed_charge'    => 'nullable|numeric|min:0',
         ]);
 
-        $admission = $this->service->admit($request->validated());
+        $admission = $this->service->admit($validated);
         $admission->load(['patient', 'doctor.user', 'ward', 'bed']);
         auth()->user()->notify(new IpdAdmissionCreated($admission));
 
@@ -64,20 +64,22 @@ class IpdController extends Controller
     public function show(IpdAdmission $ipd): View
     {
         $this->authorize('view ipd');
-        $ipd->load(['patient', 'doctor.user', 'ward', 'room', 'bed', 'treatments.doctor.user', 'admittedBy']);
-        $charges = $this->service->calculateCharges($ipd);
+        $admission = $ipd;
+        $admission->load(['patient', 'doctor.user', 'ward', 'room', 'bed', 'treatments.doctor.user', 'admittedBy']);
+        $charges = $this->service->calculateCharges($admission);
 
-        return view('ipd.show', compact('ipd', 'charges'));
+        return view('ipd.show', compact('admission', 'charges'));
     }
 
     public function edit(IpdAdmission $ipd): View
     {
         $this->authorize('edit ipd');
+        $admission   = $ipd;
         $doctors     = Doctor::active()->with('user:id,name')->get();
         $departments = Department::active()->get();
         $wards       = Ward::active()->get();
 
-        return view('ipd.edit', compact('ipd', 'doctors', 'departments', 'wards'));
+        return view('ipd.edit', compact('admission', 'doctors', 'departments', 'wards'));
     }
 
     public function update(Request $request, IpdAdmission $ipd): RedirectResponse
@@ -104,30 +106,31 @@ class IpdController extends Controller
     public function discharge(Request $request, IpdAdmission $ipdAdmission): RedirectResponse
     {
         $this->authorize('discharge patients');
-        $request->validate([
+        $validated = $request->validate([
             'discharge_datetime'  => 'required|date',
             'discharge_diagnosis' => 'nullable|string',
             'treatment_summary'   => 'nullable|string',
         ]);
 
-        $this->service->discharge($ipdAdmission, $request->validated());
+        $this->service->discharge($ipdAdmission, $validated);
 
         return redirect()->route('ipd.show', $ipdAdmission)->with('success', 'Patient discharged successfully.');
     }
 
     public function addTreatment(Request $request, IpdAdmission $ipdAdmission): RedirectResponse
     {
-        $request->validate(['treatment_notes' => 'required|string']);
-        $this->service->addTreatment($ipdAdmission, $request->validated());
+        $validated = $request->validate(['treatment_notes' => 'required|string']);
+        $this->service->addTreatment($ipdAdmission, $validated);
 
         return back()->with('success', 'Treatment note added.');
     }
 
     public function invoice(IpdAdmission $ipdAdmission): View
     {
-        $ipdAdmission->load(['patient', 'doctor.user', 'ward', 'bed']);
-        $charges = $this->service->calculateCharges($ipdAdmission);
+        $admission = $ipdAdmission;
+        $admission->load(['patient', 'doctor.user', 'ward', 'bed']);
+        $charges = $this->service->calculateCharges($admission);
 
-        return view('ipd.invoice', compact('ipdAdmission', 'charges'));
+        return view('ipd.invoice', compact('admission', 'charges'));
     }
 }

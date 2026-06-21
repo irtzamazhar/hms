@@ -21,7 +21,6 @@ class PatientRequest extends FormRequest
             'gender'                     => 'required|in:male,female,other',
             'dob'                        => 'nullable|date|before:today',
             'age'                        => 'nullable|integer|min:0|max:150',
-            'age_unit'                   => 'nullable|in:years,months,days',
             'blood_group'                => 'nullable|in:A+,A-,B+,B-,AB+,AB-,O+,O-,unknown',
             'address'                    => 'nullable|string',
             'city'                       => 'nullable|string|max:100',

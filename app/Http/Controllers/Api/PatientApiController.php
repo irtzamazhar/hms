@@ -46,7 +46,6 @@ class PatientApiController extends Controller
             'gender'                     => 'required|in:male,female,other',
             'dob'                        => 'nullable|date',
             'age'                        => 'nullable|integer|min:0',
-            'age_unit'                   => 'nullable|in:years,months,days',
             'blood_group'                => 'nullable|string|max:10',
             'address'                    => 'nullable|string',
             'city'                       => 'nullable|string|max:100',

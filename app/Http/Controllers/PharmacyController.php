@@ -38,7 +38,7 @@ class PharmacyController extends Controller
 
         $sale = $this->service->processSale($request->all());
 
-        return redirect()->route('pharmacy.sale.show', $sale)->with('success', "Sale {$sale->sale_number} created.");
+        return redirect()->route('pharmacy.sale.show', $sale)->with('success', "Sale {$sale->invoice_number} created.");
     }
 
     public function sales(Request $request): View
@@ -64,7 +64,7 @@ class PharmacyController extends Controller
             ->where(fn ($q) => $q->where('name', 'like', '%'.$request->q.'%')
                 ->orWhere('generic_name', 'like', '%'.$request->q.'%')
                 ->orWhere('barcode', $request->q))
-            ->select('id', 'name', 'generic_name', 'selling_price', 'stock_quantity')
+            ->select('id', 'name', 'generic_name', 'sale_price', 'stock_quantity')
             ->limit(12)
             ->get();
 

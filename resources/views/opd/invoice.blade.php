@@ -88,10 +88,11 @@
         </div>
 
         {{-- Prescription summary --}}
-        @if($visit->prescription && $visit->prescription->items->count())
+        @php $prescription = $visit->prescriptions->first(); @endphp
+        @if($prescription && $prescription->items->count())
         <div class="mt-6 border-t border-slate-200 dark:border-slate-700 pt-4">
             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Prescription</p>
-            @foreach($visit->prescription->items as $item)
+            @foreach($prescription->items as $item)
             <p class="text-sm text-slate-600 dark:text-slate-300">• {{ $item->medicine_name }} — {{ $item->dosage }}, {{ $item->frequency }}, {{ $item->duration }}</p>
             @endforeach
         </div>

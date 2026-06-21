@@ -43,6 +43,8 @@
     </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.default.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 
     <style>
         [x-cloak] { display: none !important; }
@@ -190,6 +192,146 @@
         /* Number ticker animation */
         @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         .fade-up { animation: fadeUp 0.3s ease forwards; }
+
+        /* ── Tom Select — mirrors .field exactly ─────────────── */
+        /* Tom Select copies the <select>'s classes (incl. "field") to .ts-wrapper,
+           which would apply .field border/padding/bg a second time around the
+           inner .ts-control — doubling the height. Reset them here. */
+        .ts-wrapper, .ts-wrapper.field {
+            width: 100%;
+            border: none !important;
+            padding: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            outline: none !important;
+            line-height: normal;
+        }
+
+        /* Control box: same border/bg/padding/radius/font as .field */
+        .ts-wrapper .ts-control {
+            border: 1.5px solid #cbd5e1 !important;   /* = .field */
+            border-radius: 0.625rem !important;        /* = .field */
+            background: #ffffff !important;            /* = .field */
+            padding: 0.5rem 2.25rem 0.5rem 0.75rem !important; /* = .field 0.5rem 0.75rem + right room for arrow */
+            font-size: 0.875rem;                       /* = .field */
+            line-height: 1.5;                          /* = .field */
+            color: #1e293b;                            /* = .field */
+            min-height: unset !important;              /* override Tom Select's built-in min-height */
+            box-sizing: border-box !important;
+            box-shadow: none !important;
+            cursor: pointer;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            display: flex;
+            align-items: center;
+        }
+        .ts-wrapper.focus .ts-control {
+            border-color: #3b82f6 !important;                    /* = .field:focus */
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.15) !important; /* = .field:focus */
+        }
+
+        /* Search input inside the control */
+        .ts-control > input {
+            font-size: 0.875rem !important;
+            color: #1e293b !important;
+            background: transparent !important;
+            line-height: 1.5;
+            padding: 0 !important;
+            margin: 0 !important;
+            flex: 1 1 auto;
+            min-width: 2rem;
+        }
+        .ts-control > input::placeholder { color: #94a3b8 !important; } /* = .field::placeholder */
+
+        /* Selected value text */
+        .ts-control .item {
+            font-size: 0.875rem;
+            color: #1e293b;
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        /* Tom Select's own placeholder element */
+        .ts-control .ts-placeholder { color: #94a3b8 !important; font-size: 0.875rem; }
+
+        /* Caret arrow */
+        .ts-wrapper.single .ts-control:after {
+            border-color: #94a3b8 transparent transparent;
+            border-width: 5px 4px 0;
+            right: 0.75rem;
+            margin-top: -3px;
+        }
+        .ts-wrapper.single.dropdown-active .ts-control:after {
+            border-color: transparent transparent #94a3b8;
+            border-width: 0 4px 5px;
+            margin-top: -8px;
+        }
+
+        /* Dropdown panel */
+        .ts-dropdown {
+            border: 1.5px solid #cbd5e1 !important;
+            border-top: none !important;
+            border-radius: 0 0 0.625rem 0.625rem !important;
+            background: #ffffff !important;
+            font-size: 0.875rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
+            margin-top: -1px;
+            z-index: 9999;
+        }
+        .ts-dropdown .ts-dropdown-content { max-height: 260px; }
+        .ts-dropdown .option {
+            color: #1e293b;
+            padding: 0.45rem 0.75rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .ts-dropdown .option.active          { background: #eff6ff !important; color: #1d4ed8 !important; }
+        .ts-dropdown .option.selected        { background: #dbeafe !important; color: #1d4ed8 !important; font-weight: 600; }
+        .ts-dropdown .option.selected.active { background: #bfdbfe !important; color: #1d4ed8 !important; }
+        .ts-dropdown .no-results             { color: #94a3b8; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-style: italic; }
+
+        /* Highlight matched text — bold color, no grey chip */
+        .ts-dropdown .highlight, .ts-dropdown mark {
+            background: transparent !important;
+            color: #2563eb !important;
+            font-weight: 700;
+            padding: 0 !important;
+        }
+
+        /* ══ Dark mode — every value mirrors .dark .field ══ */
+        .dark .ts-wrapper .ts-control {
+            background: #0f172a !important;   /* = .dark .field */
+            border-color: #334155 !important; /* = .dark .field */
+            color: #e2e8f0;                   /* = .dark .field */
+        }
+        .dark .ts-wrapper.focus .ts-control {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2) !important; /* = .dark .field:focus */
+        }
+        .dark .ts-control > input               { color: #e2e8f0 !important; }
+        .dark .ts-control > input::placeholder  { color: #475569 !important; } /* = .dark .field::placeholder */
+        .dark .ts-control .item                 { color: #e2e8f0 !important; }
+        .dark .ts-control .ts-placeholder       { color: #475569 !important; }
+        .dark .ts-wrapper.single .ts-control:after                   { border-color: #64748b transparent transparent; }
+        .dark .ts-wrapper.single.dropdown-active .ts-control:after   { border-color: transparent transparent #64748b; }
+        .dark .ts-dropdown {
+            background: #0f172a !important;   /* = .dark .field */
+            border-color: #334155 !important;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
+        }
+        .dark .ts-dropdown .option                  { color: #e2e8f0; }
+        .dark .ts-dropdown .option.active           { background: rgba(59,130,246,0.15) !important; color: #93c5fd !important; }
+        .dark .ts-dropdown .option.selected         { background: rgba(59,130,246,0.25) !important; color: #60a5fa !important; }
+        .dark .ts-dropdown .option.selected.active  { background: rgba(59,130,246,0.35) !important; color: #93c5fd !important; }
+        .dark .ts-dropdown .no-results              { color: #475569; }
+        .dark .ts-dropdown .highlight, .dark .ts-dropdown mark {
+            background: transparent !important;
+            color: #60a5fa !important;
+            font-weight: 700;
+        }
+        /* ──────────────────────────────────────────────────────── */
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-dark-950 font-sans antialiased transition-colors duration-200">
@@ -533,5 +675,87 @@
 </div>
 
 @stack('scripts')
+
+<script>
+(function () {
+    'use strict';
+
+    function initTomSelect(el) {
+        // Guard: already done, opted out, disabled, or still inside an Alpine template
+        if (el._tomselect || el.hasAttribute('data-no-tomselect') || el.disabled) return;
+        if (el.closest('template')) return;
+
+        // Small static selects (status, type, gender, shift …) keep the native
+        // <select class="field"> look — identical to inputs. Only wrap with Tom
+        // Select when there are enough options to benefit from search.
+        if (el.options.length <= 6) return;
+
+        // ─── Build settings ──────────────────────────────────────────────────
+        // Extract placeholder from first empty <option> so Tom Select renders
+        // it as a CSS placeholder on the input, not as a selectable .item.
+        const firstOpt = el.options[0];
+        const placeholder = (firstOpt && firstOpt.value === '') ? firstOpt.text : null;
+
+        const settings = {
+            create:           false,
+            allowEmptyOption: false,   // empty option stays in DOM for form submit, not in dropdown
+            placeholder:      placeholder || 'Select…',
+            maxOptions:       null,
+            onInitialize() {
+                // Patch el.value setter so Alpine x-model programmatic assignments
+                // (e.g. auto-filling department when a doctor is chosen) reflect
+                // in the Tom Select UI immediately.
+                const proto = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
+                if (!proto) return;
+                Object.defineProperty(el, 'value', {
+                    configurable: true,
+                    enumerable:   true,
+                    get: ()    => proto.get.call(el),
+                    set: (val) => {
+                        proto.set.call(el, val);
+                        const v = String(val ?? '');
+                        if (ts.getValue() !== v) ts.setValue(v, true); // silent → no loop
+                    },
+                });
+            },
+        };
+
+        const ts = new TomSelect(el, settings);
+    }
+
+    function initAll(root) {
+        (root || document).querySelectorAll('select.field').forEach(initTomSelect);
+    }
+
+    // Use alpine:initialized so we run after Alpine has wired up all x-model
+    // bindings — prevents race conditions on pages with Alpine components.
+    document.addEventListener('alpine:initialized', () => {
+        initAll();
+
+        // Watch for elements added after first render (x-for rows, dynamic modals)
+        // The setTimeout(0) lets Alpine finish its own post-add init before we wrap.
+        const observer = new MutationObserver(mutations => {
+            const pending = [];
+            for (const m of mutations) {
+                for (const node of m.addedNodes) {
+                    if (node.nodeType !== 1) continue;
+                    if (node.matches?.('select.field'))           pending.push(node);
+                    node.querySelectorAll?.('select.field').forEach(n => pending.push(n));
+                }
+            }
+            if (pending.length) setTimeout(() => pending.forEach(initTomSelect), 0);
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+    });
+
+    // Fallback: if Alpine isn't present (auth pages, plain forms)
+    document.addEventListener('DOMContentLoaded', () => {
+        if (!window.Alpine) initAll();
+    });
+
+    window.initTomSelect     = initTomSelect;
+    window.initAllTomSelects = initAll;
+})();
+</script>
 </body>
 </html>

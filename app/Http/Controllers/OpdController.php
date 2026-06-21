@@ -48,7 +48,7 @@ class OpdController extends Controller
     {
         $this->authorize('view opd');
         $visit = $opd;
-        $visit->load(['patient', 'doctor.user', 'prescription.items', 'createdBy']);
+        $visit->load(['patient', 'doctor.user', 'prescriptions.items', 'createdBy']);
 
         return view('opd.show', compact('visit'));
     }
@@ -81,7 +81,7 @@ class OpdController extends Controller
     public function invoice(OpdVisit $opdVisit): View
     {
         $visit = $opdVisit;
-        $visit->load(['patient', 'doctor.user', 'prescription.items']);
+        $visit->load(['patient', 'doctor.user', 'prescriptions.items']);
         $setting = \App\Models\HospitalSetting::current();
 
         return view('opd.invoice', compact('visit', 'setting'));
@@ -90,7 +90,7 @@ class OpdController extends Controller
     public function print(OpdVisit $opdVisit)
     {
         $visit = $opdVisit;
-        $visit->load(['patient', 'doctor.user', 'prescription.items']);
+        $visit->load(['patient', 'doctor.user', 'prescriptions.items']);
         $setting = \App\Models\HospitalSetting::current();
         $pdf     = app('dompdf.wrapper')->loadView('opd.print', compact('visit', 'setting'));
 

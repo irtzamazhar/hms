@@ -38,8 +38,8 @@
             <div>
                 <p class="text-xs text-slate-400 uppercase font-semibold tracking-wide mb-2">Admission</p>
                 <p class="text-sm text-slate-700 dark:text-slate-200">Ward: {{ $admission->ward->name ?? '—' }}, Bed: {{ $admission->bed->bed_number ?? '—' }}</p>
-                <p class="text-sm text-slate-500">In: {{ $admission->admission_date->format('d M Y') }}</p>
-                <p class="text-sm text-slate-500">Out: {{ $admission->discharge_date?->format('d M Y') ?? 'Still Admitted' }}</p>
+                <p class="text-sm text-slate-500">In: {{ $admission->admission_datetime->format('d M Y') }}</p>
+                <p class="text-sm text-slate-500">Out: {{ $admission->discharge_datetime?->format('d M Y') ?? 'Still Admitted' }}</p>
                 <p class="text-sm font-semibold text-slate-700 dark:text-white">Dr. {{ $admission->doctor->user->name }}</p>
             </div>
         </div>
@@ -54,7 +54,7 @@
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                 <tr>
-                    <td class="px-4 py-3">Bed Charges ({{ $admission->admission_date->diffInDays($admission->discharge_date ?? now()) }} days × ₨{{ number_format($admission->bed->charges_per_day ?? 0,0) }})</td>
+                    <td class="px-4 py-3">Bed Charges ({{ $admission->admission_datetime->diffInDays($admission->discharge_datetime ?? now()) }} days × ₨{{ number_format($admission->bed->charge_per_day ?? 0,0) }})</td>
                     <td class="px-4 py-3 text-right">₨ {{ number_format($admission->total_bed_charges ?? 0, 2) }}</td>
                 </tr>
                 @if(($admission->total_treatment_charges ?? 0) > 0)

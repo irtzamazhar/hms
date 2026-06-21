@@ -91,7 +91,7 @@
                         </div>
                     </td>
                     <td class="px-4 py-3 text-slate-600 dark:text-slate-300">
-                        {{ $patient->age ? $patient->age . ' ' . $patient->age_unit : '—' }}
+                        {{ $patient->age ? $patient->age . ' yrs' : '—' }}
                         <span class="text-xs text-slate-400 capitalize">/ {{ $patient->gender }}</span>
                     </td>
                     <td class="px-4 py-3 text-slate-600 dark:text-slate-300">{{ $patient->phone ?? '—' }}</td>
