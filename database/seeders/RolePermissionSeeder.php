@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Support\Permissions;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -13,66 +14,13 @@ class RolePermissionSeeder extends Seeder
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        $permissions = [
-            // Dashboard
-            'view dashboard',
-
-            // Patients
-            'view patients', 'create patients', 'edit patients', 'delete patients',
-
-            // OPD
-            'view opd', 'create opd', 'edit opd', 'delete opd',
-
-            // IPD
-            'view ipd', 'create ipd', 'edit ipd', 'delete ipd', 'discharge patients',
-
-            // Appointments
-            'view appointments', 'create appointments', 'edit appointments', 'delete appointments',
-
-            // Tokens
-            'view tokens', 'create tokens', 'manage tokens',
-
-            // Doctors
-            'view doctors', 'create doctors', 'edit doctors', 'delete doctors',
-
-            // Staff
-            'view staff', 'create staff', 'edit staff', 'delete staff',
-
-            // Departments
-            'view departments', 'create departments', 'edit departments', 'delete departments',
-
-            // Wards & Beds
-            'view wards', 'create wards', 'edit wards', 'delete wards',
-
-            // Pharmacy
-            'view pharmacy', 'manage medicines', 'create sales', 'view sales',
-            'manage purchases', 'view purchases', 'view pharmacy reports',
-
-            // Laboratory
-            'view laboratory', 'create lab bookings', 'enter lab results',
-            'verify lab reports', 'view lab reports', 'manage lab tests',
-
-            // Expenses
-            'view expenses', 'create expenses', 'edit expenses', 'delete expenses', 'approve expenses',
-
-            // Salary
-            'view salaries', 'manage salaries', 'pay salaries',
-
-            // Shifts
-            'view shifts', 'manage shifts', 'close shifts',
-
-            // Reports
-            'view reports', 'export reports', 'close daily reports', 'close monthly reports',
-
-            // Settings
-            'view settings', 'manage settings',
-
-            // Users
-            'view users', 'create users', 'edit users', 'delete users',
-        ];
-
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+        // Permission catalogue lives in App\Support\Permissions so the
+        // Access Control UI and this seeder share one source of truth.
+        foreach (Permissions::all() as $permission) {
+            Permission::updateOrCreate(
+                ['name' => $permission],
+                ['group' => Permissions::groupFor($permission)]
+            );
         }
 
         $roles = [
@@ -94,7 +42,8 @@ class RolePermissionSeeder extends Seeder
                 'view salaries', 'manage salaries', 'pay salaries',
                 'view shifts', 'manage shifts', 'close shifts',
                 'view reports', 'export reports', 'close daily reports', 'close monthly reports',
-                'view settings', 'view users',
+                'view settings', 'view users', 'create users', 'edit users',
+                'view roles', 'view permissions',
             ],
 
             'receptionist' => [

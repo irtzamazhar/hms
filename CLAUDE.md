@@ -59,9 +59,13 @@ API controllers often re-implement filtering inline rather than reusing the web 
 
 ## Authorization
 
-Spatie Laravel Permission. 8 roles (`super_admin`, `hospital_admin`, `receptionist`, `doctor`, `nurse`, `pharmacist`, `lab_technician`, `accountant`) and ~70 permissions, all seeded by `RolePermissionSeeder`. Permission names are `"<verb> <area>"` but **not uniformly CRUD** — e.g. `view opd`, `manage medicines`, `create sales`, `enter lab results`, `verify lab reports`, `manage lab tests`, `approve expenses`, `discharge patients`, `close shifts`. Check the seeder for the exact string before calling `authorize()` / `@can`.
+Spatie Laravel Permission. 8 seeded roles (`super_admin`, `hospital_admin`, `receptionist`, `doctor`, `nurse`, `pharmacist`, `lab_technician`, `accountant`) and ~80 permissions. Permission names are `"<verb> <area>"` but **not uniformly CRUD** — e.g. `view opd`, `manage medicines`, `create sales`, `enter lab results`, `verify lab reports`, `manage lab tests`, `approve expenses`, `discharge patients`, `close shifts`.
+
+**`app/Support/Permissions.php` is the single source of truth** for the permission catalogue (grouped by module label). `RolePermissionSeeder` seeds from `Permissions::all()`, and the Access Control UI builds its checkbox matrix from `Permissions::groups()`. Add new permissions there so the seeder and UI stay in sync; check it (or the seeder) for the exact string before calling `authorize()` / `@can`.
 
 Enforcement is in two places only: `$this->authorize('...')` in controllers and `@can('...')` in Blade. `User` also has a `user_type` column (mirrors the role) used by `User::homeRoute()` to redirect each role to its landing page after login.
+
+**Access Control module** (`RoleController`, `PermissionController`, and `UserController::permissions/updatePermissions`): full CRUD for roles (with a grouped permission matrix), create/delete of individual permissions, and per-user **direct** permissions layered on top of role-inherited ones (`syncPermissions` touches only direct grants). The `super_admin` role is protected — it always retains all permissions and cannot be renamed or deleted; roles still assigned to users cannot be deleted; core Access Control permissions cannot be deleted. The shared checkbox UI lives in `resources/views/partials/permission-matrix.blade.php`.
 
 ## Model conventions
 

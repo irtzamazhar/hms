@@ -11,9 +11,11 @@ use App\Http\Controllers\LabTestController;
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\OpdController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ShiftController;
@@ -157,7 +159,15 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // ── Users ─────────────────────────────────────────────
+    Route::get('/users/{user}/permissions', [UserController::class, 'permissions'])->name('users.permissions');
+    Route::put('/users/{user}/permissions', [UserController::class, 'updatePermissions'])->name('users.permissions.update');
     Route::resource('users', UserController::class);
+
+    // ── Access Control (Roles & Permissions) ──────────────
+    Route::resource('roles', RoleController::class);
+    Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
+    Route::post('/permissions', [PermissionController::class, 'store'])->name('permissions.store');
+    Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
 
     // ── Settings ──────────────────────────────────────────
     Route::prefix('settings')->name('settings.')->group(function () {

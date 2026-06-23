@@ -10,10 +10,14 @@
         @if($required) required @endif
         {{ $attributes->class(['field', 'error' => $errors->has($name)]) }}
     >
-        <option value="">{{ $placeholder }}</option>
-        @foreach($options as $value => $text)
-            <option value="{{ $value }}" @selected(old($name, $selected) == $value)>{{ $text }}</option>
-        @endforeach
+        @if(count($options))
+            <option value="">{{ $placeholder }}</option>
+            @foreach($options as $value => $text)
+                <option value="{{ $value }}" @selected(old($name, $selected) == $value)>{{ $text }}</option>
+            @endforeach
+        @else
+            {{ $slot }}
+        @endif
     </select>
     @error($name)
     <p class="mt-1 text-xs text-red-500">{{ $message }}</p>

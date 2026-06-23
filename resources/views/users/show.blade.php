@@ -8,9 +8,14 @@
 @section('content')
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-xl font-bold text-slate-800 dark:text-white">{{ $user->name }}</h1>
-    @can('edit users')
-    <a href="{{ route('users.edit', $user) }}" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm rounded-lg">Edit User</a>
-    @endcan
+    <div class="flex items-center gap-2">
+        @can('assign user permissions')
+        <a href="{{ route('users.permissions', $user) }}" class="px-4 py-2 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/40">Manage Permissions</a>
+        @endcan
+        @can('edit users')
+        <a href="{{ route('users.edit', $user) }}" class="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm rounded-lg">Edit User</a>
+        @endcan
+    </div>
 </div>
 
 <div class="grid md:grid-cols-3 gap-4">

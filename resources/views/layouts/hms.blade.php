@@ -521,6 +521,31 @@
                 <span x-show="sidebarOpen" x-cloak>Settings</span>
             </a>
             @endcan
+
+            @canany(['view users', 'view roles', 'view permissions'])
+            <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">Access Control</div>
+            @endcanany
+
+            @can('view users')
+            <a href="{{ route('users.index') }}" class="sidebar-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4zm6 0a4 4 0 00-3-3.87"/></svg>
+                <span x-show="sidebarOpen" x-cloak>Users</span>
+            </a>
+            @endcan
+
+            @can('view roles')
+            <a href="{{ route('roles.index') }}" class="sidebar-link {{ request()->routeIs('roles.*') ? 'active' : '' }}">
+                <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span x-show="sidebarOpen" x-cloak>Roles</span>
+            </a>
+            @endcan
+
+            @can('view permissions')
+            <a href="{{ route('permissions.index') }}" class="sidebar-link {{ request()->routeIs('permissions.*') ? 'active' : '' }}">
+                <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+                <span x-show="sidebarOpen" x-cloak>Permissions</span>
+            </a>
+            @endcan
         </nav>
 
         {{-- Collapse toggle --}}
