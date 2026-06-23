@@ -57,7 +57,9 @@ class Doctor extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        // Include soft-deleted users so a deactivated account never breaks
+        // listings/details that read $doctor->user->name.
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     public function department(): BelongsTo

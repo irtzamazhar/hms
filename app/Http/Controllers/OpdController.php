@@ -55,7 +55,7 @@ class OpdController extends Controller
 
     public function edit(OpdVisit $opd): View
     {
-        $this->authorize('update opd');
+        $this->authorize('edit opd');
         $visit       = $opd;
         $doctors     = Doctor::active()->with('user:id,name')->get();
 
@@ -64,7 +64,7 @@ class OpdController extends Controller
 
     public function update(OpdVisitRequest $request, OpdVisit $opd): RedirectResponse
     {
-        $this->authorize('update opd');
+        $this->authorize('edit opd');
         $this->service->update($opd, $request->validated());
 
         return redirect()->route('opd.show', $opd)->with('success', 'OPD visit updated.');
@@ -80,6 +80,7 @@ class OpdController extends Controller
 
     public function invoice(OpdVisit $opdVisit): View
     {
+        $this->authorize('edit opd');
         $visit = $opdVisit;
         $visit->load(['patient', 'doctor.user', 'prescriptions.items']);
         $setting = \App\Models\HospitalSetting::current();
@@ -89,6 +90,7 @@ class OpdController extends Controller
 
     public function print(OpdVisit $opdVisit)
     {
+        $this->authorize('edit opd');
         $visit = $opdVisit;
         $visit->load(['patient', 'doctor.user', 'prescriptions.items']);
         $setting = \App\Models\HospitalSetting::current();

@@ -10,7 +10,7 @@ class OpdService
 {
     public function list(array $filters = []): LengthAwarePaginator
     {
-        return OpdVisit::with(['patient:id,name,mr_number', 'doctor.user:id,name', 'department:id,name'])
+        return OpdVisit::with(['patient:id,name,mr_number', 'doctor.user' => fn ($q) => $q->withTrashed()->select('id', 'name'), 'department:id,name'])
             ->when($filters['date'] ?? null, fn ($q, $d) => $q->whereDate('visit_date', $d))
             ->when($filters['shift'] ?? null, fn ($q, $s) => $q->where('shift', $s))
             ->when($filters['doctor_id'] ?? null, fn ($q, $id) => $q->where('doctor_id', $id))

@@ -32,8 +32,8 @@
         <div class="border-b border-slate-100 dark:border-slate-700 last:border-0">
             <div class="px-5 py-3 flex justify-between items-center">
                 <div>
-                    <p class="font-medium text-slate-700 dark:text-white">{{ $item->labTest->name }}</p>
-                    <p class="text-xs text-slate-400">₨ {{ number_format($item->price, 0) }}</p>
+                    <p class="font-medium text-slate-700 dark:text-white">{{ $item->test->name }}</p>
+                    <p class="text-xs text-slate-400">₨ {{ number_format($item->net_cost ?? $item->cost, 0) }}</p>
                 </div>
                 <x-badge color="{{ ['completed'=>'green','processing'=>'blue','pending'=>'amber'][$item->status ?? 'pending'] ?? 'slate' }}">
                     {{ ucfirst($item->status ?? 'pending') }}
@@ -85,8 +85,8 @@
         <h3 class="font-semibold text-sm text-slate-700 dark:text-white mb-3">Payment</h3>
         <div class="flex gap-6 flex-wrap">
             <div><p class="text-xs text-slate-400">Total</p><p class="font-bold text-slate-700 dark:text-white">₨ {{ number_format($booking->total_amount, 0) }}</p></div>
-            @if(($booking->discount_amount ?? 0) > 0)
-            <div><p class="text-xs text-slate-400">Discount</p><p class="font-bold text-red-500">— ₨ {{ number_format($booking->discount_amount, 0) }}</p></div>
+            @if(($booking->discount ?? 0) > 0)
+            <div><p class="text-xs text-slate-400">Discount</p><p class="font-bold text-red-500">— ₨ {{ number_format($booking->discount, 0) }}</p></div>
             @endif
             <div><p class="text-xs text-slate-400">Net</p><p class="font-bold text-lg text-green-600">₨ {{ number_format($booking->net_amount, 0) }}</p></div>
             <div><p class="text-xs text-slate-400">Method</p><p class="font-bold text-slate-700 dark:text-white">{{ ucfirst(str_replace('_',' ',$booking->payment_method)) }}</p></div>

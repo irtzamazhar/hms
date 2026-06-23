@@ -19,7 +19,7 @@
 
     <div class="grid grid-cols-2 gap-4">
         <x-form.input name="name" label="Test Name" :value="$labTest->name" required />
-        <x-form.input name="code" label="Test Code" :value="$labTest->code" />
+        <x-form.input name="code" label="Test Code" :value="$labTest->code" required />
     </div>
 
     <x-form.select name="category_id" label="Category" required>
@@ -48,15 +48,18 @@
     </x-form.select>
 
     <div class="flex justify-between items-center pt-2">
-        <form method="POST" action="{{ route('lab.tests.destroy', $labTest) }}" onsubmit="return confirm('Delete this test?')">
-            @csrf @method('DELETE')
-            <button type="submit" class="text-sm text-red-500 hover:text-red-700">Delete Test</button>
-        </form>
+        <button type="submit" form="deleteTestForm" onclick="return confirm('Delete this test? This cannot be undone.')"
+                class="text-sm text-red-500 hover:text-red-700">Delete Test</button>
         <div class="flex gap-3">
             <a href="{{ route('lab.tests.index') }}" class="btn-cancel">Cancel</a>
             <button type="submit" class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-lg">Update Test</button>
         </div>
     </div>
+</form>
+
+{{-- Separate, non-nested form for deletion (referenced by the Delete button above via form=) --}}
+<form id="deleteTestForm" method="POST" action="{{ route('lab.tests.destroy', $labTest) }}" class="hidden">
+    @csrf @method('DELETE')
 </form>
 </div>
 @endsection

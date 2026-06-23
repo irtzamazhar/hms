@@ -58,7 +58,7 @@
         <tbody>
             @foreach($booking->items as $item)
             <tr>
-                <td><strong>{{ $item->labTest->name }}</strong><br><span style="font-size:9px;color:#94a3b8;">{{ $item->labTest->code ?? '' }}</span></td>
+                <td><strong>{{ $item->test->name }}</strong><br><span style="font-size:9px;color:#94a3b8;">{{ $item->test->code ?? '' }}</span></td>
                 <td><strong {{ $item->report?->is_abnormal ? 'class="flag"' : '' }}>{{ $item->report?->result_value ?? '—' }}</strong></td>
                 <td style="color:#64748b">{{ $item->report?->normal_range ?? '—' }}</td>
                 <td>

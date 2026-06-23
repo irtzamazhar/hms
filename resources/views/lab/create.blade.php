@@ -25,17 +25,12 @@
         </div>
         <div>
             <label class="field-label">Referred By</label>
-            <select name="referred_by" class="field">
+            <select name="doctor_id" class="field">
                 <option value="">— None —</option>
                 @foreach($doctors as $d)
-                    <option value="{{ $d->id }}" @selected(old('referred_by')==$d->id)>Dr. {{ $d->user->name }}</option>
+                    <option value="{{ $d->id }}" @selected(old('doctor_id')==$d->id)>Dr. {{ $d->user?->name }}</option>
                 @endforeach
             </select>
-        </div>
-        <div>
-            <label class="field-label">Sample Collected At</label>
-            <input type="datetime-local" name="sample_collected_at" value="{{ old('sample_collected_at', now()->format('Y-m-d\TH:i')) }}"
-                   class="field">
         </div>
         <div>
             <label class="field-label">Payment Method</label>
@@ -65,13 +60,13 @@
                 <div class="flex items-center gap-2">
                     <input type="checkbox" name="tests[]" value="{{ $test->id }}" x-model="selected"
                            class="rounded text-primary-600 focus:ring-primary-500"
-                           @change="updatePrice({{ $test->id }}, {{ $test->price }})">
+                           @change="updatePrice({{ $test->id }}, {{ (float) $test->cost }})">
                     <div>
                         <p class="text-sm text-slate-700 dark:text-white">{{ $test->name }}</p>
                         @if($test->code)<p class="text-xs text-slate-400">{{ $test->code }}</p>@endif
                     </div>
                 </div>
-                <span class="text-sm font-semibold text-slate-700 dark:text-white">₨ {{ number_format($test->price, 0) }}</span>
+                <span class="text-sm font-semibold text-slate-700 dark:text-white">₨ {{ number_format($test->cost, 0) }}</span>
             </label>
             @endforeach
         </div>
@@ -81,7 +76,7 @@
     <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center">
         <div>
             <label class="text-sm font-medium text-slate-700 dark:text-slate-300 mr-2">Discount (₨)</label>
-            <input type="number" name="discount_amount" value="{{ old('discount_amount', 0) }}" min="0" step="0.01"
+            <input type="number" name="discount" value="{{ old('discount', 0) }}" min="0" step="0.01"
                    class="field w-28">
         </div>
         <p class="text-base font-bold text-slate-800 dark:text-white">Total: ₨ <span x-text="total()"></span></p>

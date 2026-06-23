@@ -38,16 +38,16 @@ class LabController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $this->authorize('create lab bookings');
-        $request->validate([
-            'patient_id'         => 'required|exists:patients,id',
-            'tests'              => 'required|array|min:1',
-            'tests.*.test_id'    => 'required|exists:lab_tests,id',
-            'tests.*.cost'       => 'required|numeric|min:0',
-            'paid_amount'        => 'nullable|numeric|min:0',
-            'payment_method'     => 'nullable|string',
+        $validated = $request->validate([
+            'patient_id'     => 'required|exists:patients,id',
+            'doctor_id'      => 'nullable|exists:doctors,id',
+            'tests'          => 'required|array|min:1',
+            'tests.*'        => 'integer|exists:lab_tests,id',
+            'discount'       => 'nullable|numeric|min:0',
+            'payment_method' => 'nullable|in:cash,card,insurance',
         ]);
 
-        $booking = $this->service->createBooking($request->all());
+        $booking = $this->service->createBooking($validated);
 
         return redirect()->route('lab.show', $booking)->with('success', "Lab booking {$booking->booking_number} created.");
     }
@@ -57,7 +57,7 @@ class LabController extends Controller
         $this->authorize('view laboratory');
         $labBooking->load(['patient', 'doctor.user', 'items.test.category', 'reports.technician', 'createdBy']);
 
-        return view('lab.show', compact('labBooking'));
+        return view('lab.show', ['booking' => $labBooking]);
     }
 
     public function saveResults(Request $request, LabBooking $labBooking): RedirectResponse
@@ -75,10 +75,18 @@ class LabController extends Controller
 
     public function reportPdf(LabBooking $labBooking)
     {
-        $labBooking->load(['patient', 'doctor.user', 'reports.test', 'reports.technician', 'reports.verifiedBy']);
+        $labBooking->load(['patient', 'doctor.user', 'items.test', 'items.report']);
         $setting = \App\Models\HospitalSetting::current();
-        $pdf     = app('dompdf.wrapper')->loadView('lab.report-pdf', compact('labBooking', 'setting'));
+        $pdf     = app('dompdf.wrapper')->loadView('lab.report-pdf', ['booking' => $labBooking, 'setting' => $setting]);
 
         return $pdf->stream("Lab-Report-{$labBooking->booking_number}.pdf");
+    }
+
+    public function destroy(LabBooking $labBooking): RedirectResponse
+    {
+        $this->authorize('create lab bookings');
+        $labBooking->delete();
+
+        return redirect()->route('lab.index')->with('success', "Lab booking {$labBooking->booking_number} deleted.");
     }
 }

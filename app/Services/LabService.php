@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\LabBooking;
 use App\Models\LabBookingItem;
 use App\Models\LabReport;
+use App\Models\LabTest;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
@@ -24,37 +25,53 @@ class LabService
     public function createBooking(array $data): LabBooking
     {
         return DB::transaction(function () use ($data) {
-            $data['booking_number'] = LabBooking::generateNumber();
-            $data['created_by']     = auth()->id();
+            // Prices are sourced authoritatively from the lab_tests table — never trusted from the client.
+            $tests    = LabTest::whereIn('id', $data['tests'])->get();
+            $discount = (float) ($data['discount'] ?? 0);
+            $total    = (float) $tests->sum('cost');
 
-            $total = 0;
-            foreach ($data['tests'] as $test) {
-                $total += $test['cost'];
-            }
+            $booking = LabBooking::create([
+                'booking_number' => LabBooking::generateNumber(),
+                'patient_id'     => $data['patient_id'],
+                'doctor_id'      => $data['doctor_id'] ?? null,
+                'booking_date'   => today(),
+                'shift'          => $this->currentShift(),
+                'total_amount'   => $total,
+                'discount'       => $discount,
+                'net_amount'     => max($total - $discount, 0),
+                'payment_method' => $data['payment_method'] ?? 'cash',
+                'created_by'     => auth()->id(),
+            ]);
 
-            $data['total_amount'] = $total;
-            $data['net_amount']   = $total - ($data['discount'] ?? 0);
-
-            $booking = LabBooking::create($data);
-
-            foreach ($data['tests'] as $test) {
+            foreach ($tests as $test) {
                 $item = $booking->items()->create([
-                    'test_id'  => $test['test_id'],
-                    'cost'     => $test['cost'],
-                    'discount' => $test['discount'] ?? 0,
-                    'net_cost' => $test['cost'] - ($test['discount'] ?? 0),
+                    'test_id'  => $test->id,
+                    'cost'     => $test->cost,
+                    'discount' => 0,
+                    'net_cost' => $test->cost,
                 ]);
 
                 LabReport::create([
                     'booking_id'      => $booking->id,
                     'booking_item_id' => $item->id,
-                    'test_id'         => $test['test_id'],
+                    'test_id'         => $test->id,
                     'patient_id'      => $booking->patient_id,
                 ]);
             }
 
             return $booking;
         });
+    }
+
+    private function currentShift(): string
+    {
+        $hour = now()->hour;
+
+        return match (true) {
+            $hour >= 8 && $hour < 14  => 'morning',
+            $hour >= 14 && $hour < 20 => 'evening',
+            default                   => 'night',
+        };
     }
 
     public function saveResults(LabBooking $booking, array $results): void

@@ -21,7 +21,7 @@
 
 <form method="GET" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 mb-4">
     <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-        <input type="date" name="date" value="{{ request('date', today()->toDateString()) }}"
+        <input type="date" name="date" value="{{ request('date') }}"
                class="field">
         <select name="shift" class="field">
             <option value="">All Shifts</option>
@@ -69,10 +69,10 @@
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
                     <td class="px-4 py-3 font-mono text-xs text-primary-600 dark:text-primary-400 font-medium">{{ $v->visit_number }}</td>
                     <td class="px-4 py-3">
-                        <p class="font-medium text-slate-700 dark:text-white">{{ $v->patient->name }}</p>
-                        <p class="text-xs text-slate-400">{{ $v->patient->mr_number }}</p>
+                        <p class="font-medium text-slate-700 dark:text-white">{{ $v->patient?->name ?? '—' }}</p>
+                        <p class="text-xs text-slate-400">{{ $v->patient?->mr_number ?? '—' }}</p>
                     </td>
-                    <td class="px-4 py-3 text-slate-600 dark:text-slate-300">Dr. {{ $v->doctor->user->name }}</td>
+                    <td class="px-4 py-3 text-slate-600 dark:text-slate-300">Dr. {{ $v->doctor?->user?->name ?? '—' }}</td>
                     <td class="px-4 py-3">
                         <x-badge color="{{ ['morning'=>'amber','evening'=>'blue','night'=>'purple'][$v->shift] ?? 'slate' }}">
                             {{ ucfirst($v->shift) }}

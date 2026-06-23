@@ -23,7 +23,7 @@ class LabTestController extends Controller
 
         $categories = LabTestCategory::active()->get();
 
-        return view('lab.tests.index', compact('tests', 'categories'));
+        return view('lab-tests.index', compact('tests', 'categories'));
     }
 
     public function create(): View
@@ -31,13 +31,13 @@ class LabTestController extends Controller
         $this->authorize('manage lab tests');
         $categories = LabTestCategory::active()->get();
 
-        return view('lab.tests.create', compact('categories'));
+        return view('lab-tests.create', compact('categories'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $this->authorize('manage lab tests');
-        $request->validate([
+        $validated = $request->validate([
             'category_id'              => 'required|exists:lab_test_categories,id',
             'name'                     => 'required|string|max:150',
             'code'                     => 'required|string|max:30|unique:lab_tests,code',
@@ -51,7 +51,7 @@ class LabTestController extends Controller
             'status'                   => 'required|in:active,inactive',
         ]);
 
-        LabTest::create($request->all());
+        LabTest::create($validated);
 
         return redirect()->route('lab.tests.index')->with('success', 'Lab test added.');
     }
@@ -61,21 +61,27 @@ class LabTestController extends Controller
         $this->authorize('manage lab tests');
         $categories = LabTestCategory::active()->get();
 
-        return view('lab.tests.edit', compact('labTest', 'categories'));
+        return view('lab-tests.edit', compact('labTest', 'categories'));
     }
 
     public function update(Request $request, LabTest $labTest): RedirectResponse
     {
         $this->authorize('manage lab tests');
-        $request->validate([
-            'category_id'  => 'required|exists:lab_test_categories,id',
-            'name'         => 'required|string|max:150',
-            'cost'         => 'required|numeric|min:0',
-            'normal_range' => 'nullable|string|max:100',
-            'status'       => 'required|in:active,inactive',
+        $validated = $request->validate([
+            'category_id'              => 'required|exists:lab_test_categories,id',
+            'name'                     => 'required|string|max:150',
+            'code'                     => 'required|string|max:30|unique:lab_tests,code,' . $labTest->id,
+            'cost'                     => 'required|numeric|min:0',
+            'normal_range'             => 'nullable|string|max:100',
+            'unit'                     => 'nullable|string|max:30',
+            'sample_type'              => 'nullable|string|max:50',
+            'turnaround_hours'         => 'nullable|integer|min:1',
+            'preparation_instructions' => 'nullable|string',
+            'description'              => 'nullable|string',
+            'status'                   => 'required|in:active,inactive',
         ]);
 
-        $labTest->update($request->all());
+        $labTest->update($validated);
 
         return redirect()->route('lab.tests.index')->with('success', 'Lab test updated.');
     }
@@ -83,6 +89,11 @@ class LabTestController extends Controller
     public function destroy(LabTest $labTest): RedirectResponse
     {
         $this->authorize('manage lab tests');
+
+        if ($labTest->bookingItems()->exists()) {
+            return back()->withErrors(['error' => 'Cannot delete a test that has booking history. Set it to Inactive instead.']);
+        }
+
         $labTest->delete();
 
         return redirect()->route('lab.tests.index')->with('success', 'Lab test deleted.');

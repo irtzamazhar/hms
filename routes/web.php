@@ -105,6 +105,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{labBooking}', [LabController::class, 'show'])->name('show');
         Route::patch('/{labBooking}/results', [LabController::class, 'saveResults'])->name('results.save');
         Route::get('/{labBooking}/report/pdf', [LabController::class, 'reportPdf'])->name('report.pdf');
+        Route::delete('/{labBooking}', [LabController::class, 'destroy'])->name('destroy');
     });
     Route::resource('lab-tests', LabTestController::class)->except(['show'])->names([
         'index'   => 'lab.tests.index',
