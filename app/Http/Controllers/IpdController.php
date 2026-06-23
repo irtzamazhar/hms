@@ -8,6 +8,7 @@ use App\Models\Doctor;
 use App\Models\IpdAdmission;
 use App\Models\Patient;
 use App\Models\Ward;
+use App\Models\HospitalSetting;
 use App\Notifications\IpdAdmissionCreated;
 use App\Services\IpdService;
 use Illuminate\Http\RedirectResponse;
@@ -130,7 +131,8 @@ class IpdController extends Controller
         $admission = $ipdAdmission;
         $admission->load(['patient', 'doctor.user', 'ward', 'bed']);
         $charges = $this->service->calculateCharges($admission);
+        $setting = HospitalSetting::current();
 
-        return view('ipd.invoice', compact('admission', 'charges'));
+        return view('ipd.invoice', compact('admission', 'charges', 'setting'));
     }
 }
