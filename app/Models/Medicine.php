@@ -13,7 +13,7 @@ class Medicine extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'category_id', 'name', 'generic_name', 'brand', 'sku', 'barcode',
+        'category_id', 'supplier_id', 'name', 'generic_name', 'brand', 'sku', 'barcode',
         'unit', 'pack_size', 'strength', 'purchase_price', 'trade_price',
         'sale_price', 'tax_rate', 'stock_quantity', 'minimum_stock',
         'is_controlled', 'requires_prescription', 'description', 'status',
@@ -34,6 +34,11 @@ class Medicine extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(MedicineCategory::class);
+    }
+
+    public function supplier(): BelongsTo
+    {
+        return $this->belongsTo(Supplier::class);
     }
 
     public function batches(): HasMany
@@ -80,9 +85,9 @@ class Medicine extends Model
     {
         return $query->where(function ($q) use ($search) {
             $q->where('name', 'like', "%{$search}%")
-              ->orWhere('generic_name', 'like', "%{$search}%")
-              ->orWhere('brand', 'like', "%{$search}%")
-              ->orWhere('sku', 'like', "%{$search}%");
+                ->orWhere('generic_name', 'like', "%{$search}%")
+                ->orWhere('brand', 'like', "%{$search}%")
+                ->orWhere('sku', 'like', "%{$search}%");
         });
     }
 }

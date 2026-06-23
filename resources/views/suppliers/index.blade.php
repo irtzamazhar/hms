@@ -26,7 +26,7 @@
             <option value="inactive" @selected(request('status')==='inactive')>Inactive</option>
         </select>
         <button type="submit" class="px-4 py-2 bg-primary-600 text-white text-sm rounded-lg">Search</button>
-        <a href="{{ route('suppliers.index') }}" class="px-3 py-2 border text-slate-600 dark:text-slate-300">Clear</a>
+        <a href="{{ route('suppliers.index') }}" class="btn-cancel">Reset</a>
     </div>
 </form>
 

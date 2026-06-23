@@ -45,6 +45,7 @@ class Permissions
             'Pharmacy' => [
                 'view pharmacy', 'manage medicines', 'create sales', 'view sales',
                 'manage purchases', 'view purchases', 'view pharmacy reports',
+                'view suppliers', 'manage suppliers',
             ],
 
             'Laboratory' => [

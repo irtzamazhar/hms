@@ -36,7 +36,7 @@ class MedicineController extends Controller
 
         return view('medicines.create', [
             'categories' => MedicineCategory::active()->get(),
-            'suppliers'  => Supplier::orderBy('name')->get(),
+            'suppliers' => Supplier::orderBy('name')->get(),
         ]);
     }
 
@@ -44,14 +44,15 @@ class MedicineController extends Controller
     {
         $this->authorize('manage medicines');
         $request->validate([
-            'name'          => 'required|string|max:255',
-            'generic_name'  => 'nullable|string',
-            'brand'         => 'nullable|string',
-            'unit'          => 'required|string',
-            'sale_price'    => 'required|numeric|min:0',
+            'name' => 'required|string|max:255',
+            'generic_name' => 'nullable|string',
+            'brand' => 'nullable|string',
+            'unit' => 'required|string',
+            'sale_price' => 'required|numeric|min:0',
             'purchase_price' => 'required|numeric|min:0',
             'minimum_stock' => 'nullable|integer|min:0',
-            'category_id'   => 'nullable|exists:medicine_categories,id',
+            'category_id' => 'nullable|exists:medicine_categories,id',
+            'supplier_id' => 'nullable|exists:suppliers,id',
         ]);
 
         Medicine::create($request->all());
@@ -71,16 +72,21 @@ class MedicineController extends Controller
     {
         $this->authorize('manage medicines');
 
-        return view('medicines.edit', ['medicine' => $medicine, 'categories' => MedicineCategory::active()->get()]);
+        return view('medicines.edit', [
+            'medicine' => $medicine,
+            'categories' => MedicineCategory::active()->get(),
+            'suppliers' => Supplier::orderBy('name')->get(),
+        ]);
     }
 
     public function update(Request $request, Medicine $medicine): RedirectResponse
     {
         $this->authorize('manage medicines');
         $request->validate([
-            'name'          => 'required|string|max:255',
-            'sale_price'    => 'required|numeric|min:0',
+            'name' => 'required|string|max:255',
+            'sale_price' => 'required|numeric|min:0',
             'purchase_price' => 'required|numeric|min:0',
+            'supplier_id' => 'nullable|exists:suppliers,id',
         ]);
 
         $medicine->update($request->all());
@@ -101,8 +107,8 @@ class MedicineController extends Controller
         $this->authorize('manage medicines');
         $request->validate([
             'quantity' => 'required|integer|min:1',
-            'type'     => 'required|in:in,out',
-            'notes'    => 'nullable|string',
+            'type' => 'required|in:in,out',
+            'notes' => 'nullable|string',
         ]);
 
         $this->service->adjustStock($medicine, $request->quantity, $request->type, $request->notes ?? '');

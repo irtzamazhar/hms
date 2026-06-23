@@ -34,6 +34,15 @@
         <x-form.input name="strength" label="Strength" :value="old('strength',$medicine->strength)" />
         <x-form.input name="unit" label="Unit" :value="old('unit',$medicine->unit)" />
         <div>
+            <label class="field-label">Supplier</label>
+            <select name="supplier_id" class="field">
+                <option value="">— None —</option>
+                @foreach($suppliers as $s)
+                    <option value="{{ $s->id }}" @selected(old('supplier_id',$medicine->supplier_id)==$s->id)>{{ $s->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div>
             <label class="field-label">Status</label>
             <select name="status" class="field">
                 <option value="active" @selected(old('status',$medicine->status)==='active')>Active</option>

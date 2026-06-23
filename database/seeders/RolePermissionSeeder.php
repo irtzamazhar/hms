@@ -36,7 +36,7 @@ class RolePermissionSeeder extends Seeder
                 'view staff', 'create staff', 'edit staff',
                 'view departments', 'create departments', 'edit departments', 'delete departments',
                 'view wards', 'create wards', 'edit wards', 'delete wards',
-                'view pharmacy', 'view pharmacy reports',
+                'view pharmacy', 'view pharmacy reports', 'view suppliers', 'manage suppliers',
                 'view laboratory', 'view lab reports', 'manage lab tests',
                 'view expenses', 'create expenses', 'approve expenses',
                 'view salaries', 'manage salaries', 'pay salaries',
@@ -68,7 +68,7 @@ class RolePermissionSeeder extends Seeder
             'pharmacist' => [
                 'view pharmacy', 'manage medicines',
                 'create sales', 'view sales', 'manage purchases', 'view purchases',
-                'view pharmacy reports',
+                'view pharmacy reports', 'view suppliers', 'manage suppliers',
             ],
 
             'lab_technician' => [

@@ -96,8 +96,8 @@ class PurchaseController extends Controller
 
                 // Update medicine stock
                 $medicine = Medicine::find($item['medicine_id']);
-                $medicine->increment('current_stock', $item['quantity']);
-                $medicine->update(['purchase_price' => $item['unit_price'], 'selling_price' => $item['sale_price']]);
+                $medicine->increment('stock_quantity', $item['quantity']);
+                $medicine->update(['purchase_price' => $item['unit_price'], 'sale_price' => $item['sale_price']]);
 
                 MedicineStock::create([
                     'medicine_id'      => $item['medicine_id'],
