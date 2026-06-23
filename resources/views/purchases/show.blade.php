@@ -1,7 +1,7 @@
 @extends('layouts.hms')
 @section('title','Purchase — '.$purchase->purchase_number)
 @section('breadcrumb')
-    <a href="{{ route('purchases.index') }}" class="text-slate-400 hover:text-slate-600">Purchases</a>
+    <a href="{{ route('purchases.index') }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Purchases</a>
     <span class="mx-1">/</span><span class="font-medium text-slate-700 dark:text-slate-200">{{ $purchase->purchase_number }}</span>
 @endsection
 

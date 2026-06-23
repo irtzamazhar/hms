@@ -9,10 +9,14 @@
 
     {{-- Tabs --}}
     <div class="flex gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl w-fit">
-        @foreach(['hospital'=>'Hospital Info','system'=>'System Settings'] as $key=>$label)
+        @php
+            $tabs = ['hospital'=>'Hospital Info'];
+            if (auth()->user()->hasRole('super_admin')) { $tabs['modules'] = 'Modules'; }
+        @endphp
+        @foreach($tabs as $key=>$label)
         <button @click="tab='{{ $key }}'" type="button"
                 class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                :class="tab==='{{ $key }}' ? 'bg-white text-slate-800 shadow' : 'text-slate-500 hover:text-slate-700'">
+                :class="tab==='{{ $key }}' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'">
             {{ $label }}
         </button>
         @endforeach
@@ -78,8 +82,6 @@
                     @foreach([
                         ['enable_two_factor','Enable Two-Factor Auth'],
                         ['enable_audit_log','Enable Audit Logging'],
-                        ['enable_lab_module','Enable Lab Module'],
-                        ['enable_pharmacy_module','Enable Pharmacy Module'],
                     ] as [$key,$label])
                     <label class="flex items-center gap-3 cursor-pointer">
                         <input type="checkbox" name="{{ $key }}" value="1" @checked(old($key, $setting->$key ?? false))
@@ -92,6 +94,43 @@
             </div>
         </form>
     </div>
+
+    {{-- Modules (super admin only) --}}
+    @role('super_admin')
+    <div x-show="tab==='modules'">
+        <form method="POST" action="{{ route('settings.modules') }}"
+              x-data="{ all(state){ $root.querySelectorAll('input[name=\'modules[]\']').forEach(c => c.checked = state) } }" x-ref="root">
+            @csrf @method('PATCH')
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 space-y-4">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide">Site Modules</h2>
+                        <p class="text-xs text-slate-400 mt-1">Enable or disable modules across the entire site. Disabled modules are hidden from the sidebar and their pages become inaccessible to everyone.</p>
+                    </div>
+                    <div class="flex gap-2 flex-shrink-0">
+                        <button type="button" @click="all(true)" class="text-xs px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/40">Enable all</button>
+                        <button type="button" @click="all(false)" class="text-xs px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/40">Disable all</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-200 dark:border-slate-700">
+                    @foreach(\App\Support\Modules::catalogue() as $key => $meta)
+                    @php $isOn = $moduleStates[$key] ?? true; @endphp
+                    <label class="flex items-center justify-between gap-3 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-200">{{ $meta['label'] }}</span>
+                        <input type="checkbox" name="modules[]" value="{{ $key }}" @checked($isOn)
+                               class="rounded border-slate-300 dark:border-slate-600 text-primary-600 focus:ring-primary-500 w-5 h-5">
+                    </label>
+                    @endforeach
+                </div>
+
+                <p class="text-xs text-slate-400">Dashboard, Settings and Access Control (Users, Roles &amp; Permissions) are always available and cannot be disabled.</p>
+
+                <button type="submit" class="px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg">Save Modules</button>
+            </div>
+        </form>
+    </div>
+    @endrole
 
 </div>
 @endsection

@@ -1,7 +1,7 @@
 @extends('layouts.hms')
 @section('title','New IPD Admission')
 @section('breadcrumb')
-    <a href="{{ route('ipd.index') }}" class="text-slate-400 hover:text-slate-600">IPD</a> <span class="mx-1">/</span>
+    <a href="{{ route('ipd.index') }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">IPD</a> <span class="mx-1">/</span>
     <span class="font-medium text-slate-700 dark:text-slate-200">New Admission</span>
 @endsection
 

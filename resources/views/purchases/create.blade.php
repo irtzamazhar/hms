@@ -1,7 +1,7 @@
 @extends('layouts.hms')
 @section('title','New Purchase Order')
 @section('breadcrumb')
-    <a href="{{ route('purchases.index') }}" class="text-slate-400 hover:text-slate-600">Purchases</a>
+    <a href="{{ route('purchases.index') }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Purchases</a>
     <span class="mx-1">/</span><span class="font-medium text-slate-700 dark:text-slate-200">New</span>
 @endsection
 
@@ -9,7 +9,7 @@
 <div x-data="purchaseForm()" class="space-y-4">
 <div class="flex items-center justify-between mb-2">
     <h1 class="text-xl font-bold text-slate-800 dark:text-white">New Purchase Order</h1>
-    <a href="{{ route('purchases.index') }}" class="text-sm text-slate-500 hover:text-slate-700">← Back</a>
+    <a href="{{ route('purchases.index') }}" class="text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-200">← Back</a>
 </div>
 
 <form method="POST" action="{{ route('purchases.store') }}" class="space-y-4" @submit="prepareSubmit">

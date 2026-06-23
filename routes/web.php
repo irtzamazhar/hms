@@ -174,6 +174,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [SettingController::class, 'index'])->name('index');
         Route::patch('/hospital', [SettingController::class, 'updateHospital'])->name('hospital');
         Route::patch('/system', [SettingController::class, 'updateSystem'])->name('system');
+        Route::patch('/modules', [SettingController::class, 'updateModules'])->name('modules');
     });
 });
 

@@ -1,7 +1,7 @@
 @extends('layouts.hms')
 @section('title','Sale — '.$sale->sale_number)
 @section('breadcrumb')
-    <a href="{{ route('pharmacy.sales') }}" class="text-slate-400 hover:text-slate-600">Sales</a> <span class="mx-1">/</span>
+    <a href="{{ route('pharmacy.sales') }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Sales</a> <span class="mx-1">/</span>
     <span class="font-medium text-slate-700 dark:text-slate-200">{{ $sale->sale_number }}</span>
 @endsection
 

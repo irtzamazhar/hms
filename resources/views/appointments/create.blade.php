@@ -1,7 +1,7 @@
 @extends('layouts.hms')
 @section('title','Book Appointment')
 @section('breadcrumb')
-    <a href="{{ route('appointments.index') }}" class="text-slate-400 hover:text-slate-600">Appointments</a>
+    <a href="{{ route('appointments.index') }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Appointments</a>
     <span class="mx-1">/</span><span class="font-medium text-slate-700 dark:text-slate-200">Book</span>
 @endsection
 
@@ -10,7 +10,7 @@
 
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-xl font-bold text-slate-800 dark:text-white">Book Appointment</h1>
-    <a href="{{ route('appointments.index') }}" class="text-sm text-slate-500 hover:text-slate-700">← Back</a>
+    <a href="{{ route('appointments.index') }}" class="text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-200">← Back</a>
 </div>
 
 <form method="POST" action="{{ route('appointments.store') }}" class="space-y-4" @submit="onSubmit">

@@ -332,6 +332,20 @@
             font-weight: 700;
         }
         /* ──────────────────────────────────────────────────────── */
+
+        /* ── Dark-mode hover legibility safety net ───────────────
+           Some inline buttons/links use light hover backgrounds
+           (hover:bg-slate-50 / -100, hover:bg-gray-50 / -100) without a
+           dark: variant, turning near-white on hover in dark mode and
+           hiding their text. Map those to a subtle translucent overlay.
+           Elements that DO declare a dark:hover:bg-* variant keep it
+           (text colour is never affected by these rules). */
+        .dark .hover\:bg-slate-50:hover,
+        .dark .hover\:bg-gray-50:hover   { background-color: rgba(255,255,255,0.06) !important; }
+        .dark .hover\:bg-slate-100:hover,
+        .dark .hover\:bg-gray-100:hover  { background-color: rgba(255,255,255,0.09) !important; }
+        .dark .hover\:bg-white:hover     { background-color: rgba(255,255,255,0.10) !important; }
+        /* ──────────────────────────────────────────────────────── */
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-dark-950 font-sans antialiased transition-colors duration-200">
@@ -371,63 +385,79 @@
             @endcan
 
             @canany(['view tokens', 'view appointments', 'view opd'])
+            @moduleany(['tokens', 'appointments', 'opd'])
             <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">OPD</div>
+            @endmoduleany
             @endcanany
 
             @can('view tokens')
+            @module('tokens')
             <a href="{{ route('tokens.index') }}" class="sidebar-link {{ request()->routeIs('tokens.*') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/></svg>
                 <span x-show="sidebarOpen" x-cloak>Tokens</span>
             </a>
+            @endmodule
             @endcan
 
             @can('view appointments')
+            @module('appointments')
             <a href="{{ route('appointments.index') }}" class="sidebar-link {{ request()->routeIs('appointments.*') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 <span x-show="sidebarOpen" x-cloak>Appointments</span>
             </a>
+            @endmodule
             @endcan
 
             @can('view opd')
+            @module('opd')
             <a href="{{ route('opd.index') }}" class="sidebar-link {{ request()->routeIs('opd.*') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                 <span x-show="sidebarOpen" x-cloak>OPD Visits</span>
             </a>
+            @endmodule
             @endcan
 
             @canany(['view ipd', 'view wards'])
+            @moduleany(['ipd', 'wards'])
             <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">IPD</div>
+            @endmoduleany
             @endcanany
 
             @can('view ipd')
+            @module('ipd')
             <a href="{{ route('ipd.index') }}" class="sidebar-link {{ request()->routeIs('ipd.*') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18M12 3v18"/></svg>
                 <span x-show="sidebarOpen" x-cloak>Admissions</span>
             </a>
+            @endmodule
             @endcan
 
             @can('view wards')
+            @module('wards')
             <a href="{{ route('wards.index') }}" class="sidebar-link {{ request()->routeIs('wards.*') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/></svg>
                 <span x-show="sidebarOpen" x-cloak>Wards & Beds</span>
             </a>
+            @endmodule
             @endcan
 
             @can('view patients')
+            @module('patients')
             <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">Patients</div>
-            @endcan
-
-            @can('view patients')
             <a href="{{ route('patients.index') }}" class="sidebar-link {{ request()->routeIs('patients.*') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
                 <span x-show="sidebarOpen" x-cloak>Patients</span>
             </a>
+            @endmodule
             @endcan
 
             @canany(['view pharmacy', 'view purchases'])
+            @module('pharmacy')
             <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">Pharmacy</div>
+            @endmodule
             @endcanany
 
+            @module('pharmacy')
             @can('view pharmacy')
             <a href="{{ route('pharmacy.pos') }}" class="sidebar-link {{ request()->routeIs('pharmacy.pos') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
@@ -442,12 +472,16 @@
                 <span x-show="sidebarOpen" x-cloak>Purchases</span>
             </a>
             @endcan
+            @endmodule
 
             @can('view laboratory')
+            @module('laboratory')
             <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">Laboratory</div>
+            @endmodule
             @endcan
 
             @can('view laboratory')
+            @module('laboratory')
             <a href="{{ route('lab.index') }}" class="sidebar-link {{ request()->routeIs('lab.*') && ! request()->routeIs('lab.tests.*') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v11.5A3.5 3.5 0 0012.5 18h0a3.5 3.5 0 003.5-3.5V3M9 3h6M9 7h6"/></svg>
                 <span x-show="sidebarOpen" x-cloak>Lab Bookings</span>
@@ -456,31 +490,40 @@
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
                 <span x-show="sidebarOpen" x-cloak>Lab Tests</span>
             </a>
+            @endmodule
             @endcan
 
             @canany(['view expenses', 'view salaries', 'view reports'])
+            @moduleany(['expenses', 'salaries', 'reports'])
             <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">Finance</div>
+            @endmoduleany
             @endcanany
 
             @can('view expenses')
+            @module('expenses')
             <a href="{{ route('expenses.index') }}" class="sidebar-link {{ request()->routeIs('expenses.*') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/></svg>
                 <span x-show="sidebarOpen" x-cloak>Expenses</span>
             </a>
+            @endmodule
             @endcan
 
             @can('view salaries')
+            @module('salaries')
             <a href="{{ route('salaries.index') }}" class="sidebar-link {{ request()->routeIs('salaries.*') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 <span x-show="sidebarOpen" x-cloak>Salaries</span>
             </a>
+            @endmodule
             @endcan
 
             @can('view reports')
+            @module('reports')
             <a href="{{ route('reports.index') }}" class="sidebar-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 <span x-show="sidebarOpen" x-cloak>Reports</span>
             </a>
+            @endmodule
             @endcan
 
             @canany(['view doctors', 'view staff', 'view departments', 'view shifts', 'view settings'])
@@ -488,31 +531,39 @@
             @endcanany
 
             @can('view doctors')
+            @module('doctors')
             <a href="{{ route('doctors.index') }}" class="sidebar-link {{ request()->routeIs('doctors.*') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 <span x-show="sidebarOpen" x-cloak>Doctors</span>
             </a>
+            @endmodule
             @endcan
 
             @can('view staff')
+            @module('staff')
             <a href="{{ route('staff.index') }}" class="sidebar-link {{ request()->routeIs('staff.*') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197"/></svg>
                 <span x-show="sidebarOpen" x-cloak>Staff</span>
             </a>
+            @endmodule
             @endcan
 
             @can('view departments')
+            @module('departments')
             <a href="{{ route('departments.index') }}" class="sidebar-link {{ request()->routeIs('departments.*') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                 <span x-show="sidebarOpen" x-cloak>Departments</span>
             </a>
+            @endmodule
             @endcan
 
             @can('view shifts')
+            @module('shifts')
             <a href="{{ route('shifts.index') }}" class="sidebar-link {{ request()->routeIs('shifts.*') ? 'active' : '' }}">
                 <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 <span x-show="sidebarOpen" x-cloak>Shifts</span>
             </a>
+            @endmodule
             @endcan
 
             @can('view settings')

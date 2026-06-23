@@ -1,7 +1,7 @@
 @extends('layouts.hms')
 @section('title','Appointment — '.$appointment->appointment_number)
 @section('breadcrumb')
-    <a href="{{ route('appointments.index') }}" class="text-slate-400 hover:text-slate-600">Appointments</a>
+    <a href="{{ route('appointments.index') }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Appointments</a>
     <span class="mx-1">/</span><span class="font-medium text-slate-700 dark:text-slate-200">{{ $appointment->appointment_number }}</span>
 @endsection
 

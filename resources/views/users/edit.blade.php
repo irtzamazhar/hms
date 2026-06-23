@@ -1,9 +1,9 @@
 @extends('layouts.hms')
 @section('title','Edit User — '.$user->name)
 @section('breadcrumb')
-    <a href="{{ route('users.index') }}" class="text-slate-400 hover:text-slate-600">Users</a>
+    <a href="{{ route('users.index') }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Users</a>
     <span class="mx-1">/</span>
-    <a href="{{ route('users.show', $user) }}" class="text-slate-400 hover:text-slate-600">{{ $user->name }}</a>
+    <a href="{{ route('users.show', $user) }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">{{ $user->name }}</a>
     <span class="mx-1">/</span><span class="font-medium text-slate-700 dark:text-slate-200">Edit</span>
 @endsection
 
@@ -11,7 +11,7 @@
 <div class="max-w-2xl mx-auto">
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-xl font-bold text-slate-800 dark:text-white">Edit User</h1>
-    <a href="{{ route('users.show', $user) }}" class="text-sm text-slate-500 hover:text-slate-700">← Back</a>
+    <a href="{{ route('users.show', $user) }}" class="text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-200">← Back</a>
 </div>
 
 <form method="POST" action="{{ route('users.update', $user) }}"

@@ -1,7 +1,7 @@
 @extends('layouts.hms')
 @section('title','Beds — '.$ward->name)
 @section('breadcrumb')
-    <a href="{{ route('wards.index') }}" class="text-slate-400 hover:text-slate-600">Wards</a>
+    <a href="{{ route('wards.index') }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Wards</a>
     <span class="mx-1">/</span><span class="font-medium text-slate-700 dark:text-slate-200">{{ $ward->name }} — Beds</span>
 @endsection
 

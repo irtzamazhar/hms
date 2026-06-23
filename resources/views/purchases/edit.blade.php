@@ -1,9 +1,9 @@
 @extends('layouts.hms')
 @section('title','Update Payment — '.$purchase->purchase_number)
 @section('breadcrumb')
-    <a href="{{ route('purchases.index') }}" class="text-slate-400 hover:text-slate-600">Purchases</a>
+    <a href="{{ route('purchases.index') }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Purchases</a>
     <span class="mx-1">/</span>
-    <a href="{{ route('purchases.show', $purchase) }}" class="text-slate-400 hover:text-slate-600">{{ $purchase->purchase_number }}</a>
+    <a href="{{ route('purchases.show', $purchase) }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">{{ $purchase->purchase_number }}</a>
     <span class="mx-1">/</span><span class="font-medium text-slate-700 dark:text-slate-200">Update Payment</span>
 @endsection
 
@@ -11,7 +11,7 @@
 <div class="max-w-lg mx-auto">
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-xl font-bold text-slate-800 dark:text-white">Update Payment</h1>
-    <a href="{{ route('purchases.show', $purchase) }}" class="text-sm text-slate-500 hover:text-slate-700">← Back</a>
+    <a href="{{ route('purchases.show', $purchase) }}" class="text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-200">← Back</a>
 </div>
 
 <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 mb-4 text-sm">

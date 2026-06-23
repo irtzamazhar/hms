@@ -1,7 +1,7 @@
 @extends('layouts.hms')
 @section('title','Close Shift')
 @section('breadcrumb')
-    <a href="{{ route('shifts.index') }}" class="text-slate-400 hover:text-slate-600">Shifts</a>
+    <a href="{{ route('shifts.index') }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Shifts</a>
     <span class="mx-1">/</span><span class="font-medium text-slate-700 dark:text-slate-200">Close Shift</span>
 @endsection
 

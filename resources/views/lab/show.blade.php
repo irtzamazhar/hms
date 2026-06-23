@@ -1,7 +1,7 @@
 @extends('layouts.hms')
 @section('title','Lab Booking — '.$booking->booking_number)
 @section('breadcrumb')
-    <a href="{{ route('lab.index') }}" class="text-slate-400 hover:text-slate-600">Lab</a> <span class="mx-1">/</span>
+    <a href="{{ route('lab.index') }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Lab</a> <span class="mx-1">/</span>
     <span class="font-medium text-slate-700 dark:text-slate-200">{{ $booking->booking_number }}</span>
 @endsection
 

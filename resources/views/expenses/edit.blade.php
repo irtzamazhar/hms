@@ -1,8 +1,8 @@
 @extends('layouts.hms')
 @section('title','Edit Expense')
 @section('breadcrumb')
-    <a href="{{ route('expenses.index') }}" class="text-slate-400 hover:text-slate-600">Expenses</a> <span class="mx-1">/</span>
-    <a href="{{ route('expenses.show',$expense) }}" class="text-slate-400 hover:text-slate-600">{{ $expense->title }}</a> <span class="mx-1">/</span>
+    <a href="{{ route('expenses.index') }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Expenses</a> <span class="mx-1">/</span>
+    <a href="{{ route('expenses.show',$expense) }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">{{ $expense->title }}</a> <span class="mx-1">/</span>
     <span class="font-medium text-slate-700 dark:text-slate-200">Edit</span>
 @endsection
 

@@ -1,7 +1,7 @@
 @extends('layouts.hms')
 @section('title','OPD Invoice — '.$visit->visit_number)
 @section('breadcrumb')
-    <a href="{{ route('opd.show',$visit) }}" class="text-slate-400 hover:text-slate-600">{{ $visit->visit_number }}</a> <span class="mx-1">/</span>
+    <a href="{{ route('opd.show',$visit) }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">{{ $visit->visit_number }}</a> <span class="mx-1">/</span>
     <span class="font-medium text-slate-700 dark:text-slate-200">Invoice</span>
 @endsection
 

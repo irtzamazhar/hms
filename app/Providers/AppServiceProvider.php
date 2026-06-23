@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\HospitalSetting;
+use App\Support\Modules;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -26,6 +28,20 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->applyHospitalTimezone();
+        $this->registerModuleDirectives();
+    }
+
+    /**
+     * Blade helpers for gating UI by enabled modules:
+     *
+     *   @module('opd') ... @endmodule
+     *
+     *   @moduleany(['opd','ipd']) ... @endmoduleany
+     */
+    private function registerModuleDirectives(): void
+    {
+        Blade::if('module', fn (string $key) => Modules::enabled($key));
+        Blade::if('moduleany', fn (array $keys) => Modules::anyEnabled($keys));
     }
 
     /**

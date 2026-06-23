@@ -1,7 +1,7 @@
 @extends('layouts.hms')
 @section('title','Add Lab Test')
 @section('breadcrumb')
-    <a href="{{ route('lab.tests.index') }}" class="text-slate-400 hover:text-slate-600">Lab Tests</a>
+    <a href="{{ route('lab.tests.index') }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Lab Tests</a>
     <span class="mx-1">/</span><span class="font-medium text-slate-700 dark:text-slate-200">Add</span>
 @endsection
 
@@ -9,7 +9,7 @@
 <div class="max-w-2xl mx-auto">
 <div class="flex items-center justify-between mb-6">
     <h1 class="text-xl font-bold text-slate-800 dark:text-white">Add Lab Test</h1>
-    <a href="{{ route('lab.tests.index') }}" class="text-sm text-slate-500 hover:text-slate-700">← Back</a>
+    <a href="{{ route('lab.tests.index') }}" class="text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-200">← Back</a>
 </div>
 
 <form method="POST" action="{{ route('lab.tests.store') }}"

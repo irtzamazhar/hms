@@ -1,8 +1,8 @@
 @extends('layouts.hms')
 @section('title','Edit Staff')
 @section('breadcrumb')
-    <a href="{{ route('staff.index') }}" class="text-slate-400 hover:text-slate-600">Staff</a> <span class="mx-1">/</span>
-    <a href="{{ route('staff.show',$staff) }}" class="text-slate-400 hover:text-slate-600">{{ $staff->user->name }}</a> <span class="mx-1">/</span>
+    <a href="{{ route('staff.index') }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">Staff</a> <span class="mx-1">/</span>
+    <a href="{{ route('staff.show',$staff) }}" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">{{ $staff->user->name }}</a> <span class="mx-1">/</span>
     <span class="font-medium text-slate-700 dark:text-slate-200">Edit</span>
 @endsection
 

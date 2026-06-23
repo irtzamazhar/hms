@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\HospitalSetting;
+use App\Models\Module;
 use App\Providers\AppServiceProvider;
+use App\Support\Modules;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -15,8 +17,9 @@ class SettingController extends Controller
     {
         $this->authorize('view settings');
         $setting = HospitalSetting::current();
+        $moduleStates = Modules::states();
 
-        return view('settings.index', compact('setting'));
+        return view('settings.index', compact('setting', 'moduleStates'));
     }
 
     public function updateHospital(Request $request): RedirectResponse
@@ -52,5 +55,27 @@ class SettingController extends Controller
         Cache::forget(AppServiceProvider::TIMEZONE_CACHE_KEY);
 
         return back()->with('success', 'System settings updated.');
+    }
+
+    /**
+     * Enable/disable site-wide feature modules. Super admin only.
+     */
+    public function updateModules(Request $request): RedirectResponse
+    {
+        $this->authorize('manage settings');
+        abort_unless($request->user()->hasRole('super_admin'), 403);
+
+        $enabled = (array) $request->input('modules', []);
+
+        foreach (Modules::catalogue() as $key => $meta) {
+            Module::updateOrCreate(
+                ['key' => $key],
+                ['name' => $meta['label'], 'enabled' => in_array($key, $enabled, true)]
+            );
+        }
+
+        Modules::forget();
+
+        return back()->with('success', 'Module settings updated.');
     }
 }
