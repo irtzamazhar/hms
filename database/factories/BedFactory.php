@@ -12,11 +12,11 @@ class BedFactory extends Factory
     public function definition(): array
     {
         return [
-            'ward_id'        => Ward::factory(),
-            'bed_number'     => fake()->unique()->bothify('B-###'),
-            'bed_type'       => fake()->randomElement(['general', 'icu', 'isolation', 'maternity']),
+            'ward_id' => Ward::factory(),
+            'bed_number' => fake()->unique()->bothify('B-###'),
+            'bed_type' => fake()->randomElement(['standard', 'electric', 'bariatric', 'pediatric']),
             'charge_per_day' => fake()->numberBetween(500, 5000),
-            'status'         => 'available',
+            'status' => 'available',
         ];
     }
 

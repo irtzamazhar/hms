@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Doctor;
+use App\Models\HospitalSetting;
 use App\Models\Medicine;
 use App\Models\Patient;
 use App\Models\Sale;
@@ -20,8 +21,8 @@ class PharmacyController extends Controller
     {
         $this->authorize('view pharmacy');
         $medicines = Medicine::active()->with('category:id,name')->orderBy('name')->get();
-        $patients  = Patient::select('id', 'name', 'mr_number', 'phone')->latest()->get();
-        $doctors   = Doctor::active()->with('user:id,name')->get();
+        $patients = Patient::select('id', 'name', 'mr_number', 'phone')->latest()->get();
+        $doctors = Doctor::active()->with('user:id,name')->get();
 
         return view('pharmacy.pos', compact('medicines', 'patients', 'doctors'));
     }
@@ -30,10 +31,10 @@ class PharmacyController extends Controller
     {
         $this->authorize('create sales');
         $request->validate([
-            'items'               => 'required|array|min:1',
+            'items' => 'required|array|min:1',
             'items.*.medicine_id' => 'required|exists:medicines,id',
-            'items.*.quantity'    => 'required|integer|min:1',
-            'items.*.unit_price'  => 'required|numeric|min:0',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.unit_price' => 'required|numeric|min:0',
         ]);
 
         $sale = $this->service->processSale($request->all());
@@ -51,15 +52,16 @@ class PharmacyController extends Controller
             ->when($request->shift, fn ($q, $s) => $q->where('shift', $s))
             ->latest();
 
-        $totalRevenue  = (clone $query)->sum('total_amount');
+        $totalRevenue = (clone $query)->sum('total_amount');
         $totalDiscount = (clone $query)->sum('discount_amount');
-        $sales         = $query->paginate(20)->withQueryString();
+        $sales = $query->paginate(20)->withQueryString();
 
         return view('pharmacy.sales', compact('sales', 'totalRevenue', 'totalDiscount'));
     }
 
     public function searchMedicines(Request $request): JsonResponse
     {
+        $this->authorize('view pharmacy');
         $medicines = Medicine::active()
             ->where(fn ($q) => $q->where('name', 'like', '%'.$request->q.'%')
                 ->orWhere('generic_name', 'like', '%'.$request->q.'%')
@@ -81,9 +83,10 @@ class PharmacyController extends Controller
 
     public function salePrint(Sale $sale)
     {
+        $this->authorize('view sales');
         $sale->load(['items.medicine', 'patient', 'doctor.user']);
-        $setting = \App\Models\HospitalSetting::current();
-        $pdf     = app('dompdf.wrapper')->loadView('pharmacy.invoice-pdf', compact('sale', 'setting'));
+        $setting = HospitalSetting::current();
+        $pdf = app('dompdf.wrapper')->loadView('pharmacy.invoice-pdf', compact('sale', 'setting'));
 
         return $pdf->stream("Invoice-{$sale->invoice_number}.pdf");
     }

@@ -21,9 +21,9 @@ class ExpenseController extends Controller
             ->latest('expense_date')->paginate(20)->withQueryString();
 
         $categories = ExpenseCategory::active()->get();
-        $summary    = [
-            'today'   => Expense::whereDate('expense_date', today())->approved()->sum('amount'),
-            'month'   => Expense::whereMonth('expense_date', now()->month)->approved()->sum('amount'),
+        $summary = [
+            'today' => Expense::whereDate('expense_date', today())->approved()->sum('amount'),
+            'month' => Expense::whereMonth('expense_date', now()->month)->approved()->sum('amount'),
             'pending' => Expense::where('status', 'pending')->count(),
         ];
 
@@ -42,20 +42,34 @@ class ExpenseController extends Controller
         $this->authorize('create expenses');
         $request->validate([
             'expense_category_id' => 'required|exists:expense_categories,id',
-            'title'               => 'required|string|max:255',
-            'amount'              => 'required|numeric|min:0.01',
-            'expense_date'        => 'required|date',
-            'payment_method'      => 'required|string',
-            'module'              => 'required|in:hospital,pharmacy,laboratory,general',
+            'title' => 'required|string|max:255',
+            'amount' => 'required|numeric|min:0.01',
+            'expense_date' => 'required|date',
+            'payment_method' => 'required|string',
+            'module' => 'required|in:hospital,pharmacy,laboratory,general',
         ]);
 
-        Expense::create(array_merge($request->all(), ['created_by' => auth()->id()]));
+        // Only persist explicitly allowed fields. Workflow columns (status,
+        // approved_by) are forced server-side so an expense can never be
+        // self-approved by injecting them in the request body.
+        Expense::create(array_merge(
+            $request->only([
+                'expense_category_id', 'title', 'amount', 'expense_date', 'shift',
+                'reference_number', 'payment_method', 'module', 'description',
+            ]),
+            [
+                'created_by' => auth()->id(),
+                'status' => 'pending',
+                'approved_by' => null,
+            ]
+        ));
 
         return redirect()->route('expenses.index')->with('success', 'Expense recorded.');
     }
 
     public function show(Expense $expense): View
     {
+        $this->authorize('view expenses');
         $expense->load(['category', 'createdBy', 'approvedBy']);
 
         return view('expenses.show', compact('expense'));

@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Bed;
 use App\Models\Department;
 use App\Models\Doctor;
+use App\Models\HospitalSetting;
 use App\Models\IpdAdmission;
 use App\Models\Patient;
 use App\Models\Ward;
-use App\Models\HospitalSetting;
 use App\Notifications\IpdAdmissionCreated;
 use App\Services\IpdService;
 use Illuminate\Http\RedirectResponse;
@@ -23,8 +23,8 @@ class IpdController extends Controller
     {
         $this->authorize('view ipd');
         $admissions = $this->service->list($request->only(['status', 'ward_id', 'doctor_id', 'search']));
-        $wards      = Ward::active()->get();
-        $doctors    = Doctor::active()->with('user:id,name')->get();
+        $wards = Ward::active()->get();
+        $doctors = Doctor::active()->with('user:id,name')->get();
 
         return view('ipd.index', compact('admissions', 'wards', 'doctors'));
     }
@@ -32,11 +32,11 @@ class IpdController extends Controller
     public function create(): View
     {
         $this->authorize('create ipd');
-        $patients    = Patient::select('id', 'name', 'mr_number')->latest()->get();
-        $doctors     = Doctor::active()->with('user:id,name')->get();
+        $patients = Patient::select('id', 'name', 'mr_number')->latest()->get();
+        $doctors = Doctor::active()->with('user:id,name')->get();
         $departments = Department::active()->get();
-        $wards       = Ward::active()->get();
-        $beds        = Bed::available()->with('ward:id,name')->get();
+        $wards = Ward::active()->get();
+        $beds = Bed::available()->with('ward:id,name')->get();
 
         return view('ipd.create', compact('patients', 'doctors', 'departments', 'wards', 'beds'));
     }
@@ -45,14 +45,14 @@ class IpdController extends Controller
     {
         $this->authorize('create ipd');
         $validated = $request->validate([
-            'patient_id'          => 'required|exists:patients,id',
-            'doctor_id'           => 'required|exists:doctors,id',
-            'ward_id'             => 'required|exists:wards,id',
-            'bed_id'              => 'required|exists:beds,id',
-            'admission_datetime'  => 'required|date',
+            'patient_id' => 'required|exists:patients,id',
+            'doctor_id' => 'required|exists:doctors,id',
+            'ward_id' => 'required|exists:wards,id',
+            'bed_id' => 'required|exists:beds,id',
+            'admission_datetime' => 'required|date',
             'admission_diagnosis' => 'nullable|string',
-            'admission_type'      => 'required|in:emergency,elective,transfer',
-            'daily_bed_charge'    => 'nullable|numeric|min:0',
+            'admission_type' => 'required|in:emergency,elective,transfer',
+            'daily_bed_charge' => 'nullable|numeric|min:0',
         ]);
 
         $admission = $this->service->admit($validated);
@@ -75,10 +75,10 @@ class IpdController extends Controller
     public function edit(IpdAdmission $ipd): View
     {
         $this->authorize('edit ipd');
-        $admission   = $ipd;
-        $doctors     = Doctor::active()->with('user:id,name')->get();
+        $admission = $ipd;
+        $doctors = Doctor::active()->with('user:id,name')->get();
         $departments = Department::active()->get();
-        $wards       = Ward::active()->get();
+        $wards = Ward::active()->get();
 
         return view('ipd.edit', compact('admission', 'doctors', 'departments', 'wards'));
     }
@@ -108,9 +108,9 @@ class IpdController extends Controller
     {
         $this->authorize('discharge patients');
         $validated = $request->validate([
-            'discharge_datetime'  => 'required|date',
+            'discharge_datetime' => 'required|date',
             'discharge_diagnosis' => 'nullable|string',
-            'treatment_summary'   => 'nullable|string',
+            'treatment_summary' => 'nullable|string',
         ]);
 
         $this->service->discharge($ipdAdmission, $validated);
@@ -120,6 +120,7 @@ class IpdController extends Controller
 
     public function addTreatment(Request $request, IpdAdmission $ipdAdmission): RedirectResponse
     {
+        $this->authorize('edit ipd');
         $validated = $request->validate(['treatment_notes' => 'required|string']);
         $this->service->addTreatment($ipdAdmission, $validated);
 
@@ -128,6 +129,7 @@ class IpdController extends Controller
 
     public function invoice(IpdAdmission $ipdAdmission): View
     {
+        $this->authorize('view ipd');
         $admission = $ipdAdmission;
         $admission->load(['patient', 'doctor.user', 'ward', 'bed']);
         $charges = $this->service->calculateCharges($admission);

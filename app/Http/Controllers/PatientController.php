@@ -84,7 +84,7 @@ class PatientController extends Controller
 
         return Excel::download(
             new PatientsExport($request->search, $request->gender, $request->blood_group),
-            'Patients-' . now()->format('Y-m-d') . '.xlsx'
+            'Patients-'.now()->format('Y-m-d').'.xlsx'
         );
     }
 }

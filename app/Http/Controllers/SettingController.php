@@ -25,22 +25,30 @@ class SettingController extends Controller
     public function updateHospital(Request $request): RedirectResponse
     {
         $this->authorize('manage settings');
-        $request->validate([
+        $data = $request->validate([
             'hospital_name' => 'required|string|max:255',
-            'email' => 'nullable|email',
+            'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:20',
+            'website' => 'nullable|string|max:255',
+            'registration_no' => 'nullable|string|max:100',
+            'tax_no' => 'nullable|string|max:100',
             'currency' => 'nullable|string|max:10',
             'currency_symbol' => 'nullable|string|max:5',
+            'address' => 'nullable|string|max:1000',
+            // UP-1: restrict uploads to real raster images (no SVG/HTML/PHP) and size.
+            'logo' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:1024',
         ]);
 
         $setting = HospitalSetting::current();
 
         if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('hospital', 'public');
-            $setting->update(['logo' => $path]);
+            $data['logo'] = $request->file('logo')->store('hospital', 'public');
+        } else {
+            unset($data['logo']);
         }
 
-        $setting->update($request->except(['logo', '_token', '_method']));
+        // Persist only the validated fields (no blind mass-assignment of arbitrary input).
+        $setting->update($data);
 
         return back()->with('success', 'Hospital settings updated.');
     }

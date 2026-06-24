@@ -27,7 +27,10 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        // The app routes users to their role landing page; a bare user (no
+        // 'view dashboard' permission) lands on their homeRoute() rather than /dashboard.
+        // fresh() so user_type reflects the DB default applied on insert.
+        $response->assertRedirect($user->fresh()->homeRoute());
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void

@@ -38,17 +38,17 @@ class LabTestController extends Controller
     {
         $this->authorize('manage lab tests');
         $validated = $request->validate([
-            'category_id'              => 'required|exists:lab_test_categories,id',
-            'name'                     => 'required|string|max:150',
-            'code'                     => 'required|string|max:30|unique:lab_tests,code',
-            'cost'                     => 'required|numeric|min:0',
-            'normal_range'             => 'nullable|string|max:100',
-            'unit'                     => 'nullable|string|max:30',
-            'sample_type'              => 'nullable|string|max:50',
-            'turnaround_hours'         => 'nullable|integer|min:1',
+            'category_id' => 'required|exists:lab_test_categories,id',
+            'name' => 'required|string|max:150',
+            'code' => 'required|string|max:30|unique:lab_tests,code',
+            'cost' => 'required|numeric|min:0',
+            'normal_range' => 'nullable|string|max:100',
+            'unit' => 'nullable|string|max:30',
+            'sample_type' => 'nullable|string|max:50',
+            'turnaround_hours' => 'nullable|integer|min:1',
             'preparation_instructions' => 'nullable|string',
-            'description'              => 'nullable|string',
-            'status'                   => 'required|in:active,inactive',
+            'description' => 'nullable|string',
+            'status' => 'required|in:active,inactive',
         ]);
 
         LabTest::create($validated);
@@ -68,17 +68,17 @@ class LabTestController extends Controller
     {
         $this->authorize('manage lab tests');
         $validated = $request->validate([
-            'category_id'              => 'required|exists:lab_test_categories,id',
-            'name'                     => 'required|string|max:150',
-            'code'                     => 'required|string|max:30|unique:lab_tests,code,' . $labTest->id,
-            'cost'                     => 'required|numeric|min:0',
-            'normal_range'             => 'nullable|string|max:100',
-            'unit'                     => 'nullable|string|max:30',
-            'sample_type'              => 'nullable|string|max:50',
-            'turnaround_hours'         => 'nullable|integer|min:1',
+            'category_id' => 'required|exists:lab_test_categories,id',
+            'name' => 'required|string|max:150',
+            'code' => 'required|string|max:30|unique:lab_tests,code,'.$labTest->id,
+            'cost' => 'required|numeric|min:0',
+            'normal_range' => 'nullable|string|max:100',
+            'unit' => 'nullable|string|max:30',
+            'sample_type' => 'nullable|string|max:50',
+            'turnaround_hours' => 'nullable|integer|min:1',
             'preparation_instructions' => 'nullable|string',
-            'description'              => 'nullable|string',
-            'status'                   => 'required|in:active,inactive',
+            'description' => 'nullable|string',
+            'status' => 'required|in:active,inactive',
         ]);
 
         $labTest->update($validated);

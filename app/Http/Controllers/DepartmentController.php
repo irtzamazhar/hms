@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use App\Models\Doctor;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -35,11 +34,11 @@ class DepartmentController extends Controller
     {
         $this->authorize('create departments');
         $request->validate([
-            'name'           => 'required|string|max:100|unique:departments,name',
-            'code'           => 'required|string|max:20|unique:departments,code',
+            'name' => 'required|string|max:100|unique:departments,name',
+            'code' => 'required|string|max:20|unique:departments,code',
             'head_doctor_id' => 'nullable|exists:users,id',
-            'description'    => 'nullable|string',
-            'status'         => 'required|in:active,inactive',
+            'description' => 'nullable|string',
+            'status' => 'required|in:active,inactive',
         ]);
 
         Department::create($request->only(['name', 'code', 'head_doctor_id', 'description', 'status']));
@@ -64,10 +63,10 @@ class DepartmentController extends Controller
     {
         $this->authorize('edit departments');
         $request->validate([
-            'name'           => "required|string|max:100|unique:departments,name,{$department->id}",
+            'name' => "required|string|max:100|unique:departments,name,{$department->id}",
             'head_doctor_id' => 'nullable|exists:users,id',
-            'description'    => 'nullable|string',
-            'status'         => 'required|in:active,inactive',
+            'description' => 'nullable|string',
+            'status' => 'required|in:active,inactive',
         ]);
 
         $department->update($request->only(['name', 'head_doctor_id', 'description', 'status']));

@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Patient;
+use App\Support\Csv;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -11,7 +12,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class PatientsExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithTitle, WithStyles
+class PatientsExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     public function __construct(
         private ?string $search = null,
@@ -39,20 +40,22 @@ class PatientsExport implements FromQuery, WithHeadings, WithMapping, ShouldAuto
 
     public function map($row): array
     {
+        // EXC-1: pass user-controlled text through Csv::safe() to neutralise
+        // spreadsheet formula injection (=, +, -, @).
         return [
-            $row->mr_number,
-            $row->name,
+            Csv::safe($row->mr_number),
+            Csv::safe($row->name),
             ucfirst($row->gender ?? ''),
-            $row->date_of_birth?->format('d/m/Y'),
-            $row->date_of_birth ? $row->date_of_birth->age . ' yrs' : '—',
+            $row->dob?->format('d/m/Y'),
+            $row->dob ? $row->dob->age.' yrs' : '—',
             $row->blood_group ?? '—',
-            $row->phone,
-            $row->email ?? '—',
-            $row->cnic ?? '—',
-            $row->address ?? '—',
-            $row->city ?? '—',
-            $row->emergency_contact_name ?? '—',
-            $row->emergency_contact_phone ?? '—',
+            Csv::safe($row->phone),
+            Csv::safe($row->email ?? '—'),
+            Csv::safe($row->cnic ?? '—'),
+            Csv::safe($row->address ?? '—'),
+            Csv::safe($row->city ?? '—'),
+            Csv::safe($row->emergency_contact_name ?? '—'),
+            Csv::safe($row->emergency_contact_phone ?? '—'),
             $row->created_at?->format('d/m/Y'),
         ];
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\PurchasesExport;
+use App\Models\HospitalSetting;
 use App\Models\Medicine;
 use App\Models\MedicineStock;
 use App\Models\Purchase;
@@ -33,7 +34,7 @@ class PurchaseController extends Controller
         $suppliers = Supplier::active()->get();
         $summary = [
             'month_total' => Purchase::whereMonth('purchase_date', now()->month)->sum('total_amount'),
-            'pending'     => Purchase::where('payment_status', 'pending')->count(),
+            'pending' => Purchase::where('payment_status', 'pending')->count(),
         ];
 
         return view('purchases.index', compact('purchases', 'suppliers', 'summary'));
@@ -52,42 +53,42 @@ class PurchaseController extends Controller
     {
         $this->authorize('manage purchases');
         $request->validate([
-            'supplier_id'         => 'required|exists:suppliers,id',
-            'purchase_date'       => 'required|date',
-            'invoice_number'      => 'nullable|string|max:100',
-            'payment_method'      => 'required|string',
-            'items'               => 'required|array|min:1',
+            'supplier_id' => 'required|exists:suppliers,id',
+            'purchase_date' => 'required|date',
+            'invoice_number' => 'nullable|string|max:100',
+            'payment_method' => 'required|string',
+            'items' => 'required|array|min:1',
             'items.*.medicine_id' => 'required|exists:medicines,id',
-            'items.*.quantity'    => 'required|integer|min:1',
-            'items.*.unit_price'  => 'required|numeric|min:0',
-            'items.*.sale_price'  => 'required|numeric|min:0',
-            'items.*.batch_number'=> 'nullable|string',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.unit_price' => 'required|numeric|min:0',
+            'items.*.sale_price' => 'required|numeric|min:0',
+            'items.*.batch_number' => 'nullable|string',
             'items.*.expiry_date' => 'nullable|date',
         ]);
 
         DB::transaction(function () use ($request) {
             $subtotal = collect($request->items)->sum(fn ($i) => $i['quantity'] * $i['unit_price']);
             $discount = $request->discount ?? 0;
-            $tax      = $request->tax ?? 0;
-            $total    = $subtotal - $discount + $tax;
-            $paid     = $request->paid_amount ?? 0;
+            $tax = $request->tax ?? 0;
+            $total = $subtotal - $discount + $tax;
+            $paid = $request->paid_amount ?? 0;
 
             $purchase = Purchase::create([
                 'purchase_number' => Purchase::generateNumber(),
-                'supplier_id'     => $request->supplier_id,
-                'purchase_date'   => $request->purchase_date,
-                'invoice_number'  => $request->invoice_number,
-                'subtotal'        => $subtotal,
-                'discount'        => $discount,
-                'tax'             => $tax,
-                'total_amount'    => $total,
-                'paid_amount'     => $paid,
-                'due_amount'      => max(0, $total - $paid),
-                'payment_method'  => $request->payment_method,
-                'payment_status'  => $paid >= $total ? 'paid' : ($paid > 0 ? 'partial' : 'pending'),
-                'status'          => 'received',
-                'notes'           => $request->notes,
-                'created_by'      => auth()->id(),
+                'supplier_id' => $request->supplier_id,
+                'purchase_date' => $request->purchase_date,
+                'invoice_number' => $request->invoice_number,
+                'subtotal' => $subtotal,
+                'discount' => $discount,
+                'tax' => $tax,
+                'total_amount' => $total,
+                'paid_amount' => $paid,
+                'due_amount' => max(0, $total - $paid),
+                'payment_method' => $request->payment_method,
+                'payment_status' => $paid >= $total ? 'paid' : ($paid > 0 ? 'partial' : 'pending'),
+                'status' => 'received',
+                'notes' => $request->notes,
+                'created_by' => auth()->id(),
             ]);
 
             foreach ($request->items as $item) {
@@ -100,14 +101,14 @@ class PurchaseController extends Controller
                 $medicine->update(['purchase_price' => $item['unit_price'], 'sale_price' => $item['sale_price']]);
 
                 MedicineStock::create([
-                    'medicine_id'      => $item['medicine_id'],
-                    'type'             => 'in',
-                    'quantity'         => $item['quantity'],
-                    'reference_type'   => 'purchase',
-                    'reference_id'     => $purchase->id,
+                    'medicine_id' => $item['medicine_id'],
+                    'type' => 'in',
+                    'quantity' => $item['quantity'],
+                    'reference_type' => 'purchase',
+                    'reference_id' => $purchase->id,
                     'reference_number' => $purchase->purchase_number,
-                    'notes'            => "Purchase from {$purchase->supplier->name}",
-                    'created_by'       => auth()->id(),
+                    'notes' => "Purchase from {$purchase->supplier->name}",
+                    'created_by' => auth()->id(),
                 ]);
             }
         });
@@ -138,15 +139,15 @@ class PurchaseController extends Controller
         $this->authorize('manage purchases');
         $request->validate([
             'payment_status' => 'required|in:pending,partial,paid',
-            'paid_amount'    => 'required|numeric|min:0',
-            'notes'          => 'nullable|string',
+            'paid_amount' => 'required|numeric|min:0',
+            'notes' => 'nullable|string',
         ]);
 
         $purchase->update([
-            'paid_amount'    => $request->paid_amount,
-            'due_amount'     => max(0, $purchase->total_amount - $request->paid_amount),
+            'paid_amount' => $request->paid_amount,
+            'due_amount' => max(0, $purchase->total_amount - $request->paid_amount),
             'payment_status' => $request->payment_status,
-            'notes'          => $request->notes,
+            'notes' => $request->notes,
         ]);
 
         return redirect()->route('purchases.show', $purchase)->with('success', 'Payment updated.');
@@ -166,14 +167,14 @@ class PurchaseController extends Controller
 
         return Excel::download(
             new PurchasesExport($request->date_from, $request->date_to, $request->supplier_id),
-            'Purchases-' . now()->format('Y-m-d') . '.xlsx'
+            'Purchases-'.now()->format('Y-m-d').'.xlsx'
         );
     }
 
     public function print(Purchase $purchase): Response
     {
         $purchase->load(['supplier', 'items.medicine', 'createdBy']);
-        $setting = \App\Models\HospitalSetting::current();
+        $setting = HospitalSetting::current();
 
         $pdf = Pdf::loadView('purchases.print', compact('purchase', 'setting'))->setPaper('a4');
 

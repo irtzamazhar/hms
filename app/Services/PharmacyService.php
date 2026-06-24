@@ -6,10 +6,11 @@ use App\Models\Medicine;
 use App\Models\MedicineBatch;
 use App\Models\MedicineStock;
 use App\Models\Purchase;
-use App\Models\PurchaseItem;
 use App\Models\Sale;
 use App\Models\SaleItem;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class PharmacyService
 {
@@ -17,48 +18,64 @@ class PharmacyService
     {
         return DB::transaction(function () use ($data) {
             $data['invoice_number'] = Sale::generateInvoiceNumber();
-            $data['created_by']     = auth()->id();
+            $data['created_by'] = auth()->id();
 
-            $subtotal         = 0;
-            $processedItems   = [];
+            $subtotal = 0;
+            $processedItems = [];
 
             foreach ($data['items'] as $item) {
-                $medicine    = Medicine::findOrFail($item['medicine_id']);
-                $unitPrice   = $item['unit_price'] ?? $medicine->sale_price;
-                $qty         = $item['quantity'];
-                $discAmt     = ($unitPrice * $qty) * (($item['discount_percentage'] ?? 0) / 100);
-                $lineTotal   = ($unitPrice * $qty) - $discAmt;
-                $subtotal   += $lineTotal;
+                $medicine = Medicine::findOrFail($item['medicine_id']);
+                $qty = (int) $item['quantity'];
+                $unitPrice = $this->resolveUnitPrice($medicine, $item['unit_price'] ?? null);
+
+                // BL-4: never sell more than is in stock (prevents overselling /
+                // unsigned-column underflow).
+                if ($qty > $medicine->stock_quantity) {
+                    throw ValidationException::withMessages([
+                        'items' => "Insufficient stock for {$medicine->name}: {$medicine->stock_quantity} available, {$qty} requested.",
+                    ]);
+                }
+
+                // BL-3: clamp per-line discount to a sane 0–100%.
+                $discPct = max(0, min(100, (float) ($item['discount_percentage'] ?? 0)));
+                $discAmt = ($unitPrice * $qty) * ($discPct / 100);
+                $lineTotal = ($unitPrice * $qty) - $discAmt;
+                $subtotal += $lineTotal;
 
                 // find purchase cost for profit calculation
                 $purchaseCost = $medicine->purchase_price;
-                $profit       = $lineTotal - ($purchaseCost * $qty);
+                $profit = $lineTotal - ($purchaseCost * $qty);
 
                 $processedItems[] = array_merge($item, [
-                    'unit_price'          => $unitPrice,
-                    'discount_amount'     => $discAmt,
-                    'total_price'         => $lineTotal,
-                    'profit'              => $profit,
+                    'unit_price' => $unitPrice,
+                    'discount_amount' => $discAmt,
+                    'total_price' => $lineTotal,
+                    'profit' => $profit,
                 ]);
             }
 
-            $discountAmt  = $data['discount_amount'] ?? ($subtotal * (($data['discount_percentage'] ?? 0) / 100));
-            $totalAmount  = $subtotal - $discountAmt + ($data['tax_amount'] ?? 0);
-            $paidAmount   = $data['paid_amount'] ?? $totalAmount;
+            // BL-3: clamp the order-level discount so the total can never go negative.
+            $orderDiscPct = max(0, min(100, (float) ($data['discount_percentage'] ?? 0)));
+            $discountAmt = $data['discount_amount'] ?? ($subtotal * ($orderDiscPct / 100));
+            $discountAmt = max(0, min((float) $discountAmt, $subtotal));
+            $taxAmount = max(0, (float) ($data['tax_amount'] ?? 0));
+            $totalAmount = $subtotal - $discountAmt + $taxAmount;
+            $paidAmount = $data['paid_amount'] ?? $totalAmount;
 
-            $hour  = now()->hour;
+            $hour = now()->hour;
             $shift = $hour >= 8 && $hour < 14 ? 'morning' : ($hour >= 14 && $hour < 20 ? 'evening' : 'night');
 
             $sale = Sale::create(array_merge($data, [
-                'subtotal'        => $subtotal,
+                'subtotal' => $subtotal,
                 'discount_amount' => $discountAmt,
-                'total_amount'    => $totalAmount,
-                'paid_amount'     => $paidAmount,
-                'change_amount'   => max(0, $paidAmount - $totalAmount),
-                'sale_date'       => $data['sale_date'] ?? today(),
-                'shift'           => $data['shift'] ?? $shift,
-                'payment_status'  => 'paid',
-                'status'          => 'completed',
+                'tax_amount' => $taxAmount,
+                'total_amount' => $totalAmount,
+                'paid_amount' => $paidAmount,
+                'change_amount' => max(0, $paidAmount - $totalAmount),
+                'sale_date' => $data['sale_date'] ?? today(),
+                'shift' => $data['shift'] ?? $shift,
+                'payment_status' => 'paid',
+                'status' => 'completed',
             ]));
 
             foreach ($processedItems as $item) {
@@ -68,14 +85,14 @@ class PharmacyService
                 Medicine::find($item['medicine_id'])->decrement('stock_quantity', $item['quantity']);
 
                 MedicineStock::create([
-                    'medicine_id'      => $item['medicine_id'],
-                    'type'             => 'out',
-                    'quantity'         => -$item['quantity'],
-                    'unit_price'       => $item['unit_price'],
-                    'reference_type'   => 'sale',
-                    'reference_id'     => $sale->id,
+                    'medicine_id' => $item['medicine_id'],
+                    'type' => 'out',
+                    'quantity' => -$item['quantity'],
+                    'unit_price' => $item['unit_price'],
+                    'reference_type' => 'sale',
+                    'reference_id' => $sale->id,
                     'reference_number' => $sale->invoice_number,
-                    'created_by'       => auth()->id(),
+                    'created_by' => auth()->id(),
                 ]);
             }
 
@@ -83,20 +100,56 @@ class PharmacyService
         });
     }
 
+    /**
+     * BL-2: Resolve the POS unit price. The catalogue price is authoritative;
+     * a manual override is only honoured for users with 'manage medicines',
+     * must not drop below cost, and is audit-logged. Unauthorised overrides
+     * silently fall back to the catalogue price.
+     */
+    private function resolveUnitPrice(Medicine $medicine, mixed $clientPrice): float
+    {
+        $catalogue = (float) $medicine->sale_price;
+
+        if ($clientPrice === null || (float) $clientPrice === $catalogue) {
+            return $catalogue;
+        }
+
+        if (! auth()->user()?->can('manage medicines')) {
+            return $catalogue;
+        }
+
+        $override = (float) $clientPrice;
+        if ($override < (float) $medicine->purchase_price) {
+            throw ValidationException::withMessages([
+                'items' => "Price for {$medicine->name} cannot be below cost ({$medicine->purchase_price}).",
+            ]);
+        }
+
+        Log::channel(config('logging.default'))->warning('pos.price_override', [
+            'user_id' => auth()->id(),
+            'medicine_id' => $medicine->id,
+            'medicine' => $medicine->name,
+            'catalogue_price' => $catalogue,
+            'override_price' => $override,
+        ]);
+
+        return $override;
+    }
+
     public function processPurchase(array $data): Purchase
     {
         return DB::transaction(function () use ($data) {
             $data['purchase_number'] = Purchase::generateNumber();
-            $data['created_by']      = auth()->id();
+            $data['created_by'] = auth()->id();
 
             $subtotal = 0;
             foreach ($data['items'] as $item) {
                 $subtotal += $item['total_price'];
             }
 
-            $data['subtotal']     = $subtotal;
+            $data['subtotal'] = $subtotal;
             $data['total_amount'] = $subtotal - ($data['discount'] ?? 0) + ($data['tax'] ?? 0);
-            $data['due_amount']   = $data['total_amount'] - ($data['paid_amount'] ?? 0);
+            $data['due_amount'] = $data['total_amount'] - ($data['paid_amount'] ?? 0);
 
             $purchase = Purchase::create($data);
 
@@ -105,29 +158,29 @@ class PharmacyService
 
                 // create batch
                 $batch = MedicineBatch::create([
-                    'medicine_id'      => $item['medicine_id'],
-                    'batch_number'     => $item['batch_number'] ?? 'BATCH-' . now()->format('Ymd'),
-                    'expiry_date'      => $item['expiry_date'],
-                    'purchase_price'   => $item['unit_price'],
-                    'sale_price'       => $item['sale_price'] ?? Medicine::find($item['medicine_id'])?->sale_price ?? 0,
-                    'quantity'         => $item['quantity'],
+                    'medicine_id' => $item['medicine_id'],
+                    'batch_number' => $item['batch_number'] ?? 'BATCH-'.now()->format('Ymd'),
+                    'expiry_date' => $item['expiry_date'],
+                    'purchase_price' => $item['unit_price'],
+                    'sale_price' => $item['sale_price'] ?? Medicine::find($item['medicine_id'])?->sale_price ?? 0,
+                    'quantity' => $item['quantity'],
                     'remaining_quantity' => $item['quantity'],
-                    'supplier_id'      => $data['supplier_id'],
+                    'supplier_id' => $data['supplier_id'],
                 ]);
 
                 // add stock
                 Medicine::find($item['medicine_id'])->increment('stock_quantity', $item['quantity']);
 
                 MedicineStock::create([
-                    'medicine_id'      => $item['medicine_id'],
-                    'batch_id'         => $batch->id,
-                    'type'             => 'in',
-                    'quantity'         => $item['quantity'],
-                    'unit_price'       => $item['unit_price'],
-                    'reference_type'   => 'purchase',
-                    'reference_id'     => $purchase->id,
+                    'medicine_id' => $item['medicine_id'],
+                    'batch_id' => $batch->id,
+                    'type' => 'in',
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $item['unit_price'],
+                    'reference_type' => 'purchase',
+                    'reference_id' => $purchase->id,
                     'reference_number' => $purchase->purchase_number,
-                    'created_by'       => auth()->id(),
+                    'created_by' => auth()->id(),
                 ]);
             }
 
@@ -146,19 +199,19 @@ class PharmacyService
 
             MedicineStock::create([
                 'medicine_id' => $medicine->id,
-                'type'        => 'adjustment',
-                'quantity'    => $type === 'in' ? $quantity : -$quantity,
-                'unit_price'  => $medicine->purchase_price,
-                'notes'       => $notes,
-                'created_by'  => auth()->id(),
+                'type' => 'adjustment',
+                'quantity' => $type === 'in' ? $quantity : -$quantity,
+                'unit_price' => $medicine->purchase_price,
+                'notes' => $notes,
+                'created_by' => auth()->id(),
             ]);
         });
     }
 
     public function getProfitLoss(string $from, string $to): array
     {
-        $revenue  = Sale::whereBetween('sale_date', [$from, $to])->where('status', 'completed')->sum('total_amount');
-        $profit   = SaleItem::whereHas('sale', fn ($q) => $q->whereBetween('sale_date', [$from, $to])->where('status', 'completed'))->sum('profit');
+        $revenue = Sale::whereBetween('sale_date', [$from, $to])->where('status', 'completed')->sum('total_amount');
+        $profit = SaleItem::whereHas('sale', fn ($q) => $q->whereBetween('sale_date', [$from, $to])->where('status', 'completed'))->sum('profit');
 
         return compact('revenue', 'profit');
     }

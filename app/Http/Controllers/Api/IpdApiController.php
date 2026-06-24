@@ -41,15 +41,15 @@ class IpdApiController extends Controller
         $this->authorize('create ipd');
 
         $data = $request->validate([
-            'patient_id'         => 'required|exists:patients,id',
-            'doctor_id'          => 'required|exists:doctors,id',
-            'ward_id'            => 'required|exists:wards,id',
-            'bed_id'             => 'required|exists:beds,id',
+            'patient_id' => 'required|exists:patients,id',
+            'doctor_id' => 'required|exists:doctors,id',
+            'department_id' => 'nullable|exists:departments,id',
+            'ward_id' => 'required|exists:wards,id',
+            'bed_id' => 'required|exists:beds,id',
             'admission_datetime' => 'required|date',
-            'admission_type'     => 'required|in:general,emergency,maternity,icu',
-            'diagnosis'          => 'nullable|string',
-            'referral_source'    => 'nullable|string',
-            'notes'              => 'nullable|string',
+            'admission_type' => 'required|in:emergency,elective,transfer',
+            'admission_diagnosis' => 'nullable|string',
+            'notes' => 'nullable|string',
         ]);
 
         $bed = Bed::find($data['bed_id']);
@@ -57,8 +57,9 @@ class IpdApiController extends Controller
 
         $admission = IpdAdmission::create(array_merge($data, [
             'admission_number' => IpdAdmission::generateAdmissionNumber(),
-            'status'           => 'admitted',
-            'created_by'       => $request->user()->id,
+            'status' => 'admitted',
+            // ipd_admissions has admitted_by (NOT NULL), not created_by.
+            'admitted_by' => $request->user()->id,
         ]));
 
         $bed->update(['status' => 'occupied']);

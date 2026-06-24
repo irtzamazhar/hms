@@ -16,8 +16,8 @@ class TokenController extends Controller
     public function index(Request $request): View
     {
         $this->authorize('view tokens');
-        $shift  = $request->get('shift', $this->currentShift());
-        $date   = $request->get('date', today()->toDateString());
+        $shift = $request->get('shift', $this->currentShift());
+        $date = $request->get('date', today()->toDateString());
         $tokens = Token::with(['patient:id,name,mr_number', 'doctor.user:id,name', 'department:id,name'])
             ->whereDate('token_date', $date)
             ->when($shift !== 'all', fn ($q) => $q->where('shift', $shift))
@@ -30,11 +30,11 @@ class TokenController extends Controller
     public function create(): View
     {
         $this->authorize('create tokens');
-        $patients    = Patient::select('id', 'name', 'mr_number')->latest()->get();
-        $doctors     = Doctor::active()->with('user:id,name')->get();
+        $patients = Patient::select('id', 'name', 'mr_number')->latest()->get();
+        $doctors = Doctor::active()->with('user:id,name')->get();
         $departments = Department::active()->get();
-        $shift       = $this->currentShift();
-        $nextToken   = Token::nextTokenNumber($shift);
+        $shift = $this->currentShift();
+        $nextToken = Token::nextTokenNumber($shift);
 
         return view('tokens.create', compact('patients', 'doctors', 'departments', 'shift', 'nextToken'));
     }
@@ -46,34 +46,34 @@ class TokenController extends Controller
         // Quick-register a new patient if name is provided instead of an existing patient_id
         if ($request->filled('new_name')) {
             $request->validate([
-                'new_name'  => 'required|string|max:100',
-                'new_age'   => 'required|integer|min:0|max:150',
+                'new_name' => 'required|string|max:100',
+                'new_age' => 'required|integer|min:0|max:150',
                 'new_phone' => 'required|string|max:20',
             ]);
 
             $patient = Patient::create([
                 'mr_number' => Patient::generateMrNumber(),
-                'name'      => $request->new_name,
-                'age'       => $request->new_age,
-                'phone'     => $request->new_phone,
-                'gender'    => $request->new_gender ?? 'male',
+                'name' => $request->new_name,
+                'age' => $request->new_age,
+                'phone' => $request->new_phone,
+                'gender' => $request->new_gender ?? 'male',
             ]);
 
             $request->merge(['patient_id' => $patient->id]);
         }
 
         $data = $request->validate([
-            'patient_id'    => 'required|exists:patients,id',
-            'doctor_id'     => 'nullable|exists:doctors,id',
+            'patient_id' => 'required|exists:patients,id',
+            'doctor_id' => 'nullable|exists:doctors,id',
             'department_id' => 'nullable|exists:departments,id',
-            'shift'         => 'required|in:morning,evening,night',
-            'priority'      => 'nullable|in:normal,urgent,emergency',
-            'notes'         => 'nullable|string',
+            'shift' => 'required|in:morning,evening,night',
+            'priority' => 'nullable|in:normal,urgent,emergency',
+            'notes' => 'nullable|string',
         ]);
 
-        $data['token_date']   = today();
+        $data['token_date'] = today();
         $data['token_number'] = Token::nextTokenNumber($data['shift']);
-        $data['created_by']   = auth()->id();
+        $data['created_by'] = auth()->id();
 
         $token = Token::create($data);
 
@@ -86,6 +86,7 @@ class TokenController extends Controller
 
     public function show(Token $token): View
     {
+        $this->authorize('view tokens');
         $token->load(['patient', 'doctor.user', 'department']);
 
         return view('tokens.show', compact('token'));
@@ -110,6 +111,7 @@ class TokenController extends Controller
 
     public function print(Token $token)
     {
+        $this->authorize('view tokens');
         $token->load(['patient', 'doctor.user', 'department']);
 
         return view('tokens.print', compact('token'));
@@ -132,13 +134,20 @@ class TokenController extends Controller
                 ? ($now >= $s && $now < $e)
                 : ($now >= $s || $now < $e);
 
-            if ($matched) return $shift->type;
+            if ($matched) {
+                return $shift->type;
+            }
         }
 
         // Fallback when no shifts are configured in the DB
         $hour = now()->hour;
-        if ($hour >= 8 && $hour < 14)  return 'morning';
-        if ($hour >= 14 && $hour < 20) return 'evening';
+        if ($hour >= 8 && $hour < 14) {
+            return 'morning';
+        }
+        if ($hour >= 14 && $hour < 20) {
+            return 'evening';
+        }
+
         return 'night';
     }
 }

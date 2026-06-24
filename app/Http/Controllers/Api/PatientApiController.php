@@ -40,26 +40,26 @@ class PatientApiController extends Controller
         $this->authorize('create patients');
 
         $data = $request->validate([
-            'name'                       => 'required|string|max:100',
-            'phone'                      => 'required|string|max:20',
-            'email'                      => 'nullable|email|max:100',
-            'gender'                     => 'required|in:male,female,other',
-            'dob'                        => 'nullable|date',
-            'age'                        => 'nullable|integer|min:0',
-            'blood_group'                => 'nullable|string|max:10',
-            'address'                    => 'nullable|string',
-            'city'                       => 'nullable|string|max:100',
-            'emergency_contact_name'     => 'nullable|string|max:100',
-            'emergency_contact_phone'    => 'nullable|string|max:20',
+            'name' => 'required|string|max:100',
+            'phone' => 'required|string|max:20',
+            'email' => 'nullable|email|max:100',
+            'gender' => 'required|in:male,female,other',
+            'dob' => 'nullable|date',
+            'age' => 'nullable|integer|min:0',
+            'blood_group' => 'nullable|string|max:10',
+            'address' => 'nullable|string',
+            'city' => 'nullable|string|max:100',
+            'emergency_contact_name' => 'nullable|string|max:100',
+            'emergency_contact_phone' => 'nullable|string|max:20',
             'emergency_contact_relation' => 'nullable|string|max:50',
-            'allergies'                  => 'nullable|string',
-            'medical_history'            => 'nullable|string',
+            'allergies' => 'nullable|string',
+            'medical_history' => 'nullable|string',
         ]);
 
         $patient = Patient::create(array_merge($data, [
-            'mr_number'     => Patient::generateMrNumber(),
+            'mr_number' => Patient::generateMrNumber(),
             'registered_by' => $request->user()->id,
-            'status'        => 'active',
+            'status' => 'active',
         ]));
 
         return (new PatientResource($patient))
@@ -72,17 +72,17 @@ class PatientApiController extends Controller
         $this->authorize('edit patients');
 
         $data = $request->validate([
-            'name'                       => 'sometimes|string|max:100',
-            'phone'                      => 'sometimes|string|max:20',
-            'email'                      => 'nullable|email|max:100',
-            'gender'                     => 'sometimes|in:male,female,other',
-            'dob'                        => 'nullable|date',
-            'blood_group'                => 'nullable|string|max:10',
-            'address'                    => 'nullable|string',
-            'city'                       => 'nullable|string|max:100',
-            'allergies'                  => 'nullable|string',
-            'medical_history'            => 'nullable|string',
-            'status'                     => 'sometimes|in:active,inactive',
+            'name' => 'sometimes|string|max:100',
+            'phone' => 'sometimes|string|max:20',
+            'email' => 'nullable|email|max:100',
+            'gender' => 'sometimes|in:male,female,other',
+            'dob' => 'nullable|date',
+            'blood_group' => 'nullable|string|max:10',
+            'address' => 'nullable|string',
+            'city' => 'nullable|string|max:100',
+            'allergies' => 'nullable|string',
+            'medical_history' => 'nullable|string',
+            'status' => 'sometimes|in:active,inactive',
         ]);
 
         $patient->update($data);

@@ -13,9 +13,9 @@ class DashboardApiController extends Controller
     public function index(): JsonResponse
     {
         return response()->json([
-            'summary'  => $this->service->getSummary(),
-            'revenue'  => $this->service->getRevenueChart(14),
-            'growth'   => $this->service->getPatientGrowth(6),
+            'summary' => $this->service->getSummary(),
+            'revenue' => $this->service->getRevenueChart(14),
+            'growth' => $this->service->getPatientGrowth(6),
             'activity' => $this->service->getTodayActivity(),
         ]);
     }

@@ -40,25 +40,36 @@ class OpdApiController extends Controller
         $this->authorize('create opd');
 
         $data = $request->validate([
-            'patient_id'     => 'required|exists:patients,id',
-            'doctor_id'      => 'required|exists:doctors,id',
-            'department_id'  => 'nullable|exists:departments,id',
-            'visit_date'     => 'required|date',
-            'shift'          => 'required|in:morning,afternoon,evening,night',
-            'complaint'      => 'nullable|string',
-            'fee'            => 'required|numeric|min:0',
-            'discount'       => 'nullable|numeric|min:0',
-            'payment_method' => 'nullable|string',
-            'payment_status' => 'nullable|in:paid,pending,partial',
+            'patient_id' => 'required|exists:patients,id',
+            'doctor_id' => 'required|exists:doctors,id',
+            'department_id' => 'nullable|exists:departments,id',
+            'visit_date' => 'required|date',
+            'shift' => 'required|in:morning,evening,night',
+            'complaint' => 'nullable|string',
+            'fee' => 'required|numeric|min:0',
+            'discount' => 'nullable|numeric|min:0',
+            'payment_method' => 'nullable|in:cash,card,bank_transfer,insurance',
+            'payment_status' => 'nullable|in:pending,paid,partial,waived',
         ]);
 
         $netAmount = ($data['fee'] ?? 0) - ($data['discount'] ?? 0);
-        $visit = OpdVisit::create(array_merge($data, [
+        $visit = OpdVisit::create([
+            'patient_id' => $data['patient_id'],
+            'doctor_id' => $data['doctor_id'],
+            'department_id' => $data['department_id'] ?? null,
+            'visit_date' => $data['visit_date'],
+            'shift' => $data['shift'],
+            // Map API field names to the real columns (chief_complaints / consultation_fee).
+            'chief_complaints' => $data['complaint'] ?? null,
+            'consultation_fee' => $data['fee'],
+            'discount' => $data['discount'] ?? 0,
+            'payment_method' => $data['payment_method'] ?? null,
+            'payment_status' => $data['payment_status'] ?? 'pending',
+            'net_amount' => $netAmount,
             'visit_number' => OpdVisit::generateVisitNumber(),
-            'net_amount'   => $netAmount,
-            'status'       => 'waiting',
-            'created_by'   => $request->user()->id,
-        ]));
+            'status' => 'waiting',
+            'created_by' => $request->user()->id,
+        ]);
 
         $visit->load(['patient', 'doctor.user', 'department']);
 

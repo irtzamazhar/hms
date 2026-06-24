@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Route;
 
 // ── Authentication ─────────────────────────────────────
 Route::prefix('auth')->group(function () {
-    Route::post('/login', [AuthController::class, 'login']);
+    // Rate-limit credential submission to blunt brute-force / credential stuffing.
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
@@ -22,7 +23,7 @@ Route::prefix('auth')->group(function () {
 });
 
 // ── Protected Routes ───────────────────────────────────
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:120,1'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [DashboardApiController::class, 'index']);

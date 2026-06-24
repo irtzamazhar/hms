@@ -4,8 +4,12 @@ namespace App\Providers;
 
 use App\Models\HospitalSetting;
 use App\Support\Modules;
+use Illuminate\Auth\Events\Failed;
+use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -29,6 +33,30 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->applyHospitalTimezone();
         $this->registerModuleDirectives();
+        $this->registerSecurityLogging();
+    }
+
+    /**
+     * LOG-1: record failed logins and lockouts to the application log so
+     * brute-force / credential-stuffing attempts are auditable.
+     */
+    private function registerSecurityLogging(): void
+    {
+        Event::listen(Failed::class, function (Failed $event) {
+            Log::channel(config('logging.default'))->warning('auth.failed', [
+                'email' => $event->credentials['email'] ?? null,
+                'guard' => $event->guard,
+                'ip' => request()->ip(),
+                'ua' => request()->userAgent(),
+            ]);
+        });
+
+        Event::listen(Lockout::class, function () {
+            Log::channel(config('logging.default'))->warning('auth.lockout', [
+                'ip' => request()->ip(),
+                'ua' => request()->userAgent(),
+            ]);
+        });
     }
 
     /**

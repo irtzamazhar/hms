@@ -40,21 +40,21 @@ class AppointmentApiController extends Controller
         $this->authorize('create appointments');
 
         $data = $request->validate([
-            'patient_id'           => 'required|exists:patients,id',
-            'doctor_id'            => 'required|exists:doctors,id',
-            'department_id'        => 'nullable|exists:departments,id',
+            'patient_id' => 'required|exists:patients,id',
+            'doctor_id' => 'required|exists:doctors,id',
+            'department_id' => 'nullable|exists:departments,id',
             'appointment_datetime' => 'required|date|after:now',
-            'duration_minutes'     => 'nullable|integer|min:5|max:180',
-            'type'                 => 'required|in:opd,follow_up,emergency,teleconsultation',
-            'reason'               => 'nullable|string|max:255',
-            'fee'                  => 'nullable|numeric|min:0',
+            'duration_minutes' => 'nullable|integer|min:5|max:180',
+            'type' => 'required|in:opd,follow_up,emergency,teleconsultation',
+            'reason' => 'nullable|string|max:255',
+            'fee' => 'nullable|numeric|min:0',
         ]);
 
         $appointment = Appointment::create(array_merge($data, [
             'appointment_number' => Appointment::generateNumber(),
-            'status'             => 'scheduled',
-            'payment_status'     => 'pending',
-            'created_by'         => $request->user()->id,
+            'status' => 'scheduled',
+            'payment_status' => 'pending',
+            'created_by' => $request->user()->id,
         ]));
 
         $appointment->load(['patient', 'doctor.user', 'department']);

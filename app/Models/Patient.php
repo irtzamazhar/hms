@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 class Patient extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes, AuditableTrait;
+    use AuditableTrait, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'mr_number', 'name', 'cnic', 'phone', 'email', 'gender', 'dob',
@@ -21,10 +21,30 @@ class Patient extends Model implements Auditable
         'allergies', 'medical_history', 'referred_by', 'registered_by', 'status',
     ];
 
+    /**
+     * Sensitive (non-searchable) PHI encrypted at rest (CR-1) and excluded
+     * from the plaintext audit trail (CR-2).
+     */
+    public const ENCRYPTED_PHI = [
+        'allergies', 'medical_history',
+        'emergency_contact_name', 'emergency_contact_phone', 'emergency_contact_relation',
+    ];
+
+    /** Do not write these PHI fields into the audits table in plaintext. */
+    protected $auditExclude = [
+        'allergies', 'medical_history',
+        'emergency_contact_name', 'emergency_contact_phone', 'emergency_contact_relation',
+    ];
+
     protected function casts(): array
     {
         return [
             'dob' => 'date',
+            'allergies' => 'encrypted',
+            'medical_history' => 'encrypted',
+            'emergency_contact_name' => 'encrypted',
+            'emergency_contact_phone' => 'encrypted',
+            'emergency_contact_relation' => 'encrypted',
         ];
     }
 
@@ -78,16 +98,16 @@ class Patient extends Model implements Auditable
         $last = static::withTrashed()->latest('id')->value('mr_number');
         $next = $last ? ((int) ltrim(substr($last, 3), '0') + 1) : 1;
 
-        return 'MR-' . str_pad($next, 6, '0', STR_PAD_LEFT);
+        return 'MR-'.str_pad($next, 6, '0', STR_PAD_LEFT);
     }
 
     public function scopeSearch($query, string $search)
     {
         return $query->where(function ($q) use ($search) {
             $q->where('name', 'like', "%{$search}%")
-              ->orWhere('mr_number', 'like', "%{$search}%")
-              ->orWhere('phone', 'like', "%{$search}%")
-              ->orWhere('cnic', 'like', "%{$search}%");
+                ->orWhere('mr_number', 'like', "%{$search}%")
+                ->orWhere('phone', 'like', "%{$search}%")
+                ->orWhere('cnic', 'like', "%{$search}%");
         });
     }
 }

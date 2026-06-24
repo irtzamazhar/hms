@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Doctor;
+use App\Models\HospitalSetting;
 use App\Models\LabBooking;
-use App\Models\LabTest;
 use App\Models\LabTestCategory;
 use App\Models\Patient;
 use App\Notifications\LabResultReady;
@@ -28,8 +28,8 @@ class LabController extends Controller
     public function create(): View
     {
         $this->authorize('create lab bookings');
-        $patients   = Patient::select('id', 'name', 'mr_number')->latest()->get();
-        $doctors    = Doctor::active()->with('user:id,name')->get();
+        $patients = Patient::select('id', 'name', 'mr_number')->latest()->get();
+        $doctors = Doctor::active()->with('user:id,name')->get();
         $categories = LabTestCategory::active()->with(['tests' => fn ($q) => $q->active()->orderBy('name')])->get();
 
         return view('lab.create', compact('patients', 'doctors', 'categories'));
@@ -39,11 +39,11 @@ class LabController extends Controller
     {
         $this->authorize('create lab bookings');
         $validated = $request->validate([
-            'patient_id'     => 'required|exists:patients,id',
-            'doctor_id'      => 'nullable|exists:doctors,id',
-            'tests'          => 'required|array|min:1',
-            'tests.*'        => 'integer|exists:lab_tests,id',
-            'discount'       => 'nullable|numeric|min:0',
+            'patient_id' => 'required|exists:patients,id',
+            'doctor_id' => 'nullable|exists:doctors,id',
+            'tests' => 'required|array|min:1',
+            'tests.*' => 'integer|exists:lab_tests,id',
+            'discount' => 'nullable|numeric|min:0',
             'payment_method' => 'nullable|in:cash,card,insurance',
         ]);
 
@@ -75,9 +75,10 @@ class LabController extends Controller
 
     public function reportPdf(LabBooking $labBooking)
     {
+        $this->authorize('view lab reports');
         $labBooking->load(['patient', 'doctor.user', 'items.test', 'items.report']);
-        $setting = \App\Models\HospitalSetting::current();
-        $pdf     = app('dompdf.wrapper')->loadView('lab.report-pdf', ['booking' => $labBooking, 'setting' => $setting]);
+        $setting = HospitalSetting::current();
+        $pdf = app('dompdf.wrapper')->loadView('lab.report-pdf', ['booking' => $labBooking, 'setting' => $setting]);
 
         return $pdf->stream("Lab-Report-{$labBooking->booking_number}.pdf");
     }

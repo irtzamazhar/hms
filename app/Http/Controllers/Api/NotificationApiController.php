@@ -14,7 +14,7 @@ class NotificationApiController extends Controller
     {
         $notifications = $request->user()
             ->notifications()
-            ->when(!$request->boolean('all'), fn ($q) => $q->whereNull('read_at'))
+            ->when(! $request->boolean('all'), fn ($q) => $q->whereNull('read_at'))
             ->latest()
             ->paginate($request->integer('per_page', 20));
 

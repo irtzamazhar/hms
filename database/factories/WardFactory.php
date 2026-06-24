@@ -11,12 +11,12 @@ class WardFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'       => fake()->unique()->word() . ' Ward',
-            'code'       => fake()->unique()->bothify('W-##'),
-            'ward_type'  => fake()->randomElement(['general', 'icu', 'emergency', 'maternity', 'paediatric']),
+            'name' => fake()->unique()->word().' Ward',
+            'code' => fake()->unique()->bothify('W-##'),
+            'ward_type' => fake()->randomElement(['general', 'private', 'icu', 'nicu', 'emergency', 'maternity', 'surgical', 'pediatric']),
             'total_beds' => fake()->numberBetween(5, 30),
-            'floor'      => fake()->numberBetween(1, 5),
-            'status'     => 'active',
+            'floor' => fake()->numberBetween(1, 5),
+            'status' => 'active',
         ];
     }
 }

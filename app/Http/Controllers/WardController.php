@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Bed;
 use App\Models\Department;
 use App\Models\Ward;
 use Illuminate\Http\RedirectResponse;
@@ -37,14 +36,14 @@ class WardController extends Controller
     {
         $this->authorize('create wards');
         $validated = $request->validate([
-            'name'          => 'required|string|max:100',
-            'code'          => 'required|string|max:20|unique:wards,code',
+            'name' => 'required|string|max:100',
+            'code' => 'required|string|max:20|unique:wards,code',
             'department_id' => 'nullable|exists:departments,id',
-            'ward_type'     => 'required|in:general,private,icu,nicu,emergency,maternity,surgical,pediatric',
-            'total_beds'    => 'required|integer|min:1|max:200',
-            'floor'         => 'nullable|integer|min:0',
-            'description'   => 'nullable|string',
-            'status'        => 'required|in:active,inactive',
+            'ward_type' => 'required|in:general,private,icu,nicu,emergency,maternity,surgical,pediatric',
+            'total_beds' => 'required|integer|min:1|max:200',
+            'floor' => 'nullable|integer|min:0',
+            'description' => 'nullable|string',
+            'status' => 'required|in:active,inactive',
         ]);
 
         $ward = Ward::create($validated);
@@ -52,10 +51,10 @@ class WardController extends Controller
         // Auto-create beds
         for ($i = 1; $i <= $validated['total_beds']; $i++) {
             $ward->beds()->create([
-                'bed_number'     => str_pad($i, 2, '0', STR_PAD_LEFT),
-                'bed_type'       => 'standard',
+                'bed_number' => str_pad($i, 2, '0', STR_PAD_LEFT),
+                'bed_type' => 'standard',
                 'charge_per_day' => 0,
-                'status'         => 'available',
+                'status' => 'available',
             ]);
         }
 
@@ -78,12 +77,12 @@ class WardController extends Controller
     {
         $this->authorize('edit wards');
         $validated = $request->validate([
-            'name'          => 'required|string|max:100',
+            'name' => 'required|string|max:100',
             'department_id' => 'nullable|exists:departments,id',
-            'ward_type'     => 'required|in:general,private,icu,nicu,emergency,maternity,surgical,pediatric',
-            'floor'         => 'nullable|integer|min:0',
-            'description'   => 'nullable|string',
-            'status'        => 'required|in:active,inactive',
+            'ward_type' => 'required|in:general,private,icu,nicu,emergency,maternity,surgical,pediatric',
+            'floor' => 'nullable|integer|min:0',
+            'description' => 'nullable|string',
+            'status' => 'required|in:active,inactive',
         ]);
 
         $ward->update($validated);

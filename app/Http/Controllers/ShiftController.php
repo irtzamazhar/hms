@@ -31,11 +31,11 @@ class ShiftController extends Controller
     {
         $this->authorize('manage shifts');
         $request->validate([
-            'name'       => 'required|string|max:100|unique:shifts,name',
-            'type'       => 'required|in:morning,evening,night,custom',
+            'name' => 'required|string|max:100|unique:shifts,name',
+            'type' => 'required|in:morning,evening,night',
             'start_time' => 'required|date_format:H:i',
-            'end_time'   => 'required|date_format:H:i',
-            'status'     => 'required|in:active,inactive',
+            'end_time' => 'required|date_format:H:i',
+            'status' => 'required|in:active,inactive',
         ]);
 
         Shift::create($request->only(['name', 'type', 'start_time', 'end_time', 'status']));
@@ -54,10 +54,10 @@ class ShiftController extends Controller
     {
         $this->authorize('manage shifts');
         $request->validate([
-            'name'       => "required|string|max:100|unique:shifts,name,{$shift->id}",
+            'name' => "required|string|max:100|unique:shifts,name,{$shift->id}",
             'start_time' => 'required|date_format:H:i',
-            'end_time'   => 'required|date_format:H:i',
-            'status'     => 'required|in:active,inactive',
+            'end_time' => 'required|date_format:H:i',
+            'status' => 'required|in:active,inactive',
         ]);
 
         $shift->update($request->only(['name', 'start_time', 'end_time', 'status']));
@@ -84,7 +84,7 @@ class ShiftController extends Controller
             ->withQueryString();
 
         $shifts = Shift::active()->get();
-        $users  = User::whereIn('user_type', ['doctor', 'staff'])->where('status', 'active')->get();
+        $users = User::whereIn('user_type', ['doctor', 'staff'])->where('status', 'active')->get();
 
         return view('shifts.assignments', compact('assignments', 'shifts', 'users'));
     }
@@ -93,8 +93,8 @@ class ShiftController extends Controller
     {
         $this->authorize('manage shifts');
         $request->validate([
-            'user_id'         => 'required|exists:users,id',
-            'shift_id'        => 'required|exists:shifts,id',
+            'user_id' => 'required|exists:users,id',
+            'shift_id' => 'required|exists:shifts,id',
             'assignment_date' => 'required|date',
         ]);
 
@@ -109,7 +109,7 @@ class ShiftController extends Controller
     public function closeForm(): View
     {
         $this->authorize('close shifts');
-        $shifts  = Shift::active()->get();
+        $shifts = Shift::active()->get();
         $closings = ShiftClosing::with('shift')->latest()->limit(10)->get();
 
         return view('shifts.close', compact('shifts', 'closings'));
@@ -119,14 +119,14 @@ class ShiftController extends Controller
     {
         $this->authorize('close shifts');
         $request->validate([
-            'shift_id'          => 'required|exists:shifts,id',
-            'closing_date'      => 'required|date',
-            'opd_revenue'       => 'nullable|numeric|min:0',
-            'ipd_revenue'       => 'nullable|numeric|min:0',
-            'pharmacy_revenue'  => 'nullable|numeric|min:0',
-            'lab_revenue'       => 'nullable|numeric|min:0',
-            'total_expenses'    => 'nullable|numeric|min:0',
-            'notes'             => 'nullable|string',
+            'shift_id' => 'required|exists:shifts,id',
+            'closing_date' => 'required|date',
+            'opd_revenue' => 'nullable|numeric|min:0',
+            'ipd_revenue' => 'nullable|numeric|min:0',
+            'pharmacy_revenue' => 'nullable|numeric|min:0',
+            'lab_revenue' => 'nullable|numeric|min:0',
+            'total_expenses' => 'nullable|numeric|min:0',
+            'notes' => 'nullable|string',
         ]);
 
         $already = ShiftClosing::where('shift_id', $request->shift_id)
@@ -142,18 +142,18 @@ class ShiftController extends Controller
             + ($request->other_revenue ?? 0);
 
         ShiftClosing::create([
-            'shift_id'          => $request->shift_id,
-            'closing_date'      => $request->closing_date,
-            'opd_revenue'       => $request->opd_revenue ?? 0,
-            'ipd_revenue'       => $request->ipd_revenue ?? 0,
-            'pharmacy_revenue'  => $request->pharmacy_revenue ?? 0,
-            'lab_revenue'       => $request->lab_revenue ?? 0,
-            'other_revenue'     => $request->other_revenue ?? 0,
-            'total_revenue'     => $totalRevenue,
-            'total_expenses'    => $request->total_expenses ?? 0,
-            'notes'             => $request->notes,
-            'closed_by'         => auth()->id(),
-            'closed_at'         => now(),
+            'shift_id' => $request->shift_id,
+            'closing_date' => $request->closing_date,
+            'opd_revenue' => $request->opd_revenue ?? 0,
+            'ipd_revenue' => $request->ipd_revenue ?? 0,
+            'pharmacy_revenue' => $request->pharmacy_revenue ?? 0,
+            'lab_revenue' => $request->lab_revenue ?? 0,
+            'other_revenue' => $request->other_revenue ?? 0,
+            'total_revenue' => $totalRevenue,
+            'total_expenses' => $request->total_expenses ?? 0,
+            'notes' => $request->notes,
+            'closed_by' => auth()->id(),
+            'closed_at' => now(),
         ]);
 
         return redirect()->route('shifts.close.form')->with('success', 'Shift closed successfully.');

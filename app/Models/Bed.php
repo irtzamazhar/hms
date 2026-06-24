@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Bed extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['ward_id', 'room_id', 'bed_number', 'bed_type', 'charge_per_day', 'status'];
 
     protected function casts(): array

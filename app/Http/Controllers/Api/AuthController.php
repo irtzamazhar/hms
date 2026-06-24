@@ -13,28 +13,28 @@ class AuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         $request->validate([
-            'email'    => 'required|email',
+            'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        if (! Auth::attempt($request->only('email', 'password'))) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
 
-        $user  = $request->user();
+        $user = $request->user();
         $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([
-            'token'      => $token,
+            'token' => $token,
             'token_type' => 'Bearer',
-            'user'       => [
-                'id'        => $user->id,
-                'name'      => $user->name,
-                'email'     => $user->email,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
                 'user_type' => $user->user_type,
-                'avatar_url'=> $user->avatar_url,
+                'avatar_url' => $user->avatar_url,
             ],
         ]);
     }
@@ -51,15 +51,15 @@ class AuthController extends Controller
         $user = $request->user();
 
         return response()->json([
-            'id'             => $user->id,
-            'name'           => $user->name,
-            'email'          => $user->email,
-            'phone'          => $user->phone,
-            'user_type'      => $user->user_type,
-            'avatar_url'     => $user->avatar_url,
-            'permissions'    => $user->getAllPermissions()->pluck('name'),
-            'roles'          => $user->getRoleNames(),
-            'last_login_at'  => $user->last_login_at?->toDateTimeString(),
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'user_type' => $user->user_type,
+            'avatar_url' => $user->avatar_url,
+            'permissions' => $user->getAllPermissions()->pluck('name'),
+            'roles' => $user->getRoleNames(),
+            'last_login_at' => $user->last_login_at?->toDateTimeString(),
         ]);
     }
 }
