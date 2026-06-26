@@ -23,7 +23,7 @@ class IpdService
     public function admit(array $data): IpdAdmission
     {
         $data['admission_number'] = IpdAdmission::generateAdmissionNumber();
-        $data['admitted_by']      = auth()->id();
+        $data['admitted_by'] = auth()->id();
 
         $admission = IpdAdmission::create($data);
 
@@ -31,13 +31,13 @@ class IpdService
             Bed::find($admission->bed_id)?->update(['status' => 'occupied']);
         }
 
-        return $admission;
+        return $this->persistCharges($admission);
     }
 
     public function discharge(IpdAdmission $admission, array $data): IpdAdmission
     {
-        $data['status']          = 'discharged';
-        $data['discharged_by']   = auth()->id();
+        $data['status'] = 'discharged';
+        $data['discharged_by'] = auth()->id();
         $data['discharge_datetime'] ??= now();
 
         $admission->update($data);
@@ -46,30 +46,46 @@ class IpdService
             Bed::find($admission->bed_id)?->update(['status' => 'available']);
         }
 
-        return $admission;
+        return $this->persistCharges($admission);
     }
 
     public function addTreatment(IpdAdmission $admission, array $data): void
     {
-        $data['doctor_id']          = $data['doctor_id'] ?? $admission->doctor_id;
+        $data['doctor_id'] = $data['doctor_id'] ?? $admission->doctor_id;
         $data['treatment_datetime'] = $data['treatment_datetime'] ?? now();
 
         $admission->treatments()->create($data);
     }
 
+    /**
+     * Persist the computed total/net so financial reports, P&L and daily/monthly
+     * closing (which all sum the stored net_amount) agree with the live invoice.
+     */
+    public function persistCharges(IpdAdmission $admission): IpdAdmission
+    {
+        $charges = $this->calculateCharges($admission);
+
+        $admission->update([
+            'total_amount' => $charges['total'],
+            'net_amount' => $charges['net'],
+        ]);
+
+        return $admission;
+    }
+
     public function calculateCharges(IpdAdmission $admission): array
     {
-        $days         = $admission->days_admitted ?: 1;
-        $bedCharge    = $days * $admission->daily_bed_charge;
-        $total        = $bedCharge + $admission->doctor_charges
+        $days = $admission->days_admitted ?: 1;
+        $bedCharge = $days * $admission->daily_bed_charge;
+        $total = $bedCharge + $admission->doctor_charges
             + $admission->nursing_charges + $admission->medicine_charges
             + $admission->lab_charges + $admission->other_charges;
 
         return [
-            'days'       => $days,
+            'days' => $days,
             'bed_charge' => $bedCharge,
-            'total'      => $total,
-            'net'        => $total - $admission->discount,
+            'total' => $total,
+            'net' => $total - $admission->discount,
         ];
     }
 }

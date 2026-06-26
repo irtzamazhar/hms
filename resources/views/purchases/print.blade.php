@@ -76,27 +76,27 @@
             <td>{{ $i + 1 }}</td>
             <td>{{ $item->medicine?->name }}</td>
             <td style="text-align:center">{{ $item->quantity }}</td>
-            <td style="text-align:right">₨ {{ number_format($item->unit_price, 2) }}</td>
-            <td style="text-align:right">₨ {{ number_format($item->sale_price, 2) }}</td>
+            <td style="text-align:right">Rs {{ number_format($item->unit_price, 2) }}</td>
+            <td style="text-align:right">Rs {{ number_format($item->sale_price, 2) }}</td>
             <td>{{ $item->batch_number ?? '—' }}</td>
             <td>{{ $item->expiry_date?->format('M Y') ?? '—' }}</td>
-            <td style="text-align:right; font-weight:bold">₨ {{ number_format($item->total_price, 0) }}</td>
+            <td style="text-align:right; font-weight:bold">Rs {{ number_format($item->total_price, 0) }}</td>
         </tr>
         @endforeach
     </tbody>
 </table>
 
 <div class="totals">
-    <div class="total-row"><span>Subtotal</span><span>₨ {{ number_format($purchase->subtotal, 0) }}</span></div>
+    <div class="total-row"><span>Subtotal</span><span>Rs {{ number_format($purchase->subtotal, 0) }}</span></div>
     @if($purchase->discount > 0)
-    <div class="total-row"><span>Discount</span><span>− ₨ {{ number_format($purchase->discount, 0) }}</span></div>
+    <div class="total-row"><span>Discount</span><span>− Rs {{ number_format($purchase->discount, 0) }}</span></div>
     @endif
     @if($purchase->tax > 0)
-    <div class="total-row"><span>Tax</span><span>+ ₨ {{ number_format($purchase->tax, 0) }}</span></div>
+    <div class="total-row"><span>Tax</span><span>+ Rs {{ number_format($purchase->tax, 0) }}</span></div>
     @endif
-    <div class="total-row total-final"><span>TOTAL</span><span>₨ {{ number_format($purchase->total_amount, 0) }}</span></div>
-    <div class="total-row" style="color:#16a34a"><span>Paid</span><span>₨ {{ number_format($purchase->paid_amount, 0) }}</span></div>
-    <div class="total-row" style="color:#dc2626"><span>Due</span><span>₨ {{ number_format($purchase->due_amount, 0) }}</span></div>
+    <div class="total-row total-final"><span>TOTAL</span><span>Rs {{ number_format($purchase->total_amount, 0) }}</span></div>
+    <div class="total-row" style="color:#16a34a"><span>Paid</span><span>Rs {{ number_format($purchase->paid_amount, 0) }}</span></div>
+    <div class="total-row" style="color:#dc2626"><span>Due</span><span>Rs {{ number_format($purchase->due_amount, 0) }}</span></div>
 </div>
 
 @if($purchase->notes)

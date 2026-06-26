@@ -53,7 +53,12 @@ class IpdController extends Controller
             'admission_diagnosis' => 'nullable|string',
             'admission_type' => 'required|in:emergency,elective,transfer',
             'daily_bed_charge' => 'nullable|numeric|min:0',
+            'advance_payment' => 'nullable|numeric|min:0',
         ]);
+
+        // The form collects an advance payment; it is stored in the `paid_amount` column.
+        $validated['paid_amount'] = $validated['advance_payment'] ?? 0;
+        unset($validated['advance_payment']);
 
         $admission = $this->service->admit($validated);
         $admission->load(['patient', 'doctor.user', 'ward', 'bed']);
@@ -92,6 +97,9 @@ class IpdController extends Controller
             'lab_charges', 'other_charges', 'discount', 'paid_amount',
             'payment_status', 'notes',
         ]));
+
+        // Keep stored total/net in sync with the edited charges so reports match the invoice.
+        $this->service->persistCharges($ipd);
 
         return redirect()->route('ipd.show', $ipd)->with('success', 'Admission updated.');
     }

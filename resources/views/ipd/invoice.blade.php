@@ -53,14 +53,15 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+                @php $treatmentCharges = ($admission->doctor_charges ?? 0) + ($admission->nursing_charges ?? 0) + ($admission->medicine_charges ?? 0) + ($admission->lab_charges ?? 0); @endphp
                 <tr>
-                    <td class="px-4 py-3">Bed Charges ({{ $admission->admission_datetime->diffInDays($admission->discharge_datetime ?? now()) }} days × ₨{{ number_format($admission->bed->charge_per_day ?? 0,0) }})</td>
-                    <td class="px-4 py-3 text-right">₨ {{ number_format($admission->total_bed_charges ?? 0, 2) }}</td>
+                    <td class="px-4 py-3">Bed Charges ({{ $charges['days'] }} days × ₨{{ number_format($admission->daily_bed_charge ?? 0, 0) }})</td>
+                    <td class="px-4 py-3 text-right">₨ {{ number_format($charges['bed_charge'] ?? 0, 2) }}</td>
                 </tr>
-                @if(($admission->total_treatment_charges ?? 0) > 0)
+                @if($treatmentCharges > 0)
                 <tr>
                     <td class="px-4 py-3">Treatment & Procedures</td>
-                    <td class="px-4 py-3 text-right">₨ {{ number_format($admission->total_treatment_charges ?? 0, 2) }}</td>
+                    <td class="px-4 py-3 text-right">₨ {{ number_format($treatmentCharges, 2) }}</td>
                 </tr>
                 @endif
                 @if(($admission->other_charges ?? 0) > 0)
@@ -69,25 +70,25 @@
                     <td class="px-4 py-3 text-right">₨ {{ number_format($admission->other_charges ?? 0, 2) }}</td>
                 </tr>
                 @endif
-                @if(($admission->discount_amount ?? 0) > 0)
+                @if(($admission->discount ?? 0) > 0)
                 <tr>
                     <td class="px-4 py-3 text-red-500">Discount</td>
-                    <td class="px-4 py-3 text-right text-red-500">— ₨ {{ number_format($admission->discount_amount ?? 0, 2) }}</td>
+                    <td class="px-4 py-3 text-right text-red-500">— ₨ {{ number_format($admission->discount ?? 0, 2) }}</td>
                 </tr>
                 @endif
             </tbody>
             <tfoot>
                 <tr class="border-t-2 border-slate-200 dark:border-slate-600">
                     <td class="px-4 py-3 font-bold">Total</td>
-                    <td class="px-4 py-3 text-right font-bold text-lg">₨ {{ number_format($admission->net_amount ?? 0, 2) }}</td>
+                    <td class="px-4 py-3 text-right font-bold text-lg">₨ {{ number_format($charges['net'] ?? 0, 2) }}</td>
                 </tr>
                 <tr>
                     <td class="px-4 py-2 text-slate-400">Advance Paid</td>
-                    <td class="px-4 py-2 text-right text-slate-400">— ₨ {{ number_format($admission->advance_payment ?? 0, 2) }}</td>
+                    <td class="px-4 py-2 text-right text-slate-400">— ₨ {{ number_format($admission->paid_amount ?? 0, 2) }}</td>
                 </tr>
                 <tr class="border-t border-slate-200 dark:border-slate-600">
                     <td class="px-4 py-3 font-bold text-red-600">Balance Due</td>
-                    <td class="px-4 py-3 text-right font-bold text-red-600">₨ {{ number_format(($admission->net_amount ?? 0) - ($admission->advance_payment ?? 0), 2) }}</td>
+                    <td class="px-4 py-3 text-right font-bold text-red-600">₨ {{ number_format(($charges['net'] ?? 0) - ($admission->paid_amount ?? 0), 2) }}</td>
                 </tr>
             </tfoot>
         </table>
@@ -97,7 +98,7 @@
         <div class="border-t border-slate-200 dark:border-slate-700 pt-4 mb-6">
             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Treatment Summary</p>
             @foreach($admission->treatments as $t)
-            <p class="text-sm text-slate-600 dark:text-slate-300">• {{ $t->description }} <span class="text-slate-400">({{ $t->created_at->format('d M') }})</span></p>
+            <p class="text-sm text-slate-600 dark:text-slate-300">• {{ $t->treatment_notes }} <span class="text-slate-400">({{ ($t->treatment_datetime ?? $t->created_at)->format('d M') }})</span></p>
             @endforeach
         </div>
         @endif

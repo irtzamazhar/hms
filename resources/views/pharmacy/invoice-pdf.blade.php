@@ -54,7 +54,7 @@
             @if(($sale->discount_amount ?? 0) > 0)
             <tr><td colspan="3">Discount</td><td>-{{ number_format($sale->discount_amount, 0) }}</td></tr>
             @endif
-            <tr class="total-row"><td colspan="3" class="big-total">TOTAL</td><td class="big-total">₨{{ number_format($sale->net_amount, 0) }}</td></tr>
+            <tr class="total-row"><td colspan="3" class="big-total">TOTAL</td><td class="big-total">Rs {{ number_format($sale->net_amount, 0) }}</td></tr>
         </tfoot>
     </table>
 

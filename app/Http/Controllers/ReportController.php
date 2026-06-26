@@ -189,7 +189,9 @@ class ReportController extends Controller
     {
         $this->authorize('close daily reports');
         $date = request('date', today()->toDateString());
-        $currentShift = now()->hour < 14 ? 'morning' : (now()->hour < 22 ? 'evening' : 'night');
+        // Shift boundaries match OpdService/LabService/PharmacyService (8–14 morning, 14–20 evening, else night).
+        $hour = now()->hour;
+        $currentShift = $hour >= 8 && $hour < 14 ? 'morning' : ($hour >= 14 && $hour < 20 ? 'evening' : 'night');
         $report = DailyClosingReport::whereDate('report_date', $date)->first();
 
         return view('reports.daily-closing', compact('report', 'currentShift'));

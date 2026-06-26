@@ -69,17 +69,17 @@
     {{-- Earnings --}}
     <div class="salary-section">
         <div class="section-header">Earnings</div>
-        <div class="section-row"><span>Basic Salary</span><span>₨ {{ number_format($salaryPayment->basic_salary, 2) }}</span></div>
-        <div class="section-row"><span>Allowances</span><span>₨ {{ number_format($salaryPayment->total_allowances, 2) }}</span></div>
+        <div class="section-row"><span>Basic Salary</span><span>Rs {{ number_format($salaryPayment->basic_salary, 2) }}</span></div>
+        <div class="section-row"><span>Allowances</span><span>Rs {{ number_format($salaryPayment->total_allowances, 2) }}</span></div>
         @if($salaryPayment->bonus > 0)
-        <div class="section-row"><span>Bonus</span><span>₨ {{ number_format($salaryPayment->bonus, 2) }}</span></div>
+        <div class="section-row"><span>Bonus</span><span>Rs {{ number_format($salaryPayment->bonus, 2) }}</span></div>
         @endif
         @if($salaryPayment->overtime > 0)
-        <div class="section-row"><span>Overtime</span><span>₨ {{ number_format($salaryPayment->overtime, 2) }}</span></div>
+        <div class="section-row"><span>Overtime</span><span>Rs {{ number_format($salaryPayment->overtime, 2) }}</span></div>
         @endif
         <div class="section-total">
             <span>Gross Salary</span>
-            <span>₨ {{ number_format($salaryPayment->basic_salary + $salaryPayment->total_allowances + $salaryPayment->bonus + $salaryPayment->overtime, 2) }}</span>
+            <span>Rs {{ number_format($salaryPayment->basic_salary + $salaryPayment->total_allowances + $salaryPayment->bonus + $salaryPayment->overtime, 2) }}</span>
         </div>
     </div>
 
@@ -87,20 +87,20 @@
     <div class="salary-section">
         <div class="section-header">Deductions</div>
         @if($salaryPayment->salaryStructure)
-        <div class="section-row"><span>Income Tax</span><span>₨ {{ number_format($salaryPayment->salaryStructure->income_tax_deduction, 2) }}</span></div>
-        <div class="section-row"><span>Provident Fund</span><span>₨ {{ number_format($salaryPayment->salaryStructure->provident_fund_deduction, 2) }}</span></div>
-        <div class="section-row"><span>Other</span><span>₨ {{ number_format($salaryPayment->salaryStructure->other_deductions, 2) }}</span></div>
+        <div class="section-row"><span>Income Tax</span><span>Rs {{ number_format($salaryPayment->salaryStructure->income_tax_deduction, 2) }}</span></div>
+        <div class="section-row"><span>Provident Fund</span><span>Rs {{ number_format($salaryPayment->salaryStructure->provident_fund_deduction, 2) }}</span></div>
+        <div class="section-row"><span>Other</span><span>Rs {{ number_format($salaryPayment->salaryStructure->other_deductions, 2) }}</span></div>
         @endif
         <div class="section-total">
             <span>Total Deductions</span>
-            <span>₨ {{ number_format($salaryPayment->total_deductions, 2) }}</span>
+            <span>Rs {{ number_format($salaryPayment->total_deductions, 2) }}</span>
         </div>
     </div>
 </div>
 
 <div class="net-box">
     <div class="label">Net Salary Payable</div>
-    <div class="amount">₨ {{ number_format($salaryPayment->net_salary, 2) }}</div>
+    <div class="amount">Rs {{ number_format($salaryPayment->net_salary, 2) }}</div>
 </div>
 
 <div class="footer">

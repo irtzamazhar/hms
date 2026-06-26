@@ -81,7 +81,7 @@ class OpdController extends Controller
 
     public function invoice(OpdVisit $opdVisit): View
     {
-        $this->authorize('edit opd');
+        $this->authorize('view opd');
         $visit = $opdVisit;
         $visit->load(['patient', 'doctor.user', 'prescriptions.items']);
         $setting = HospitalSetting::current();
@@ -91,7 +91,7 @@ class OpdController extends Controller
 
     public function print(OpdVisit $opdVisit)
     {
-        $this->authorize('edit opd');
+        $this->authorize('view opd');
         $visit = $opdVisit;
         $visit->load(['patient', 'doctor.user', 'prescriptions.items']);
         $setting = HospitalSetting::current();

@@ -84,19 +84,19 @@
         <tbody>
             <tr>
                 <td>Consultation Fee ({{ ucfirst(str_replace('_',' ',$visit->visit_type)) }})</td>
-                <td>₨ {{ number_format($visit->consultation_fee, 2) }}</td>
+                <td>Rs {{ number_format($visit->consultation_fee, 2) }}</td>
             </tr>
             @if($visit->discount_amount > 0)
             <tr>
                 <td style="color:#dc2626;">Discount</td>
-                <td style="color:#dc2626;">— ₨ {{ number_format($visit->discount_amount, 2) }}</td>
+                <td style="color:#dc2626;">— Rs {{ number_format($visit->discount_amount, 2) }}</td>
             </tr>
             @endif
         </tbody>
         <tfoot>
             <tr class="total-row">
                 <td>Total Amount</td>
-                <td>₨ {{ number_format($visit->net_amount, 2) }}</td>
+                <td>Rs {{ number_format($visit->net_amount, 2) }}</td>
             </tr>
         </tfoot>
     </table>

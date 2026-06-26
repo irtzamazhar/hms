@@ -33,7 +33,7 @@ class SalaryController extends Controller
         $summary = [
             'total' => SalaryPayment::where('month', now()->month)->where('year', now()->year)->sum('net_salary'),
             'paid' => SalaryPayment::where('month', now()->month)->where('year', now()->year)->where('status', 'paid')->sum('net_salary'),
-            'pending' => SalaryPayment::where('status', 'generated')->count(),
+            'pending' => SalaryPayment::where('status', 'pending')->count(),
         ];
 
         return view('salaries.index', compact('payments', 'summary'));

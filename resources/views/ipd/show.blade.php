@@ -57,13 +57,13 @@
         <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700">
             <div class="px-5 py-3 font-semibold text-xs text-slate-500 uppercase tracking-wide">Financials</div>
             @foreach([
-                ['Bed Charges', '₨ '.number_format($admission->total_bed_charges ?? 0, 0)],
-                ['Treatment Charges', '₨ '.number_format($admission->total_treatment_charges ?? 0, 0)],
+                ['Bed Charges', '₨ '.number_format($charges['bed_charge'] ?? 0, 0)],
+                ['Treatment Charges', '₨ '.number_format(($admission->doctor_charges ?? 0) + ($admission->nursing_charges ?? 0) + ($admission->medicine_charges ?? 0) + ($admission->lab_charges ?? 0), 0)],
                 ['Other Charges', '₨ '.number_format($admission->other_charges ?? 0, 0)],
-                ['Discount', '— ₨ '.number_format($admission->discount_amount ?? 0, 0)],
-                ['Net Amount', '₨ '.number_format($admission->net_amount ?? 0, 0)],
-                ['Advance Paid', '₨ '.number_format($admission->advance_payment ?? 0, 0)],
-                ['Balance', '₨ '.number_format(($admission->net_amount ?? 0) - ($admission->advance_payment ?? 0), 0)],
+                ['Discount', '— ₨ '.number_format($admission->discount ?? 0, 0)],
+                ['Net Amount', '₨ '.number_format($charges['net'] ?? 0, 0)],
+                ['Advance Paid', '₨ '.number_format($admission->paid_amount ?? 0, 0)],
+                ['Balance', '₨ '.number_format(($charges['net'] ?? 0) - ($admission->paid_amount ?? 0), 0)],
             ] as [$l,$v])
             <div class="px-5 py-2.5 flex justify-between">
                 <span class="text-sm text-slate-400">{{ $l }}</span>
@@ -104,21 +104,6 @@
         <div id="addTreatmentForm" class="hidden border-b border-slate-200 dark:border-slate-700 p-4">
             <form method="POST" action="{{ route('ipd.treatment.add',$admission) }}">
                 @csrf
-                <div class="grid grid-cols-2 gap-3 mb-3">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Type</label>
-                        <select name="treatment_type" class="field">
-                            @foreach(['medication','procedure','lab_test','nursing','other'] as $t)
-                                <option value="{{ $t }}">{{ ucfirst(str_replace('_',' ',$t)) }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Charge (₨)</label>
-                        <input type="number" name="charge" value="0" min="0" step="0.01"
-                               class="field">
-                    </div>
-                </div>
                 <textarea name="treatment_notes" rows="2" placeholder="Treatment notes…" required
                           class="field mb-3"></textarea>
                 <button type="submit" class="px-4 py-2 bg-primary-600 text-white text-sm rounded-lg">Add</button>
@@ -129,12 +114,9 @@
         <div class="px-5 py-3 border-b border-slate-100 dark:border-slate-700 last:border-0">
             <div class="flex justify-between items-start">
                 <div>
-                    <p class="text-sm font-medium text-slate-700 dark:text-white">{{ $t->description }}</p>
-                    <p class="text-xs text-slate-400 mt-0.5">{{ ucfirst(str_replace('_',' ',$t->treatment_type)) }} · {{ $t->created_at->format('d M Y H:i') }}</p>
+                    <p class="text-sm font-medium text-slate-700 dark:text-white whitespace-pre-line">{{ $t->treatment_notes }}</p>
+                    <p class="text-xs text-slate-400 mt-0.5">{{ $t->treatment_datetime?->format('d M Y H:i') ?? $t->created_at->format('d M Y H:i') }}</p>
                 </div>
-                @if($t->charge > 0)
-                <span class="text-sm font-medium text-slate-700 dark:text-slate-200">₨ {{ number_format($t->charge,0) }}</span>
-                @endif
             </div>
         </div>
         @empty

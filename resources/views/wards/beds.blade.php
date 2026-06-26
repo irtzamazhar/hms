@@ -81,7 +81,7 @@
                     @endif
                 </td>
                 <td class="px-4 py-3 text-slate-500 dark:text-slate-400">
-                    {{ $bed->currentAdmission?->admission_date?->format('d M Y') ?? '—' }}
+                    {{ $bed->currentAdmission?->admission_datetime?->format('d M Y') ?? '—' }}
                 </td>
                 <td class="px-4 py-3 text-right text-slate-700 dark:text-slate-200">₨ {{ number_format($bed->charge_per_day, 0) }}/day</td>
             </tr>

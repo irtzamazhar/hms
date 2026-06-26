@@ -14,7 +14,7 @@ class LabApiController extends Controller
     {
         $this->authorize('view laboratory');
 
-        $bookings = LabBooking::with(['patient:id,name,mr_number'])
+        $bookings = LabBooking::with(['patient:id,name,mr_number', 'doctor.user:id,name'])
             ->withCount('items')
             ->when($request->status, fn ($q, $s) => $q->where('status', $s))
             ->when($request->date, fn ($q, $d) => $q->whereDate('booking_date', $d))
@@ -28,7 +28,7 @@ class LabApiController extends Controller
     public function show(LabBooking $lab): LabBookingResource
     {
         $this->authorize('view laboratory');
-        $lab->load(['patient', 'items.labTest', 'referredBy.user:id,name']);
+        $lab->load(['patient', 'items.test', 'doctor.user:id,name']);
 
         return new LabBookingResource($lab);
     }
