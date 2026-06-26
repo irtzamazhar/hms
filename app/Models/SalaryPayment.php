@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class SalaryPayment extends Model
+class SalaryPayment extends Model implements Auditable
 {
+    use AuditableTrait;
+
     protected $fillable = [
         'user_id', 'salary_structure_id', 'month', 'year', 'basic_salary',
         'total_allowances', 'total_deductions', 'bonus', 'overtime',
@@ -49,6 +53,6 @@ class SalaryPayment extends Model
 
     public function getMonthNameAttribute(): string
     {
-        return date('F', mktime(0, 0, 0, $this->month, 1)) . ' ' . $this->year;
+        return date('F', mktime(0, 0, 0, $this->month, 1)).' '.$this->year;
     }
 }

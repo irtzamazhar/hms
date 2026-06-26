@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 class OpdVisit extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes, AuditableTrait;
+    use AuditableTrait, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'visit_number', 'patient_id', 'doctor_id', 'department_id',
@@ -78,10 +78,10 @@ class OpdVisit extends Model implements Auditable
 
     public static function generateVisitNumber(): string
     {
-        $prefix = 'OPD-' . now()->format('Ymd') . '-';
-        $last = static::where('visit_number', 'like', $prefix . '%')->latest('id')->value('visit_number');
+        $prefix = 'OPD-'.now()->format('Ymd').'-';
+        $last = static::where('visit_number', 'like', $prefix.'%')->latest('id')->value('visit_number');
         $next = $last ? ((int) substr($last, -4) + 1) : 1;
 
-        return $prefix . str_pad($next, 4, '0', STR_PAD_LEFT);
+        return $prefix.str_pad($next, 4, '0', STR_PAD_LEFT);
     }
 }

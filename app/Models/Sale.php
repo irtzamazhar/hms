@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Sale extends Model
+class Sale extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes;
+    use AuditableTrait, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'invoice_number', 'patient_id', 'doctor_id', 'prescription_id',
@@ -80,10 +82,10 @@ class Sale extends Model
 
     public static function generateInvoiceNumber(): string
     {
-        $prefix = 'RX-' . now()->format('Ymd') . '-';
-        $last = static::where('invoice_number', 'like', $prefix . '%')->latest('id')->value('invoice_number');
+        $prefix = 'RX-'.now()->format('Ymd').'-';
+        $last = static::where('invoice_number', 'like', $prefix.'%')->latest('id')->value('invoice_number');
         $next = $last ? ((int) substr($last, -4) + 1) : 1;
 
-        return $prefix . str_pad($next, 4, '0', STR_PAD_LEFT);
+        return $prefix.str_pad($next, 4, '0', STR_PAD_LEFT);
     }
 }

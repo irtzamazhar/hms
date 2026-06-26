@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Appointment extends Model
+class Appointment extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes;
+    use AuditableTrait, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'appointment_number', 'patient_id', 'doctor_id', 'department_id',
@@ -47,10 +49,10 @@ class Appointment extends Model
 
     public static function generateNumber(): string
     {
-        $prefix = 'APT-' . now()->format('Ymd') . '-';
-        $last = static::where('appointment_number', 'like', $prefix . '%')->latest('id')->value('appointment_number');
+        $prefix = 'APT-'.now()->format('Ymd').'-';
+        $last = static::where('appointment_number', 'like', $prefix.'%')->latest('id')->value('appointment_number');
         $next = $last ? ((int) substr($last, -3) + 1) : 1;
 
-        return $prefix . str_pad($next, 3, '0', STR_PAD_LEFT);
+        return $prefix.str_pad($next, 3, '0', STR_PAD_LEFT);
     }
 }

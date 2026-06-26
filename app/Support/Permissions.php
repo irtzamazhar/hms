@@ -70,6 +70,8 @@ class Permissions
                 'view permissions', 'create permissions', 'delete permissions',
                 'assign user permissions',
             ],
+
+            'Audit Trail' => ['view audit logs'],
         ];
     }
 

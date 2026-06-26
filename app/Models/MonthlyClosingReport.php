@@ -18,8 +18,8 @@ class MonthlyClosingReport extends Model
     protected function casts(): array
     {
         return [
-            'closed_at'     => 'datetime',
-            'net_profit'    => 'decimal:2',
+            'closed_at' => 'datetime',
+            'net_profit' => 'decimal:2',
             'total_revenue' => 'decimal:2',
         ];
     }
@@ -31,6 +31,6 @@ class MonthlyClosingReport extends Model
 
     public function getMonthNameAttribute(): string
     {
-        return date('F', mktime(0, 0, 0, $this->month, 1)) . ' ' . $this->year;
+        return date('F', mktime(0, 0, 0, $this->month, 1)).' '.$this->year;
     }
 }

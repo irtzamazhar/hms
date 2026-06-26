@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\AuditController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DoctorController;
@@ -111,11 +112,11 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{labBooking}', [LabController::class, 'destroy'])->name('destroy');
     });
     Route::resource('lab-tests', LabTestController::class)->except(['show'])->names([
-        'index'   => 'lab.tests.index',
-        'create'  => 'lab.tests.create',
-        'store'   => 'lab.tests.store',
-        'edit'    => 'lab.tests.edit',
-        'update'  => 'lab.tests.update',
+        'index' => 'lab.tests.index',
+        'create' => 'lab.tests.create',
+        'store' => 'lab.tests.store',
+        'edit' => 'lab.tests.edit',
+        'update' => 'lab.tests.update',
         'destroy' => 'lab.tests.destroy',
     ]);
 
@@ -159,6 +160,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/profit-loss/export', [ReportController::class, 'profitLossExport'])->name('profit-loss.export');
     });
 
+    // ── Audit Trail ───────────────────────────────────────
+    Route::get('/audit-logs', [AuditController::class, 'index'])->name('audit-logs.index');
+
     // ── Users ─────────────────────────────────────────────
     Route::get('/users/{user}/permissions', [UserController::class, 'permissions'])->name('users.permissions');
     Route::put('/users/{user}/permissions', [UserController::class, 'updatePermissions'])->name('users.permissions.update');
@@ -179,4 +183,4 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

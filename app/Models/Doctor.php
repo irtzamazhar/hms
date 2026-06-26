@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Doctor extends Model
+class Doctor extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes;
+    use AuditableTrait, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id', 'department_id', 'doctor_id', 'qualification',
@@ -41,6 +43,7 @@ class Doctor extends Model
                 return array_map('strtolower', $decoded);
             }
         }
+
         return [];
     }
 
@@ -48,7 +51,7 @@ class Doctor extends Model
     {
         if (is_string($value)) {
             $decoded = json_decode($value, true);
-            $value   = is_array($decoded) ? $decoded : [];
+            $value = is_array($decoded) ? $decoded : [];
         }
         $this->attributes['available_days'] = json_encode(
             is_array($value) ? array_map('strtolower', array_values($value)) : []
@@ -89,7 +92,7 @@ class Doctor extends Model
 
     public function getFullTitleAttribute(): string
     {
-        return 'Dr. ' . $this->user?->name . ' (' . $this->specialization . ')';
+        return 'Dr. '.$this->user?->name.' ('.$this->specialization.')';
     }
 
     public function scopeActive($query)

@@ -5,9 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Prescription extends Model
+class Prescription extends Model implements Auditable
 {
+    use AuditableTrait;
+
     protected $fillable = ['opd_visit_id', 'patient_id', 'doctor_id', 'prescription_date', 'notes'];
 
     protected function casts(): array

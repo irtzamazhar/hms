@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Medicine extends Model
+class Medicine extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes;
+    use AuditableTrait, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'category_id', 'supplier_id', 'name', 'generic_name', 'brand', 'sku', 'barcode',

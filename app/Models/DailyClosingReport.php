@@ -18,13 +18,13 @@ class DailyClosingReport extends Model
     {
         return [
             'report_date' => 'date',
-            'closed_at'   => 'datetime',
-            'opd_revenue'        => 'decimal:2',
-            'pharmacy_revenue'   => 'decimal:2',
-            'lab_revenue'        => 'decimal:2',
-            'total_revenue'      => 'decimal:2',
-            'total_expenses'     => 'decimal:2',
-            'net_profit'         => 'decimal:2',
+            'closed_at' => 'datetime',
+            'opd_revenue' => 'decimal:2',
+            'pharmacy_revenue' => 'decimal:2',
+            'lab_revenue' => 'decimal:2',
+            'total_revenue' => 'decimal:2',
+            'total_expenses' => 'decimal:2',
+            'net_profit' => 'decimal:2',
         ];
     }
 

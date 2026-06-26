@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
 class IpdAdmission extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes, AuditableTrait;
+    use AuditableTrait, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'admission_number', 'patient_id', 'doctor_id', 'department_id',
@@ -96,10 +96,10 @@ class IpdAdmission extends Model implements Auditable
 
     public static function generateAdmissionNumber(): string
     {
-        $prefix = 'IPD-' . now()->format('Y') . '-';
-        $last = static::where('admission_number', 'like', $prefix . '%')->latest('id')->value('admission_number');
+        $prefix = 'IPD-'.now()->format('Y').'-';
+        $last = static::where('admission_number', 'like', $prefix.'%')->latest('id')->value('admission_number');
         $next = $last ? ((int) substr($last, -5) + 1) : 1;
 
-        return $prefix . str_pad($next, 5, '0', STR_PAD_LEFT);
+        return $prefix.str_pad($next, 5, '0', STR_PAD_LEFT);
     }
 }

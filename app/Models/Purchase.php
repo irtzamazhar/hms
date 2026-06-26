@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Purchase extends Model
+class Purchase extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes;
+    use AuditableTrait, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'purchase_number', 'supplier_id', 'purchase_date', 'invoice_number',
@@ -48,10 +50,10 @@ class Purchase extends Model
 
     public static function generateNumber(): string
     {
-        $prefix = 'PO-' . now()->format('Ym') . '-';
-        $last = static::where('purchase_number', 'like', $prefix . '%')->latest('id')->value('purchase_number');
+        $prefix = 'PO-'.now()->format('Ym').'-';
+        $last = static::where('purchase_number', 'like', $prefix.'%')->latest('id')->value('purchase_number');
         $next = $last ? ((int) substr($last, -4) + 1) : 1;
 
-        return $prefix . str_pad($next, 4, '0', STR_PAD_LEFT);
+        return $prefix.str_pad($next, 4, '0', STR_PAD_LEFT);
     }
 }

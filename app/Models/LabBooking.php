@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class LabBooking extends Model
+class LabBooking extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes;
+    use AuditableTrait, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'booking_number', 'patient_id', 'doctor_id', 'opd_visit_id', 'ipd_admission_id',
@@ -66,10 +68,10 @@ class LabBooking extends Model
 
     public static function generateNumber(): string
     {
-        $prefix = 'LAB-' . now()->format('Ymd') . '-';
-        $last = static::where('booking_number', 'like', $prefix . '%')->latest('id')->value('booking_number');
+        $prefix = 'LAB-'.now()->format('Ymd').'-';
+        $last = static::where('booking_number', 'like', $prefix.'%')->latest('id')->value('booking_number');
         $next = $last ? ((int) substr($last, -4) + 1) : 1;
 
-        return $prefix . str_pad($next, 4, '0', STR_PAD_LEFT);
+        return $prefix.str_pad($next, 4, '0', STR_PAD_LEFT);
     }
 }

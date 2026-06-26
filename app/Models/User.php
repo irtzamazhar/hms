@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
+use OwenIt\Auditing\Contracts\Auditable;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements Auditable
 {
-    use HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes, AuditableTrait;
+    use AuditableTrait, HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name', 'email', 'password', 'phone', 'avatar', 'employee_id',
@@ -57,21 +57,21 @@ class User extends Authenticatable implements Auditable
 
     public function homeRoute(): string
     {
-        return match($this->user_type) {
-            'receptionist'   => route('tokens.index'),
-            'doctor'         => route('opd.index'),
-            'nurse'          => route('patients.index'),
-            'pharmacist'     => route('pharmacy.pos'),
+        return match ($this->user_type) {
+            'receptionist' => route('tokens.index'),
+            'doctor' => route('opd.index'),
+            'nurse' => route('patients.index'),
+            'pharmacist' => route('pharmacy.pos'),
             'lab_technician' => route('lab.index'),
-            'accountant'     => route('expenses.index'),
-            default          => route('dashboard'),
+            'accountant' => route('expenses.index'),
+            default => route('dashboard'),
         };
     }
 
     public function getAvatarUrlAttribute(): string
     {
         return $this->avatar
-            ? asset('storage/' . $this->avatar)
-            : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF';
+            ? asset('storage/'.$this->avatar)
+            : 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&color=7F9CF5&background=EBF4FF';
     }
 }
