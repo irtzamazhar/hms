@@ -78,6 +78,14 @@ class PatientController extends Controller
         return view('patients.history', compact('patient', 'history'));
     }
 
+    public function medicineHistory(Request $request, Patient $patient): View
+    {
+        $this->authorize('view patients');
+        $data = $this->service->getMedicineHistory($patient, $request->only(['from', 'to']));
+
+        return view('patients.medicine-history', array_merge(['patient' => $patient], $data));
+    }
+
     public function export(Request $request): BinaryFileResponse
     {
         $this->authorize('view patients');

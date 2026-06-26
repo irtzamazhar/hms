@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -9,33 +10,37 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ProfitLossExport implements FromArray, WithHeadings, ShouldAutoSize, WithTitle, WithStyles
+class ProfitLossExport implements FromArray, ShouldAutoSize, WithHeadings, WithStyles, WithTitle
 {
     public function __construct(
         private array $revenue,
-        private array $expenses,
+        private Collection $expenseByCategory,
+        private float $totalSalaries,
+        private float $totalExpenses,
         private float $netProfit,
-        private int $month,
-        private int $year
+        private string $from,
+        private string $to
     ) {}
 
     public function array(): array
     {
         $rows = [];
 
-        $rows[] = ['=== REVENUE ===', ''];
+        $rows[] = ['REVENUE', ''];
         $rows[] = ['OPD Revenue', $this->revenue['opd'] ?? 0];
+        $rows[] = ['IPD Revenue', $this->revenue['ipd'] ?? 0];
         $rows[] = ['Pharmacy Revenue', $this->revenue['pharmacy'] ?? 0];
         $rows[] = ['Lab Revenue', $this->revenue['lab'] ?? 0];
-        $rows[] = ['Total Revenue', $this->revenue['total'] ?? 0];
+        $rows[] = ['Other Revenue', $this->revenue['other'] ?? 0];
+        $rows[] = ['Total Revenue', array_sum($this->revenue)];
 
         $rows[] = ['', ''];
-        $rows[] = ['=== EXPENSES ===', ''];
-        $rows[] = ['Hospital Expenses', $this->expenses['hospital'] ?? 0];
-        $rows[] = ['Pharmacy Expenses', $this->expenses['pharmacy'] ?? 0];
-        $rows[] = ['Lab Expenses', $this->expenses['lab'] ?? 0];
-        $rows[] = ['Salaries', $this->expenses['salaries'] ?? 0];
-        $rows[] = ['Total Expenses', $this->expenses['total'] ?? 0];
+        $rows[] = ['EXPENSES', ''];
+        foreach ($this->expenseByCategory as $cat) {
+            $rows[] = [$cat->name ?? '—', $cat->total ?? 0];
+        }
+        $rows[] = ['Salaries', $this->totalSalaries];
+        $rows[] = ['Total Expenses', $this->totalExpenses];
 
         $rows[] = ['', ''];
         $rows[] = ['NET PROFIT / (LOSS)', $this->netProfit];
@@ -50,14 +55,13 @@ class ProfitLossExport implements FromArray, WithHeadings, ShouldAutoSize, WithT
 
     public function title(): string
     {
-        return 'P&L — ' . date('F', mktime(0, 0, 0, $this->month, 1)) . ' ' . $this->year;
+        return 'P&L — '.$this->from.' to '.$this->to;
     }
 
     public function styles(Worksheet $sheet): array
     {
         return [
-            1  => ['font' => ['bold' => true], 'fill' => ['fillType' => 'solid', 'startColor' => ['rgb' => 'DCFCE7']]],
-            14 => ['font' => ['bold' => true, 'size' => 12]],
+            1 => ['font' => ['bold' => true], 'fill' => ['fillType' => 'solid', 'startColor' => ['rgb' => 'DCFCE7']]],
         ];
     }
 }

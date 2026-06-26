@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class LabReportExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithTitle, WithStyles
+class LabReportExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     public function __construct(
         private string $from,
@@ -21,7 +21,7 @@ class LabReportExport implements FromQuery, WithHeadings, WithMapping, ShouldAut
 
     public function query()
     {
-        return LabBooking::with(['patient:id,name,mr_number', 'referredBy.user:id,name'])
+        return LabBooking::with(['patient:id,name,mr_number', 'doctor.user:id,name'])
             ->withCount('items')
             ->whereBetween('booking_date', [$this->from, $this->to])
             ->when($this->status, fn ($q, $s) => $q->where('status', $s))
@@ -44,7 +44,7 @@ class LabReportExport implements FromQuery, WithHeadings, WithMapping, ShouldAut
             $row->booking_date?->format('d/m/Y'),
             $row->patient?->mr_number,
             $row->patient?->name,
-            $row->referredBy ? 'Dr. ' . $row->referredBy->user?->name : '—',
+            $row->doctor ? 'Dr. '.$row->doctor->user?->name : '—',
             $row->items_count,
             $row->total_amount,
             $row->discount,

@@ -32,33 +32,33 @@
         <div class="hospital">{{ $setting->hospital_name }}</div>
         <div class="sub">{{ $setting->address }} | {{ $setting->phone }}</div>
         <div class="report-title">Daily Closing Report</div>
-        <div class="sub">{{ $report->report_date->format('d M Y') }} — {{ ucfirst($report->shift) }} Shift</div>
+        <div class="sub">{{ $report->report_date->format('d M Y') }}</div>
     </div>
 
     <div class="grid2">
         @foreach([
-            ['OPD', $report->opd_visits ?? 0, '₨ '.number_format($report->opd_revenue ?? 0, 0)],
-            ['IPD', $report->ipd_admissions ?? 0, '₨ '.number_format($report->ipd_revenue ?? 0, 0)],
-            ['Pharmacy', $report->pharmacy_sales ?? 0, '₨ '.number_format($report->pharmacy_revenue ?? 0, 0)],
-            ['Lab', $report->lab_bookings ?? 0, '₨ '.number_format($report->lab_revenue ?? 0, 0)],
+            ['OPD', $report->total_opd_patients ?? 0, 'Rs '.number_format($report->opd_revenue ?? 0, 0)],
+            ['IPD', $report->total_ipd_admissions ?? 0, 'Rs '.number_format($report->ipd_revenue ?? 0, 0)],
+            ['Pharmacy', null, 'Rs '.number_format($report->pharmacy_revenue ?? 0, 0)],
+            ['Lab', null, 'Rs '.number_format($report->lab_revenue ?? 0, 0)],
         ] as [$dept, $count, $revenue])
         <div class="card">
             <div class="card-label">{{ $dept }}</div>
-            <div class="card-value">{{ $count }}</div>
-            <div class="card-sub">{{ $revenue }}</div>
+            <div class="card-value">{{ is_null($count) ? $revenue : $count }}</div>
+            @if(!is_null($count))<div class="card-sub">{{ $revenue }}</div>@endif
         </div>
         @endforeach
     </div>
 
     <div class="total-section">
-        <div class="total-row"><span>Total Revenue</span><span style="color:#16a34a;font-weight:600;">₨ {{ number_format($report->total_revenue ?? 0, 0) }}</span></div>
-        <div class="total-row"><span>Total Expenses</span><span style="color:#dc2626;font-weight:600;">₨ {{ number_format($report->total_expenses ?? 0, 0) }}</span></div>
-        <div class="total-row net"><span>Net Profit</span><span style="color:{{ ($report->net_profit ?? 0) >= 0 ? '#16a34a' : '#dc2626' }};">₨ {{ number_format($report->net_profit ?? 0, 0) }}</span></div>
+        <div class="total-row"><span>Total Revenue</span><span style="color:#16a34a;font-weight:600;">Rs {{ number_format($report->total_revenue ?? 0, 0) }}</span></div>
+        <div class="total-row"><span>Total Expenses</span><span style="color:#dc2626;font-weight:600;">Rs {{ number_format($report->total_expenses ?? 0, 0) }}</span></div>
+        <div class="total-row net"><span>Net Profit</span><span style="color:{{ ($report->net_profit ?? 0) >= 0 ? '#16a34a' : '#dc2626' }};">Rs {{ number_format($report->net_profit ?? 0, 0) }}</span></div>
     </div>
 
     <div class="footer">
-        Prepared: {{ now()->format('d M Y H:i') }} | {{ $setting->hospital_name }} HMS | Shift: {{ ucfirst($report->shift) }}
-        @if($report->is_closed) | CLOSED @endif
+        Prepared: {{ now()->format('d M Y H:i') }} | {{ $setting->hospital_name }} HMS
+        @if($report->closed_at) | CLOSED @endif
     </div>
 </div>
 </body>

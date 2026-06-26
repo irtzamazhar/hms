@@ -22,12 +22,13 @@
         <input type="date" name="to" value="{{ request('to', today()->toDateString()) }}"
                class="field">
         <button type="submit" class="px-4 py-2 bg-primary-600 text-white text-sm rounded-lg">Generate</button>
+        <a href="{{ route('reports.pharmacy') }}" class="btn-cancel">Reset</a>
     </div>
 </form>
 
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
     @foreach([
-        ['Total Sales', $summary['total_sales'] ?? 0, 'text-slate-800'],
+        ['Total Sales', $summary['total_sales'] ?? 0, 'text-slate-800 dark:text-white'],
         ['Revenue', '₨ '.number_format($summary['revenue'] ?? 0, 0), 'text-green-600'],
         ['Cost', '₨ '.number_format($summary['cost'] ?? 0, 0), 'text-red-500'],
         ['Gross Profit', '₨ '.number_format(($summary['revenue'] ?? 0) - ($summary['cost'] ?? 0), 0), 'text-primary-600'],

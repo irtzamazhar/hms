@@ -53,7 +53,7 @@
 
         {{-- Totals --}}
         <div class="px-5 py-4 space-y-2">
-            <div class="flex justify-between text-sm"><span class="text-slate-400">Subtotal</span><span>₨ {{ number_format($sale->total_amount, 2) }}</span></div>
+            <div class="flex justify-between text-sm"><span class="text-slate-400">Subtotal</span><span>₨ {{ number_format($sale->subtotal, 2) }}</span></div>
             @if(($sale->discount_amount ?? 0) > 0)
             <div class="flex justify-between text-sm text-red-500"><span>Discount</span><span>— ₨ {{ number_format($sale->discount_amount, 2) }}</span></div>
             @endif

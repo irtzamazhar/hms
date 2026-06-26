@@ -36,24 +36,26 @@
         <div class="flex justify-between items-start">
             <div>
                 <p class="text-sm text-slate-400">Closing Report</p>
-                <h2 class="text-lg font-bold text-slate-800 dark:text-white">{{ $report->report_date->format('d M Y') }} — {{ ucfirst($report->shift) }} Shift</h2>
+                <h2 class="text-lg font-bold text-slate-800 dark:text-white">{{ $report->report_date->format('d M Y') }}</h2>
             </div>
-            <x-badge color="{{ $report->is_closed ? 'green' : 'amber' }}">{{ $report->is_closed ? 'Closed' : 'Draft' }}</x-badge>
+            <x-badge color="{{ $report->closed_at ? 'green' : 'amber' }}">{{ $report->closed_at ? 'Closed' : 'Draft' }}</x-badge>
         </div>
     </div>
 
     {{-- Department summaries --}}
     <div class="grid md:grid-cols-2 gap-4">
         @foreach([
-            ['OPD', $report->opd_visits ?? 0, $report->opd_revenue ?? 0, 'blue'],
-            ['IPD', $report->ipd_admissions ?? 0, $report->ipd_revenue ?? 0, 'green'],
-            ['Pharmacy', $report->pharmacy_sales ?? 0, $report->pharmacy_revenue ?? 0, 'purple'],
-            ['Laboratory', $report->lab_bookings ?? 0, $report->lab_revenue ?? 0, 'cyan'],
-        ] as [$dept, $count, $revenue, $color])
+            ['OPD', $report->total_opd_patients ?? 0, $report->opd_revenue ?? 0],
+            ['IPD', $report->total_ipd_admissions ?? 0, $report->ipd_revenue ?? 0],
+            ['Pharmacy', null, $report->pharmacy_revenue ?? 0],
+            ['Laboratory', null, $report->lab_revenue ?? 0],
+        ] as [$dept, $count, $revenue])
         <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">{{ $dept }}</p>
-            <p class="text-2xl font-bold text-slate-800 dark:text-white mt-1">{{ $count }} <span class="text-sm font-normal text-slate-400">records</span></p>
-            <p class="text-sm font-semibold text-green-600 mt-0.5">₨ {{ number_format($revenue, 0) }}</p>
+            <p class="text-2xl font-bold text-slate-800 dark:text-white mt-1">
+                @if(!is_null($count)){{ $count }} <span class="text-sm font-normal text-slate-400">records</span>@else ₨ {{ number_format($revenue, 0) }}@endif
+            </p>
+            @if(!is_null($count))<p class="text-sm font-semibold text-green-600 mt-0.5">₨ {{ number_format($revenue, 0) }}</p>@endif
         </div>
         @endforeach
     </div>
@@ -65,17 +67,13 @@
         <div class="px-5 py-3 flex justify-between"><span class="font-bold text-slate-700 dark:text-white">Net Profit</span><span class="font-bold text-lg {{ ($report->net_profit ?? 0) >= 0 ? 'text-green-600' : 'text-red-500' }}">₨ {{ number_format($report->net_profit ?? 0, 0) }}</span></div>
     </div>
 
-    {{-- Close shift button --}}
-    @if(!$report->is_closed)
+    {{-- Regenerate button --}}
     @can('close daily reports')
-    <form method="POST" action="{{ route('reports.daily-closing.close') }}" onsubmit="return confirm('Close this shift? This cannot be undone.')">
+    <form method="POST" action="{{ route('reports.daily-closing.close') }}" onsubmit="return confirm('Regenerate today\'s closing report with the latest figures?')">
         @csrf
-        <input type="hidden" name="date" value="{{ $report->report_date->toDateString() }}">
-        <input type="hidden" name="shift" value="{{ $report->shift }}">
-        <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl">Close {{ ucfirst($report->shift) }} Shift</button>
+        <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl">Regenerate Report</button>
     </form>
     @endcan
-    @endif
 </div>
 @else
 <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-12 text-center">

@@ -11,19 +11,19 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ExpensesReportExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithTitle, WithStyles
+class ExpensesReportExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     public function __construct(
         private string $from,
         private string $to,
-        private ?string $module = null
+        private ?int $categoryId = null
     ) {}
 
     public function query()
     {
         return Expense::with(['category:id,name', 'createdBy:id,name', 'approvedBy:id,name'])
             ->whereBetween('expense_date', [$this->from, $this->to])
-            ->when($this->module, fn ($q, $m) => $q->where('module', $m))
+            ->when($this->categoryId, fn ($q, $id) => $q->where('expense_category_id', $id))
             ->latest('expense_date');
     }
 

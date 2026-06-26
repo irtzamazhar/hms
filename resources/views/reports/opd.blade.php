@@ -37,7 +37,7 @@
 {{-- Summary --}}
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
     @foreach([
-        ['Total Visits', $summary['total_visits'] ?? 0, 'text-slate-800'],
+        ['Total Visits', $summary['total_visits'] ?? 0, 'text-slate-800 dark:text-white'],
         ['Revenue', '₨ '.number_format($summary['total_revenue'] ?? 0, 0), 'text-green-600'],
         ['Discount', '₨ '.number_format($summary['total_discount'] ?? 0, 0), 'text-red-500'],
         ['Avg Fee', '₨ '.number_format($summary['avg_fee'] ?? 0, 0), 'text-blue-600'],

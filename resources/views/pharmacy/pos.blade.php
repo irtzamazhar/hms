@@ -19,7 +19,7 @@
 
         {{-- Search Results --}}
         <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden" x-show="results.length > 0">
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-0 divide-x divide-y divide-slate-100 dark:divide-slate-700">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-0 divide-x divide-y divide-slate-100 dark:divide-slate-700 max-h-[60vh] overflow-y-auto">
                 <template x-for="med in results" :key="med.id">
                     <button @click="addToCart(med)" type="button"
                             class="p-3 text-left hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
@@ -41,7 +41,7 @@
             <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-700">
                 <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Recent / Common Medicines</p>
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-0 divide-x divide-y divide-slate-100 dark:divide-slate-700">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-0 divide-x divide-y divide-slate-100 dark:divide-slate-700 max-h-[60vh] overflow-y-auto">
                 @foreach($medicines as $med)
                 <button type="button"
                         x-on:click="addToCart({id:{{ $med->id }},name:{{ json_encode($med->name) }},generic_name:{{ json_encode($med->generic_name ?? '') }},sale_price:{{ $med->sale_price }},stock_quantity:{{ $med->stock_quantity }}})"

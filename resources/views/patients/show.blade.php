@@ -23,8 +23,9 @@
         <div class="flex gap-2 flex-wrap">
             <a href="{{ route('tokens.create', ['patient_id'=>$patient->id]) }}" class="px-3 py-2 bg-amber-600 hover:bg-amber-700 text-white text-sm rounded-lg">+ Token</a>
             <a href="{{ route('opd.create', ['patient_id'=>$patient->id]) }}" class="px-3 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm rounded-lg">+ OPD Visit</a>
+            <a href="{{ route('patients.medicine-history', $patient) }}" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm rounded-lg">💊 Medicine History</a>
             @can('edit patients')
-            <a href="{{ route('patients.edit', $patient) }}" class="px-3 py-2 bg-slate-200 text-slate-700 dark:text-slate-200">Edit</a>
+            <a href="{{ route('patients.edit', $patient) }}" class="px-3 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-sm rounded-lg">Edit</a>
             @endcan
         </div>
     </div>

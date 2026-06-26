@@ -348,7 +348,7 @@
         /* ──────────────────────────────────────────────────────── */
     </style>
 </head>
-<body class="bg-slate-100 dark:bg-dark-950 font-sans antialiased transition-colors duration-200">
+<body class="bg-slate-100 dark:bg-dark-950 text-slate-700 dark:text-slate-200 font-sans antialiased transition-colors duration-200">
 
 <div class="flex h-screen overflow-hidden">
 

@@ -37,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/patients/export', [PatientController::class, 'export'])->name('patients.export');
     Route::resource('patients', PatientController::class);
     Route::get('/patients/{patient}/history', [PatientController::class, 'history'])->name('patients.history');
+    Route::get('/patients/{patient}/medicine-history', [PatientController::class, 'medicineHistory'])->name('patients.medicine-history');
 
     // ── Tokens ────────────────────────────────────────────
     Route::resource('tokens', TokenController::class)->except(['edit', 'update']);

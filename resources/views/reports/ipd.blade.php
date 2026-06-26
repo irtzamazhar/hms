@@ -21,13 +21,16 @@
                class="field">
         <input type="date" name="to" value="{{ request('to', today()->toDateString()) }}"
                class="field">
-        <button type="submit" class="px-3 py-2 bg-primary-600 text-white text-sm rounded-lg">Generate</button>
+        <div class="flex gap-2">
+            <button type="submit" class="flex-1 px-3 py-2 bg-primary-600 text-white text-sm rounded-lg">Generate</button>
+            <a href="{{ route('reports.ipd') }}" class="btn-cancel">Reset</a>
+        </div>
     </div>
 </form>
 
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
     @foreach([
-        ['Admissions', $summary['total_admissions'] ?? 0, 'text-slate-800'],
+        ['Admissions', $summary['total_admissions'] ?? 0, 'text-slate-800 dark:text-white'],
         ['Discharges', $summary['total_discharges'] ?? 0, 'text-green-600'],
         ['Revenue', '₨ '.number_format($summary['total_revenue'] ?? 0, 0), 'text-primary-600'],
         ['Avg Stay', ($summary['avg_stay'] ?? 0).' days', 'text-amber-600'],
@@ -60,8 +63,8 @@
                     <td class="px-4 py-2.5 font-mono text-xs text-primary-600">{{ $a->admission_number }}</td>
                     <td class="px-4 py-2.5 text-slate-700 dark:text-white">{{ $a->patient->name }}</td>
                     <td class="px-4 py-2.5 text-slate-500">{{ $a->ward->name ?? '—' }}</td>
-                    <td class="px-4 py-2.5 text-xs text-slate-400">{{ $a->admission_date->format('d M Y') }}</td>
-                    <td class="px-4 py-2.5 text-xs text-slate-400">{{ $a->discharge_date?->format('d M Y') ?? '—' }}</td>
+                    <td class="px-4 py-2.5 text-xs text-slate-400">{{ $a->admission_datetime?->format('d M Y') ?? '—' }}</td>
+                    <td class="px-4 py-2.5 text-xs text-slate-400">{{ $a->discharge_datetime?->format('d M Y') ?? '—' }}</td>
                     <td class="px-4 py-2.5 text-right font-semibold text-slate-700 dark:text-white">₨ {{ number_format($a->net_amount ?? 0, 0) }}</td>
                     <td class="px-4 py-2.5"><x-badge color="{{ ['admitted'=>'blue','discharged'=>'green'][$a->status] ?? 'slate' }}">{{ ucfirst($a->status) }}</x-badge></td>
                 </tr>

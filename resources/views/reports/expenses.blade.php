@@ -27,7 +27,10 @@
                 <option value="{{ $c->id }}" @selected(request('category_id')==$c->id)>{{ $c->name }}</option>
             @endforeach
         </select>
-        <button type="submit" class="px-3 py-2 bg-primary-600 text-white text-sm rounded-lg">Generate</button>
+        <div class="flex gap-2">
+            <button type="submit" class="flex-1 px-3 py-2 bg-primary-600 text-white text-sm rounded-lg">Generate</button>
+            <a href="{{ route('reports.expenses') }}" class="btn-cancel">Reset</a>
+        </div>
     </div>
 </form>
 

@@ -34,6 +34,25 @@ class Sale extends Model
         ];
     }
 
+    /**
+     * Net payable for the sale. There is no dedicated column — the stored
+     * `total_amount` is already subtotal − discount + tax, so it is the net.
+     * Exposed as `net_amount` for the views/exports that reference that name.
+     */
+    public function getNetAmountAttribute(): float
+    {
+        return (float) $this->total_amount;
+    }
+
+    /**
+     * Friendly alias for the receipt identifier. The column is `invoice_number`;
+     * views/exports refer to it as `sale_number`.
+     */
+    public function getSaleNumberAttribute(): ?string
+    {
+        return $this->invoice_number;
+    }
+
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class)->withTrashed();

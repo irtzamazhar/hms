@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class IpdReportExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithTitle, WithStyles
+class IpdReportExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     public function __construct(
         private string $from,
@@ -22,7 +22,7 @@ class IpdReportExport implements FromQuery, WithHeadings, WithMapping, ShouldAut
     public function query()
     {
         return IpdAdmission::with(['patient:id,name,mr_number', 'doctor.user:id,name', 'ward:id,name', 'bed:id,bed_number'])
-            ->whereBetween('admission_datetime', [$this->from . ' 00:00:00', $this->to . ' 23:59:59'])
+            ->whereBetween('admission_datetime', [$this->from.' 00:00:00', $this->to.' 23:59:59'])
             ->when($this->status, fn ($q, $s) => $q->where('status', $s))
             ->latest('admission_datetime');
     }
@@ -49,15 +49,15 @@ class IpdReportExport implements FromQuery, WithHeadings, WithMapping, ShouldAut
             $row->discharge_datetime?->format('d/m/Y') ?? '—',
             $row->patient?->mr_number,
             $row->patient?->name,
-            'Dr. ' . ($row->doctor?->user?->name ?? ''),
+            'Dr. '.($row->doctor?->user?->name ?? ''),
             $row->ward?->name,
             $row->bed?->bed_number,
             $days,
             ucfirst($row->status),
-            $row->bed_charges,
-            $row->treatment_charges,
+            $row->daily_bed_charge,
+            $row->doctor_charges + $row->nursing_charges + $row->medicine_charges + $row->lab_charges,
             $row->other_charges,
-            $row->advance_payment,
+            $row->paid_amount,
             $row->net_amount,
         ];
     }

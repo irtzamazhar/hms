@@ -37,7 +37,7 @@
             <p class="text-sm text-slate-400">Monthly Report</p>
             <h2 class="text-lg font-bold text-slate-800 dark:text-white">{{ date('F Y', mktime(0,0,0,$report->month,1,$report->year)) }}</h2>
         </div>
-        <x-badge color="{{ $report->is_closed ? 'green' : 'amber' }}">{{ $report->is_closed ? 'Closed' : 'Draft' }}</x-badge>
+        <x-badge color="{{ $report->closed_at ? 'green' : 'amber' }}">{{ $report->closed_at ? 'Closed' : 'Draft' }}</x-badge>
     </div>
 
     {{-- Department Totals --}}
@@ -67,16 +67,14 @@
         @endforeach
     </div>
 
-    @if(!$report->is_closed)
     @can('close monthly reports')
-    <form method="POST" action="{{ route('reports.monthly-closing.close') }}" onsubmit="return confirm('Close this month? This cannot be undone.')">
+    <form method="POST" action="{{ route('reports.monthly-closing.close') }}" onsubmit="return confirm('Regenerate this month\'s closing report with the latest figures?')">
         @csrf
         <input type="hidden" name="month" value="{{ $report->month }}">
         <input type="hidden" name="year" value="{{ $report->year }}">
-        <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl">Close Month — {{ date('F Y', mktime(0,0,0,$report->month,1,$report->year)) }}</button>
+        <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl">Regenerate — {{ date('F Y', mktime(0,0,0,$report->month,1,$report->year)) }}</button>
     </form>
     @endcan
-    @endif
 </div>
 @else
 <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-12 text-center">

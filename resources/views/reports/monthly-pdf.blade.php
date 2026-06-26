@@ -33,11 +33,11 @@
     <table>
         <thead><tr><th>Department</th><th>Records</th><th>Revenue</th></tr></thead>
         <tbody>
-            <tr><td>OPD</td><td>{{ $report->opd_visits ?? 0 }}</td><td>₨ {{ number_format($report->opd_revenue ?? 0, 0) }}</td></tr>
-            <tr><td>IPD</td><td>{{ $report->ipd_admissions ?? 0 }}</td><td>₨ {{ number_format($report->ipd_revenue ?? 0, 0) }}</td></tr>
-            <tr><td>Pharmacy</td><td>{{ $report->pharmacy_sales ?? 0 }}</td><td>₨ {{ number_format($report->pharmacy_revenue ?? 0, 0) }}</td></tr>
-            <tr><td>Laboratory</td><td>{{ $report->lab_bookings ?? 0 }}</td><td>₨ {{ number_format($report->lab_revenue ?? 0, 0) }}</td></tr>
-            <tr style="font-weight:bold;background:#f8fafc;"><td>Total Revenue</td><td></td><td>₨ {{ number_format($report->total_revenue ?? 0, 0) }}</td></tr>
+            <tr><td>OPD</td><td>{{ $report->total_opd_patients ?? 0 }}</td><td>Rs {{ number_format($report->opd_revenue ?? 0, 0) }}</td></tr>
+            <tr><td>IPD</td><td>{{ $report->total_ipd_admissions ?? 0 }}</td><td>Rs {{ number_format($report->ipd_revenue ?? 0, 0) }}</td></tr>
+            <tr><td>Pharmacy</td><td>—</td><td>Rs {{ number_format($report->pharmacy_revenue ?? 0, 0) }}</td></tr>
+            <tr><td>Laboratory</td><td>—</td><td>Rs {{ number_format($report->lab_revenue ?? 0, 0) }}</td></tr>
+            <tr style="font-weight:bold;background:#f8fafc;"><td>Total Revenue</td><td></td><td>Rs {{ number_format($report->total_revenue ?? 0, 0) }}</td></tr>
         </tbody>
     </table>
 
@@ -46,21 +46,21 @@
         <thead><tr><th>Category</th><th>Amount</th></tr></thead>
         <tbody>
             @foreach($expenseByCategory ?? [] as $cat)
-            <tr><td>{{ $cat->name ?? '—' }}</td><td>₨ {{ number_format($cat->total ?? 0, 0) }}</td></tr>
+            <tr><td>{{ $cat->name ?? '—' }}</td><td>Rs {{ number_format($cat->total ?? 0, 0) }}</td></tr>
             @endforeach
-            <tr><td>Salaries</td><td>₨ {{ number_format($report->total_salaries ?? 0, 0) }}</td></tr>
-            <tr style="font-weight:bold;background:#f8fafc;"><td>Total Expenses</td><td>₨ {{ number_format($report->total_expenses ?? 0, 0) }}</td></tr>
+            <tr><td>Salaries</td><td>Rs {{ number_format($report->total_salaries ?? 0, 0) }}</td></tr>
+            <tr style="font-weight:bold;background:#f8fafc;"><td>Total Expenses</td><td>Rs {{ number_format($report->total_expenses ?? 0, 0) }}</td></tr>
         </tbody>
     </table>
 
     <div class="total-box">
         <span style="font-size:14px;font-weight:700;">Net Profit / (Loss)</span>
-        <span style="font-size:22px;font-weight:900;color:{{ ($report->net_profit ?? 0) >= 0 ? '#16a34a' : '#dc2626' }};">₨ {{ number_format($report->net_profit ?? 0, 0) }}</span>
+        <span style="font-size:22px;font-weight:900;color:{{ ($report->net_profit ?? 0) >= 0 ? '#16a34a' : '#dc2626' }};">Rs {{ number_format($report->net_profit ?? 0, 0) }}</span>
     </div>
 
     <div class="footer">
         Generated: {{ now()->format('d M Y H:i') }} | {{ $setting->hospital_name }} HMS
-        @if($report->is_closed) | CLOSED @endif
+        @if($report->closed_at) | CLOSED @endif
     </div>
 </div>
 </body>
