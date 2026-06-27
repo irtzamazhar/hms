@@ -22,6 +22,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TenantController;
 use App\Http\Controllers\TokenController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WardController;
@@ -184,6 +185,17 @@ Route::middleware(['auth', 'tenant', 'subscription'])->group(function () {
         Route::patch('/system', [SettingController::class, 'updateSystem'])->name('system');
         Route::patch('/modules', [SettingController::class, 'updateModules'])->name('modules');
     });
+});
+
+// ── Platform (vendor) tenant-management console — platform admins only ──────
+Route::middleware(['auth', 'platform'])->group(function () {
+    Route::get('/tenants', [TenantController::class, 'index'])->name('tenants.index');
+    Route::get('/tenants/create', [TenantController::class, 'create'])->name('tenants.create');
+    Route::post('/tenants', [TenantController::class, 'store'])->name('tenants.store');
+    Route::get('/tenants/{tenant}', [TenantController::class, 'show'])->name('tenants.show');
+    Route::patch('/tenants/{tenant}/subscribe', [TenantController::class, 'subscribe'])->name('tenants.subscribe');
+    Route::patch('/tenants/{tenant}/extend-trial', [TenantController::class, 'extendTrial'])->name('tenants.extend-trial');
+    Route::patch('/tenants/{tenant}/status', [TenantController::class, 'setStatus'])->name('tenants.status');
 });
 
 require __DIR__.'/auth.php';

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureModuleEnabled;
+use App\Http\Middleware\EnsurePlatformAdmin;
 use App\Http\Middleware\EnsureSubscriptionActive;
 use App\Http\Middleware\ResolveTenant;
 use App\Http\Middleware\SecurityHeaders;
@@ -25,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'tenant' => ResolveTenant::class,
             'subscription' => EnsureSubscriptionActive::class,
+            'platform' => EnsurePlatformAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

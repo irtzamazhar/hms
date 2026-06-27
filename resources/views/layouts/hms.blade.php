@@ -579,6 +579,14 @@
             </a>
             @endcan
 
+            @if(auth()->user()?->hospital_id === null && auth()->user()?->can('manage tenants'))
+            <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">Platform</div>
+            <a href="{{ route('tenants.index') }}" class="sidebar-link {{ request()->routeIs('tenants.*') ? 'active' : '' }}">
+                <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0H5m14 0h2M5 21H3m4-14h.01M11 7h.01M7 11h.01M11 11h.01M7 15h.01M11 15h.01"/></svg>
+                <span x-show="sidebarOpen" x-cloak>Tenants</span>
+            </a>
+            @endif
+
             @canany(['view users', 'view roles', 'view permissions'])
             <div x-show="sidebarOpen" x-cloak class="sidebar-group-label">Access Control</div>
             @endcanany
