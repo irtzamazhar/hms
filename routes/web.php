@@ -29,7 +29,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route('dashboard'));
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'tenant', 'subscription'])->group(function () {
+
+    // Subscription / trial gate landing (exempt from the gate itself).
+    Route::view('/subscription/expired', 'subscription.expired')->name('subscription.expired');
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

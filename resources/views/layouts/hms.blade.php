@@ -739,6 +739,15 @@
 
         {{-- Page content --}}
         <main class="flex-1 overflow-y-auto p-4 md:p-5 bg-slate-50 dark:bg-dark-950">
+            {{-- Trial countdown banner --}}
+            @php $tenant = \App\Support\Tenancy::current(); @endphp
+            @if($tenant && $tenant->onTrial())
+            <div class="mb-4 flex items-center gap-3 px-4 py-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 text-amber-700 dark:text-amber-400 rounded-xl text-sm font-medium">
+                <svg class="w-5 h-5 flex-shrink-0 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span><strong>{{ $tenant->trialDaysLeft() }}</strong> {{ \Illuminate\Support\Str::plural('day', $tenant->trialDaysLeft()) }} left in your free trial. Subscribe to keep access after it ends.</span>
+            </div>
+            @endif
+
             {{-- Flash messages --}}
             @if(session('success'))
             <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)" x-transition
