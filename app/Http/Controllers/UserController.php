@@ -7,6 +7,7 @@ use App\Support\Permissions;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -46,7 +47,7 @@ class UserController extends Controller
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
             'phone' => 'nullable|string|max:20',
-            'password' => 'required|min:8|confirmed',
+            'password' => ['required', 'confirmed', Password::defaults()],
             'user_type' => 'required|in:admin,doctor,staff,receptionist,pharmacist,lab_technician',
             'role' => 'required|exists:roles,name',
             'status' => 'required|in:active,inactive',
@@ -95,7 +96,7 @@ class UserController extends Controller
             'name' => 'required|string|max:100',
             'email' => "required|email|unique:users,email,{$user->id}",
             'phone' => 'nullable|string|max:20',
-            'password' => 'nullable|min:8|confirmed',
+            'password' => ['nullable', 'confirmed', Password::defaults()],
             'role' => 'required|exists:roles,name',
             'status' => 'required|in:active,inactive',
         ]);

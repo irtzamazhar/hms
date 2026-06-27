@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use OwenIt\Auditing\Auditable as AuditableTrait;
@@ -10,6 +11,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 class SalaryPayment extends Model implements Auditable
 {
     use AuditableTrait;
+    use BelongsToTenant;
 
     protected $fillable = [
         'user_id', 'salary_structure_id', 'month', 'year', 'basic_salary',

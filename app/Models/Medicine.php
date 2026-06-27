@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +14,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 class Medicine extends Model implements Auditable
 {
     use AuditableTrait, HasFactory, SoftDeletes;
+    use BelongsToTenant;
 
     protected $fillable = [
         'category_id', 'supplier_id', 'name', 'generic_name', 'brand', 'sku', 'barcode',

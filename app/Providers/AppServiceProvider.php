@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,6 +35,25 @@ class AppServiceProvider extends ServiceProvider
         $this->applyHospitalTimezone();
         $this->registerModuleDirectives();
         $this->registerSecurityLogging();
+        $this->registerPasswordPolicy();
+    }
+
+    /**
+     * SEC: centralise the password policy so every flow that uses
+     * Rules\Password::defaults() (Breeze auth + admin user management) shares it.
+     * Production enforces a strong policy incl. a breach check (HIBP k-anonymity);
+     * local/test stay at a plain minimum so the suite runs offline and fast.
+     */
+    private function registerPasswordPolicy(): void
+    {
+        Password::defaults(function () {
+            // Non-prod keeps a plain 8-char minimum (matches Breeze test fixtures
+            // and keeps the suite offline); production enforces length + complexity
+            // + a Have-I-Been-Pwned breach check.
+            return $this->app->isProduction()
+                ? Password::min(10)->mixedCase()->numbers()->symbols()->uncompromised()
+                : Password::min(8);
+        });
     }
 
     /**

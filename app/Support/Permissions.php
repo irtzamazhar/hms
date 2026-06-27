@@ -72,6 +72,11 @@ class Permissions
             ],
 
             'Audit Trail' => ['view audit logs'],
+
+            // Platform-level (vendor) capability — managing tenant hospitals and
+            // their subscriptions. Held only by platform admins (users with no
+            // hospital_id); see App\Http\Middleware\EnsurePlatformAdmin.
+            'Platform' => ['manage tenants'],
         ];
     }
 

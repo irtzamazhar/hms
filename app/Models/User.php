@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -19,7 +20,7 @@ class User extends Authenticatable implements Auditable
     protected $fillable = [
         'name', 'email', 'password', 'phone', 'avatar', 'employee_id',
         'user_type', 'status', 'joining_date', 'is_two_factor_enabled',
-        'two_factor_secret', 'last_login_at', 'last_login_ip',
+        'two_factor_secret', 'last_login_at', 'last_login_ip', 'hospital_id',
     ];
 
     protected $hidden = ['password', 'remember_token', 'two_factor_secret'];
@@ -33,6 +34,11 @@ class User extends Authenticatable implements Auditable
             'last_login_at' => 'datetime',
             'is_two_factor_enabled' => 'boolean',
         ];
+    }
+
+    public function hospital(): BelongsTo
+    {
+        return $this->belongsTo(Hospital::class);
     }
 
     public function doctor(): HasOne
