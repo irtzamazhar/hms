@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +13,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 class Staff extends Model implements Auditable
 {
     use AuditableTrait, HasFactory, SoftDeletes;
+    use BelongsToTenant;
 
     protected $fillable = [
         'user_id', 'department_id', 'staff_id', 'designation', 'cnic',

@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ShiftClosing extends Model
 {
+    use BelongsToTenant;
+
     protected $fillable = [
         'closing_date', 'shift_id', 'opd_revenue', 'ipd_revenue', 'pharmacy_revenue',
         'lab_revenue', 'other_revenue', 'total_revenue', 'total_expenses',

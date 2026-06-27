@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DailyClosingReport extends Model
 {
+    use BelongsToTenant;
+
     protected $fillable = [
         'report_date', 'total_opd_patients', 'total_ipd_admissions', 'total_ipd_discharged',
         'opd_revenue', 'ipd_revenue', 'pharmacy_revenue', 'lab_revenue', 'other_revenue',

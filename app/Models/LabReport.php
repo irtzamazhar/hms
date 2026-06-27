@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LabReport extends Model
 {
+    use BelongsToTenant;
+
     protected $fillable = [
         'booking_id', 'booking_item_id', 'test_id', 'patient_id', 'sample_id',
         'sample_collected_at', 'result_entered_at', 'result_value', 'result_unit',

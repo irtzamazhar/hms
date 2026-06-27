@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MonthlyClosingReport extends Model
 {
+    use BelongsToTenant;
+
     protected $fillable = [
         'month', 'year', 'total_opd_patients', 'total_ipd_admissions',
         'opd_revenue', 'ipd_revenue', 'pharmacy_revenue', 'lab_revenue',

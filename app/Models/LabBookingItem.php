@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class LabBookingItem extends Model
 {
+    use BelongsToTenant;
+
     protected $fillable = ['booking_id', 'test_id', 'cost', 'discount', 'net_cost', 'status'];
 
     protected function casts(): array

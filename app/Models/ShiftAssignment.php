@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ShiftAssignment extends Model
 {
+    use BelongsToTenant;
+
     protected $fillable = [
         'user_id', 'shift_id', 'assignment_date', 'status',
         'check_in', 'check_out', 'notes', 'assigned_by',

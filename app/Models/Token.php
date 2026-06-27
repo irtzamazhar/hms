@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Token extends Model
 {
+    use BelongsToTenant;
+
     protected $fillable = [
         'token_number', 'token_date', 'patient_id', 'doctor_id',
         'department_id', 'shift', 'status', 'priority', 'notes', 'created_by',

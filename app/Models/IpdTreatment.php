@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class IpdTreatment extends Model
 {
+    use BelongsToTenant;
+
     protected $fillable = [
         'ipd_admission_id', 'doctor_id', 'treatment_datetime', 'treatment_notes',
         'vital_bp', 'vital_pulse', 'vital_temperature', 'vital_weight', 'vital_spo2',
